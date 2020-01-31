@@ -11,11 +11,11 @@ namespace Watchman.BusinessLogic.Models.Data
         where TClass : class, IIdentifiedEntity<TKey>
         where TKey : IEquatable<TKey>
     {
-        Task<OperationResult> CreateAsync(TClass obj, CancellationToken cancellationToken);
-        Task<OperationResult> UpdateAsync(TClass obj, CancellationToken cancellationToken);
-        Task<OperationResult> DeleteAsync(TClass obj, CancellationToken cancellationToken);
-        Task<TKey> GeTKeyAsync(TClass obj, CancellationToken cancellationToken);
-        Task<TClass> FindByIdAsync(TKey id, CancellationToken cancellationToken);
+        Task<OperationResult> CreateAsync(TClass obj, CancellationToken cancellationToken = default(CancellationToken));
+        Task<OperationResult> UpdateAsync(TClass obj, CancellationToken cancellationToken = default(CancellationToken));
+        Task<OperationResult> DeleteAsync(TClass obj, CancellationToken cancellationToken = default(CancellationToken));
+        Task<TKey> GeIdAsync(TClass obj, CancellationToken cancellationToken = default(CancellationToken));
+        Task<TClass> FindByIdAsync(TKey id, CancellationToken cancellationToken = default(CancellationToken));
         Task<IEnumerable<TClass>> FindByConditionAsync(Expression<Func<TClass, bool>> expression);
     }
 }
