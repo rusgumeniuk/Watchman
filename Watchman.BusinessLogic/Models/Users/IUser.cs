@@ -2,8 +2,11 @@
 
 namespace Watchman.BusinessLogic.Models.Users
 {
-    public interface IUser : IUser<Guid, Guid, Guid, Guid, Guid, Guid, Guid, Guid> { }
-    public interface IUser<TKey, TPatientKey, THealthMeasurementKey, TPatientHealthKey, TActivityStateKey, TSignKey, TWatchmanKey, TPersonalInfoKey> : IIdentifiedEntity<TKey>
+    public interface IUser<TPersInfo> : IUser<TPersInfo, Guid, Guid, Guid, Guid, Guid, Guid, Guid, Guid>
+    where TPersInfo : IPersonalInformation<Guid>
+    { }
+    public interface IUser<TPersInfo, TKey, TPatientKey, THealthMeasurementKey, TPatientHealthKey, TActivityStateKey, TSignKey, TWatchmanKey, TPersonalInfoKey> : IIdentifiedEntity<TKey>
+        where TPersInfo : IPersonalInformation<TPersonalInfoKey>
         where TKey : IEquatable<TKey>
         where TPatientKey : IEquatable<TPatientKey>
         where THealthMeasurementKey : IEquatable<THealthMeasurementKey>
@@ -15,6 +18,6 @@ namespace Watchman.BusinessLogic.Models.Users
     {
         IPatient<TPatientKey, THealthMeasurementKey, TPatientHealthKey, TActivityStateKey, TSignKey, TWatchmanKey> Patient { get; set; }
         IWatchman<TWatchmanKey> Watchman { get; set; }
-        IPersonalInformation<TPersonalInfoKey> PersonalInformation { get; set; }
+        TPersInfo PersonalInformation { get; set; }
     }
 }
