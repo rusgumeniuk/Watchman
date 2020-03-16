@@ -2,14 +2,17 @@ using Identity.API.Data;
 using Identity.API.Models;
 using Identity.API.Models.Extensions;
 using Identity.API.Services;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 using System;
+
+using Watchman.BusinessLogic.Models.Users;
 
 namespace Identity.API
 {
@@ -21,7 +24,7 @@ namespace Identity.API
             Configuration = configuration;
         }
 
-        
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
@@ -29,14 +32,13 @@ namespace Identity.API
 
 
             string connection = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<WatchmanIdentityDbContext>(options => options.UseSqlServer(connection));
+            services.AddDbContext<WatchmanDbContext>(options => options.UseSqlServer(connection));
 
-
-            services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
-                .AddEntityFrameworkStores<WatchmanIdentityDbContext>()
-                .AddDefaultTokenProviders();
-
-            services.AddTransient<ILoginService<ApplicationUser, Guid>, LoginService>();
+            services.AddTransient<IPersonalInformation<Guid>, PersonalInformation>();
+            services.AddTransient<IUser<PersonalInformation>, WatchmanUser>();
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<ICustomPasswordHasher, PasswordHasher>();
+            services.AddTransient<ILoginService<WatchmanUser, Guid>, LoginService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
