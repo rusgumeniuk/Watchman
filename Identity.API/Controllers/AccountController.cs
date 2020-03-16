@@ -1,42 +1,59 @@
 ﻿using Identity.API.Models;
 using Identity.API.Services;
-using Microsoft.AspNetCore.Identity;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+
 using System;
 
 namespace Identity.API.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : ControllerBase
     {
-        private readonly ILoginService<ApplicationUser, Guid> _loginService;                       
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILoginService<WatchmanUser, Guid> _loginService;
         private readonly ILogger<AccountController> _logger;
         private readonly IConfiguration _configuration;
 
         public AccountController(
-
-            //InMemoryUserLoginService loginService,
-            ILoginService<ApplicationUser, Guid> loginService,
+            ILoginService<WatchmanUser, Guid> loginService,
             ILogger<AccountController> logger,
-            UserManager<ApplicationUser> userManager,
             IConfiguration configuration)
         {
             _loginService = loginService;
             _logger = logger;
-            _userManager = userManager;
             _configuration = configuration;
         }
 
         [HttpPost]
-        public IActionResult Register()
+        [AllowAnonymous]
+        public IActionResult Register([FromBody]RegisterViewModel model)
         {
-            return Ok();
+            try
+            {
+                if (!ModelState.IsValid)
+                    throw new ArgumentException("not valid model");
+
+                _loginService.Register(model.Email, model.Password);
+
+                return StatusCode(201, "Logged up");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
-        public IActionResult Bad()
+        [HttpPost]
+        public IActionResult Login([FromBody]RegisterViewModel model)
         {
-            return BadRequest();
+            var user = _loginService.FindByEmail(model.Email);
+            if (user != null && _loginService.ValidateCredentials(user, model.Password))
+            {
+                return StatusCode(202, "Logged in");
+            }
+            return BadRequest("No way");
         }
     }
 }
