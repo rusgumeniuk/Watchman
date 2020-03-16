@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Watchman.BusinessLogic.Models.Users
 {
@@ -11,7 +10,8 @@ namespace Watchman.BusinessLogic.Models.Users
         string SecondName { get; set; }
         string LastName { get; set; }
         DateTime BirthDay { get; set; }
-        ISet<string> Phones { get; set; }
-        ISet<string> Emails { get; set; }
+        string Phone { get; set; }
+        string Email { get; set; }
+        string HashedPassword { get; set; }
     }
 }
