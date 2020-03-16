@@ -1,46 +1,59 @@
 ﻿using Identity.API.Models;
 
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
-
 using System;
-using System.Threading.Tasks;
+
+using Watchman.BusinessLogic.Models.Users;
 
 namespace Identity.API.Services
 {
-    public class LoginService : ILoginService<ApplicationUser, Guid>
+    public class LoginService : ILoginService<WatchmanUser, Guid>
     {
-        private UserManager<ApplicationUser> _userManager;
-        private SignInManager<ApplicationUser> _signInManager;
+        private readonly IUserRepository UserRepository;
+        private readonly ICustomPasswordHasher Hasher;
 
-        public LoginService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public LoginService(IUserRepository userRepository, ICustomPasswordHasher hasher)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
+            this.UserRepository = userRepository;
+            this.Hasher = hasher;
         }
 
-        public async Task<ApplicationUser> FindByEmail(string email)
+        public void Register(string email, string password)
         {
-            return await _userManager.FindByEmailAsync(email);
+            Register(new PersonalInformation() { Email = email, HashedPassword = Hasher.Hash(password) });
         }
-        public async Task<ApplicationUser> FindById(Guid key)
+        public void Register(IPersonalInformation<Guid> personalInformation)
         {
-            return await _userManager.FindByIdAsync(key.ToString());
+            Register(new WatchmanUser() { PersonalInformation = personalInformation as PersonalInformation });
+        }
+        public void Register(IUser<PersonalInformation> user)
+        {
+            if (!AreCredentialsNotEmpty(user.PersonalInformation.Email, user.PersonalInformation.HashedPassword))
+                throw new ArgumentNullException("Please input valid credentials");
+            if (UserRepository.GetByEmail(user.PersonalInformation.Email).Result == null)
+            {
+                UserRepository.Add(user as WatchmanUser);
+                UserRepository.SaveChanges();
+            }
+            else
+                throw new ArgumentException($"User with email '{user.PersonalInformation.Email}' already exist");
         }
 
-        public async Task<bool> ValidateCredentials(ApplicationUser user, string password)
+        public WatchmanUser FindByEmail(string email)
         {
-            return await _userManager.CheckPasswordAsync(user, password);
+            return UserRepository.GetByEmail(email).Result as WatchmanUser;
+        }
+        public WatchmanUser FindById(Guid key)
+        {
+            return UserRepository.Get(key) as WatchmanUser;
         }
 
-        public Task SignIn(ApplicationUser user)
+        public bool ValidateCredentials(WatchmanUser user, string password)
         {
-            return _signInManager.SignInAsync(user, true);
+            return Hasher.Verify(user?.PersonalInformation?.HashedPassword, password);
         }
-
-        public Task SignInAsync(ApplicationUser user, AuthenticationProperties properties, string authenticationMethod = null)
+        private bool AreCredentialsNotEmpty(string email, string password)
         {
-            return _signInManager.SignInAsync(user, properties, authenticationMethod);
+            return !String.IsNullOrWhiteSpace(email) && !String.IsNullOrWhiteSpace(password);
         }
     }
 }
