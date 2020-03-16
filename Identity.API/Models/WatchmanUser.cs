@@ -1,17 +1,18 @@
-﻿using Microsoft.AspNetCore.Identity;
-
+﻿
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 using Watchman.BusinessLogic.Models.Users;
 
 namespace Identity.API.Models
 {
-    public class ApplicationUser : IdentityUser<Guid>, IUser
+    public class WatchmanUser : IUser<PersonalInformation>
     {
         public Guid Id { get; set; }
+        public PersonalInformation PersonalInformation { get; set; }
+        [NotMapped]
         public IPatient<Guid, Guid, Guid, Guid, Guid, Guid> Patient { get; set; }
+        [NotMapped]
         public IWatchman<Guid> Watchman { get; set; }
-        public IPersonalInformation<Guid> PersonalInformation { get; set; }
-
     }
 }
