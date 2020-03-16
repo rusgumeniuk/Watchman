@@ -1,22 +1,24 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿
+using Identity.API.Models;
 
 using System;
-using System.Threading.Tasks;
 
 using Watchman.BusinessLogic.Models;
+using Watchman.BusinessLogic.Models.Users;
+
 namespace Identity.API.Services
 {
-    public interface ILoginService<T, TKey>
-        where T : IIdentifiedEntity<TKey>
+    public interface ILoginService<TUser, TKey>
+        where TUser : IIdentifiedEntity<TKey>
         where TKey : IEquatable<TKey>
     {
-        Task<bool> ValidateCredentials(T user, string password);
+        bool ValidateCredentials(TUser user, string password);
 
-        Task<T> FindByEmail(string email);
-        Task<T> FindById(TKey key);
+        TUser FindByEmail(string email);
+        TUser FindById(TKey key);
 
-        Task SignIn(T user);
-
-        Task SignInAsync(T user, AuthenticationProperties properties, string authenticationMethod = null);
+        void Register(string email, string password);
+        void Register(IPersonalInformation<Guid> personalInformation);
+        void Register(IUser<PersonalInformation> user);
     }
 }
