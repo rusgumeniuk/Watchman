@@ -37,9 +37,9 @@ namespace Identity.API.Services
         {
             return new TokenValidationParameters()
             {
-                ValidateLifetime = false, // Because there is no expiration in the generated token
-                ValidateAudience = false, // Because there is no audiance in the generated token
-                ValidateIssuer = false,   // Because there is no issuer in the generated token
+                ValidateLifetime = true, // Because there is no expiration in the generated token
+                ValidateAudience = true, // Because there is no audiance in the generated token
+                ValidateIssuer = true,   // Because there is no issuer in the generated token
                 ValidIssuer = _configuration["Jwt:Issuer"],
                 ValidAudience = _configuration["Jwt:Issuer"],
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])) // The same key as the one that generate the token
