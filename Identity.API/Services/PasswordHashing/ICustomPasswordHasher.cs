@@ -1,4 +1,4 @@
-﻿namespace Identity.API.Services
+﻿namespace Identity.API.Services.PasswordHashing
 {
     public interface ICustomPasswordHasher
     {

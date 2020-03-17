@@ -1,6 +1,6 @@
 ﻿using Identity.API.Models;
 using Identity.API.Services;
-
+using Identity.API.Services.JWT;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Watchman.BusinessLogic.Models.Data;
 
 namespace Identity.API.Controllers
 {

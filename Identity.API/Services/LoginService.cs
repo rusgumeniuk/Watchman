@@ -1,4 +1,6 @@
 ﻿using Identity.API.Models;
+using Identity.API.Repositories;
+using Identity.API.Services.PasswordHashing;
 
 using System;
 

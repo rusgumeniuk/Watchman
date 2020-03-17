@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 using Watchman.BusinessLogic.Models;
 using Watchman.BusinessLogic.Models.Data;
 
-namespace Identity.API.Services
+namespace Identity.API.Repositories
 {
     public class Repository<TEntity, TKey> : ICRUDRepository<TEntity, TKey>
         where TEntity : class, IIdentifiedEntity<TKey>

@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using System.Security.Cryptography;
 
-namespace Identity.API.Services
+namespace Identity.API.Services.PasswordHashing
 {
     public class PasswordHasher : ICustomPasswordHasher
     {

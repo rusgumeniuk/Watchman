@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Identity.API.Services
+namespace Identity.API.Repositories
 {
     public class UserRepository : Repository<WatchmanUser, Guid>, IUserRepository
     {

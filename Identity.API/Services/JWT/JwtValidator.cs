@@ -6,7 +6,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Principal;
 using System.Text;
 
-namespace Identity.API.Services
+using Watchman.BusinessLogic.Models.Data;
+
+namespace Identity.API.Services.JWT
 {
     public class JwtValidator : IJwtValidator
     {

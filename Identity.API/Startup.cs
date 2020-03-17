@@ -1,7 +1,10 @@
 using Identity.API.Data;
 using Identity.API.Models;
 using Identity.API.Models.Extensions;
+using Identity.API.Repositories;
 using Identity.API.Services;
+using Identity.API.Services.JWT;
+using Identity.API.Services.PasswordHashing;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -10,9 +13,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
+
 using System;
-using System.Text;
+
+using Watchman.BusinessLogic.Models.Data;
 using Watchman.BusinessLogic.Models.Users;
 
 namespace Identity.API
@@ -31,7 +35,7 @@ namespace Identity.API
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
-                    options.TokenValidationParameters = new JwtValidator(Configuration).GetValidationParameters();                    
+                    options.TokenValidationParameters = new JwtValidator(Configuration).GetValidationParameters();
                 });
 
             services.AddMvc();
@@ -57,7 +61,7 @@ namespace Identity.API
                 app.UseDeveloperExceptionPage();
             }
             app.UseAuthentication();
-            
+
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>

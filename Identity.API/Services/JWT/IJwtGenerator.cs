@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace Identity.API.Services
+namespace Identity.API.Services.JWT
 {
     public interface IJwtGenerator
     {

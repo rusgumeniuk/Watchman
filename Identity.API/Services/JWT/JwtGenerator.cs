@@ -6,7 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Identity.API.Services
+namespace Identity.API.Services.JWT
 {
     public class JwtGenerator : IJwtGenerator
     {

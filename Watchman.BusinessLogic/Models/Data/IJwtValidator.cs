@@ -1,6 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 
-namespace Identity.API.Services
+namespace Watchman.BusinessLogic.Models.Data
 {
     public interface IJwtValidator
     {
