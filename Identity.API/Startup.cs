@@ -55,6 +55,8 @@ namespace Identity.API
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<ICustomPasswordHasher, PasswordHasher>();
             services.AddTransient<ILoginService<WatchmanUser, Guid>, LoginService>();
+            services.AddTransient<IJwtValidator, JwtValidator>();
+            services.AddTransient<IJwtGenerator, JwtGenerator>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
