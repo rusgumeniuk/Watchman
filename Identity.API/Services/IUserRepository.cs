@@ -3,10 +3,12 @@
 using System;
 using System.Threading.Tasks;
 
+using Watchman.BusinessLogic.Models.Data;
+
 namespace Identity.API.Services
 {
-    public interface IUserRepository : IRepository<WatchmanUser, Guid>
+    public interface IUserRepository : IAsyncCRUDRepository<WatchmanUser, Guid>
     {
-        Task<WatchmanUser> GetByEmail(string email);
+        Task<WatchmanUser> GetByEmailAsync(string email);
     }
 }

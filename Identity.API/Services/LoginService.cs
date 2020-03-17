@@ -29,9 +29,9 @@ namespace Identity.API.Services
         {
             if (!AreCredentialsNotEmpty(user.PersonalInformation.Email, user.PersonalInformation.HashedPassword))
                 throw new ArgumentNullException("Please input valid credentials");
-            if (UserRepository.GetByEmail(user.PersonalInformation.Email).Result == null)
+            if (UserRepository.GetByEmailAsync(user.PersonalInformation.Email).Result == null)
             {
-                UserRepository.Add(user as WatchmanUser);
+                UserRepository.Create(user as WatchmanUser);
                 UserRepository.SaveChanges();
             }
             else
@@ -40,11 +40,11 @@ namespace Identity.API.Services
 
         public WatchmanUser FindByEmail(string email)
         {
-            return UserRepository.GetByEmail(email).Result as WatchmanUser;
+            return UserRepository.GetByEmailAsync(email).Result as WatchmanUser;
         }
         public WatchmanUser FindById(Guid key)
         {
-            return UserRepository.Get(key) as WatchmanUser;
+            return UserRepository.Retrieve(key) as WatchmanUser;
         }
 
         public bool ValidateCredentials(WatchmanUser user, string password)
