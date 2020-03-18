@@ -1,11 +1,24 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using HealthService.API.Models.Extensions;
+using HealthService.API.Services;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 
 namespace HealthService.API.Controllers
 {
     [Authorize]
     public class SignController : Controller
     {
+        private readonly IConfiguration _configuration;
+
+        public SignController(IConfiguration configuration)
+        {
+            this._configuration = configuration;
+        }
         [HttpPost]
         public IActionResult Check()
         {
@@ -17,6 +30,15 @@ namespace HealthService.API.Controllers
         public IActionResult Anon()
         {
             return Ok("Everyone can see this");
+        }
+
+        [HttpPost]
+        public IActionResult Email()
+        {
+            var email = this.GetUserEmailFromHttpContext();
+            var token = this.GetBearerTokenFromRequest();
+            var res = new JwtValidator(_configuration).GetClaimValueFromToken(token, JwtRegisteredClaimNames.Email);            
+            return Ok(email);
         }
     }
 }
