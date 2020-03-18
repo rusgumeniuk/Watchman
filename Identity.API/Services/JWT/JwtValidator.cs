@@ -75,5 +75,10 @@ namespace Identity.API.Services.JWT
             }
             return true;
         }
+
+        public string GetClaimValueFromToken(string authToken, string claimType)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -6,5 +6,6 @@ namespace Watchman.BusinessLogic.Models.Data
     {
         bool ValidateToken(string token);
         TokenValidationParameters GetValidationParameters();
+        string GetClaimValueFromToken(string authToken, string claimType);
     }
 }
