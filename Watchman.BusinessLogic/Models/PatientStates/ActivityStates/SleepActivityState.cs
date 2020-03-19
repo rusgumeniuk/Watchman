@@ -2,12 +2,14 @@
 
 namespace Watchman.BusinessLogic.Models.PatientStates.ActivityStates
 {
-    public class SleepActivityState : IPatientActivityState<Guid>
+    public class SleepActivityState : PatientActivityState<Guid>
     {
         private static SleepActivityState state;
-        public Guid Id { get; set; }
-        public float ChangeFactor { get; } = 0.8f;
-        private SleepActivityState() { }
+     
+        public SleepActivityState()
+        {
+            ChangeFactor = 0.8f;
+        }
 
         public static SleepActivityState GetInstance()
         {

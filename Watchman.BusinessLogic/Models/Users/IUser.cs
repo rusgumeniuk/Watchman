@@ -13,8 +13,8 @@ namespace Watchman.BusinessLogic.Models.Users
         where TSignKey : IEquatable<TSignKey>
         where TWatchmanKey : IEquatable<TWatchmanKey>
     {
-        IPatient<TPatientKey, THealthMeasurementKey, TPatientHealthKey, TActivityStateKey, TSignKey, TWatchmanKey> Patient { get; set; }
-        IWatchman<TWatchmanKey> Watchman { get; set; }
-        PersonalInformation PersonalInformation { get; set; }
+        Patient<TKey> Patient { get; set; }
+        WatchmanProfile<TWatchmanKey> Watchman { get; set; }
+        PersonalInformation<TKey> PersonalInformation { get; set; }
     }
 }

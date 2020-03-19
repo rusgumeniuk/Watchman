@@ -12,7 +12,7 @@ namespace Watchman.BusinessLogic.Models.Analysis
         where TSignsKey : IEquatable<TSignsKey>
         where TCallToActionKey : IEquatable<TCallToActionKey>
     {
-        IAnalysisResult<TResultKey, THealthMeasurementKey, TCallToActionKey, TSignsKey> Analyze<TPatientKey>(IHealthMeasurement<THealthMeasurementKey, TSignsKey> healthState, TPatientKey patientId)
+        IAnalysisResult<TResultKey, THealthMeasurementKey, TCallToActionKey, TSignsKey> Analyze<TPatientKey>(HealthMeasurement<THealthMeasurementKey, TSignsKey> healthState, TPatientKey patientId)
             where TPatientKey : IEquatable<TPatientKey>;
     }
 }

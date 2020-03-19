@@ -2,12 +2,13 @@
 
 namespace Watchman.BusinessLogic.Models.PatientStates.HealthStates
 {
-    public class ThreateningHealthState : IPatientHealthState<Guid>
+    public class ThreateningHealthState : PatientHealthState<Guid>
     {
         private static ThreateningHealthState state;
-        public Guid Id { get; set; }
-        public ushort HealthAuditSecondPeriod { get; } = 5;
-        private ThreateningHealthState() { }
+        public ThreateningHealthState()
+        {
+            HealthAuditSecondPeriod = 5;
+        }
 
         public static ThreateningHealthState GetInstance()
         {

@@ -11,7 +11,7 @@ namespace Watchman.BusinessLogic.Models.Analysis
     {
         public TKey Id { get; set; }
         public ActionRequirement ActionRequirement { get; } = ActionRequirement.NotNecessarily;
-        public ISign<TSignKey> Sign { get; set; }
+        public Sign<TSignKey> Sign { get; set; }
         public string Comment { get; set; }
     }
 }

@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{F4
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity.API", "Identity.API\Identity.API.csproj", "{7097D030-9852-4640-B1D9-81AAF81D00DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthService.API", "HealthService.API\HealthService.API.csproj", "{56ED9BED-B053-4A28-A26E-E02077205580}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthService.API", "HealthService.API\HealthService.API.csproj", "{56ED9BED-B053-4A28-A26E-E02077205580}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

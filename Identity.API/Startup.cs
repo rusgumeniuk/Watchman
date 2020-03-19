@@ -17,7 +17,6 @@ using Microsoft.Extensions.Hosting;
 using System;
 
 using Watchman.BusinessLogic.Models.Data;
-using Watchman.BusinessLogic.Models.Users;
 
 namespace Identity.API
 {
@@ -45,8 +44,6 @@ namespace Identity.API
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<WatchmanDbContext>(options => options.UseSqlServer(connection));
 
-            
-            services.AddTransient<IUser, WatchmanUser>();
             services.AddTransient<IUserRepository<WatchmanUser>, UserRepository>();
             services.AddTransient<ICustomPasswordHasher, PasswordHasher>();
             services.AddTransient<ILoginService<WatchmanUser, Guid>, LoginService>();

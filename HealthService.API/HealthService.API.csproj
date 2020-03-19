@@ -14,8 +14,4 @@
     <ProjectReference Include="..\Watchman.BusinessLogic\Watchman.BusinessLogic.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\Health\" />
-  </ItemGroup>
-
 </Project>

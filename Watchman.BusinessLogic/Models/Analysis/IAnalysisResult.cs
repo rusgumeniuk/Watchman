@@ -13,7 +13,7 @@ namespace Watchman.BusinessLogic.Models.Analysis
         where TCallToActionKey : IEquatable<TCallToActionKey>
 
     {
-        IHealthMeasurement<THealthStateKey, TSignsKey> HealthState { get; set; }
+        HealthMeasurement<THealthStateKey, TSignsKey> HealthState { get; set; }
         IEnumerable<HealthThreat<TCallToActionKey, TSignsKey>> Threats { get; set; }
         IEnumerable<HealthAdvice<TCallToActionKey, TSignsKey>> Advices { get; set; }
         IEnumerable<HealthNotice<TCallToActionKey, TSignsKey>> Notices { get; set; }

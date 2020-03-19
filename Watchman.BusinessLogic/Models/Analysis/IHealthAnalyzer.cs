@@ -16,7 +16,7 @@ namespace Watchman.BusinessLogic.Models.Analysis
         IAnalysisStrategy<TStrategyKey, TResultKey, THealthMeasurementKey, TCallToActionKey, TSignsKey> AnalysisStrategy { get; set; }
         IAnalysisResult<TResultKey, THealthMeasurementKey, TCallToActionKey, TSignsKey> AnalysisResult { get; set; }
 
-        void Analyze<TPatientKey>(IHealthMeasurement<THealthMeasurementKey, TSignsKey> healthState, TPatientKey patientId)
+        void Analyze<TPatientKey>(HealthMeasurement<THealthMeasurementKey, TSignsKey> healthState, TPatientKey patientId)
             where TPatientKey : IEquatable<TPatientKey>;
     }
 }
