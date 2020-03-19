@@ -6,7 +6,7 @@ using Watchman.BusinessLogic.Models.Users;
 
 namespace Identity.API.Models
 {
-    public class WatchmanUser : IUser<PersonalInformation>
+    public class WatchmanUser : IUser
     {
         public Guid Id { get; set; }
         public PersonalInformation PersonalInformation { get; set; }

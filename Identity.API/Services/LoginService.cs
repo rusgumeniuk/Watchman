@@ -1,19 +1,18 @@
 ﻿using Identity.API.Models;
-using Identity.API.Repositories;
 using Identity.API.Services.PasswordHashing;
 
 using System;
-
+using Watchman.BusinessLogic.Models.Data;
 using Watchman.BusinessLogic.Models.Users;
 
 namespace Identity.API.Services
 {
     public class LoginService : ILoginService<WatchmanUser, Guid>
     {
-        private readonly IUserRepository UserRepository;
+        private readonly IUserRepository<WatchmanUser> UserRepository;
         private readonly ICustomPasswordHasher Hasher;
 
-        public LoginService(IUserRepository userRepository, ICustomPasswordHasher hasher)
+        public LoginService(IUserRepository<WatchmanUser> userRepository, ICustomPasswordHasher hasher)
         {
             this.UserRepository = userRepository;
             this.Hasher = hasher;
@@ -21,13 +20,13 @@ namespace Identity.API.Services
 
         public void Register(string email, string password)
         {
-            Register(new PersonalInformation() { Email = email, HashedPassword = Hasher.Hash(password) });
+            Register(new PersonalInfo() { Email = email, HashedPassword = Hasher.Hash(password) });
         }
-        public void Register(IPersonalInformation<Guid> personalInformation)
+        public void Register(PersonalInformation personalInformation)
         {
             Register(new WatchmanUser() { PersonalInformation = personalInformation as PersonalInformation });
         }
-        public void Register(IUser<PersonalInformation> user)
+        public void Register(IUser user)
         {
             if (!AreCredentialsNotEmpty(user.PersonalInformation.Email, user.PersonalInformation.HashedPassword))
                 throw new ArgumentNullException("Please input valid credentials");

@@ -18,7 +18,7 @@ namespace Identity.API.Services
         TUser FindById(TKey key);
 
         void Register(string email, string password);
-        void Register(IPersonalInformation<Guid> personalInformation);
-        void Register(IUser<PersonalInformation> user);
+        void Register(PersonalInformation personalInformation);
+        void Register(IUser user);
     }
 }

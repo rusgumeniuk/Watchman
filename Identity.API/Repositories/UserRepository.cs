@@ -11,7 +11,7 @@ using Watchman.BusinessLogic.Models.Data;
 
 namespace Identity.API.Repositories
 {
-    public class UserRepository : Repository<WatchmanUser, Guid>, IUserRepository<WatchmanUser, PersonalInformation>
+    public class UserRepository : Repository<WatchmanUser, Guid>, IUserRepository<WatchmanUser>
     {
         public WatchmanDbContext WatchmanContext => Context as WatchmanDbContext;
         public UserRepository(WatchmanDbContext context) : base(context) { }

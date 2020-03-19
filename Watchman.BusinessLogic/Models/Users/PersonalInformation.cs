@@ -1,12 +1,12 @@
 ﻿using System;
 
-using Watchman.BusinessLogic.Models.Users;
-
-namespace Identity.API.Models
+namespace Watchman.BusinessLogic.Models.Users
 {
-    public class PersonalInformation : IPersonalInformation
+    public abstract class PersonalInformation : PersonalInformation<Guid> { }
+    public abstract class PersonalInformation<TKey> : IIdentifiedEntity<TKey>
+        where TKey : IEquatable<TKey>
     {
-        public Guid Id { get; set; }
+        public TKey Id { get; set; }
         public string FirstName { get; set; }
         public string SecondName { get; set; }
         public string LastName { get; set; }
