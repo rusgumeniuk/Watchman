@@ -40,5 +40,19 @@ namespace HealthService.API.Controllers
             service.RemovePatientFromUser(model.Id);
             return Ok();
         }
+
+        [HttpDelete]
+        public IActionResult RemoveWatchmen([FromBody] GuidFieldViewModel model)
+        {
+            try
+            {
+                service.RemoveAllWatchmenFromPatient(model.Id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
     }
 }

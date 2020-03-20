@@ -40,5 +40,47 @@ namespace HealthService.API.Controllers
             service.RemoveWatchmanFromUser(model.Id);
             return Ok();
         }
+
+        [HttpPost]
+        public IActionResult Add([FromBody] WatchmanIdPatientIdViewModel model)
+        {
+            try
+            {
+                service.AddPatientToWatchman(model.WatchmanId, model.PatientId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+        [HttpDelete]
+        public IActionResult RemovePatient([FromBody]WatchmanIdPatientIdViewModel model)
+        {
+            try
+            {
+                service.RemovePatientFromWatchman(model.WatchmanId, model.PatientId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+        [HttpDelete]
+        public IActionResult RemovePatients([FromBody]GuidFieldViewModel model)
+        {
+            try
+            {
+                service.RemoveAllPatientFromWatchman(model.Id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
     }
 }

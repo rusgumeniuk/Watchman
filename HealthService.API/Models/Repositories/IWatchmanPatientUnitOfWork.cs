@@ -11,6 +11,12 @@ namespace HealthService.API.Models.Repositories
     {
         IWatchmanRepository<WatchmanProfileHealth, Guid> WatchmanRepository { get; }
         IPatientRepository<PatientProfile, Guid> PatientRepository { get; }
+        void AddWatchmanToPatient(Guid watchmanId, Guid patientId);
+        void RemoveWatchmanFromPatient(Guid watchmanId, Guid patientId);
+
+        void RemoveAllWatchmen(Guid patientId);
+        void RemoveAllPatients(Guid watchmanId);
+
         void Save();
         Task SaveAsync();
     }

@@ -7,6 +7,10 @@ namespace HealthService.API.Services
     public interface IWatchmanPatientService<TKey>
         where TKey : IEquatable<TKey>
     {
+        void AddPatientToWatchman(Guid watchmanId, Guid patientId);
+
+        void RemovePatientFromWatchman(Guid watchmanId, Guid patientId);
+
         bool ExistPatient(TKey userId);
         bool ExistWatchman(TKey userId);
 
@@ -18,5 +22,8 @@ namespace HealthService.API.Services
 
         void RemovePatientFromUser(TKey userId);
         void RemoveWatchmanFromUser(TKey userId);
+
+        void RemoveAllWatchmenFromPatient(TKey patientId);
+        void RemoveAllPatientFromWatchman(TKey watchmanId);
     }
 }

@@ -2,6 +2,8 @@
 using HealthService.API.Models.Users;
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using Watchman.BusinessLogic.Models.Users;
 
@@ -32,7 +34,7 @@ namespace HealthService.API.Services
         }
         public bool ExistWatchman(Guid userId)
         {
-            return db.WatchmanRepository.ExistWatchmanProfile(userId);            
+            return db.WatchmanRepository.ExistWatchmanProfile(userId);
         }
 
         public void AddPatientToUser(Guid userId, Patient<Guid> patient = null)
@@ -55,6 +57,50 @@ namespace HealthService.API.Services
         {
             db.WatchmanRepository.RemoveWatchmanFromUser(userId);
             db.Save();
+        }
+
+        public void AddPatientToWatchman(Guid watchmanId, Guid patientId)
+        {
+            var watchman = db.WatchmanRepository.Retrieve(watchmanId);
+            var patient = db.PatientRepository.Retrieve(patientId);
+
+            if (watchman != null && patient != null)
+            {
+                db.AddWatchmanToPatient(watchmanId, patientId);
+                db.Save();
+            }
+        }
+        public void RemovePatientFromWatchman(Guid watchmanId, Guid patientId)
+        {
+            var watchman = db.WatchmanRepository.Retrieve(watchmanId);
+            if (watchman != null)
+            {
+                var patients = new List<Patient<Guid>>(db.WatchmanRepository.GetPatients(watchman));
+                if (patients.FirstOrDefault(patient => patient.Id.Equals(patientId)) != null)
+                {
+                    db.RemoveWatchmanFromPatient(watchmanId, patientId);
+                    db.Save();
+                }
+            }
+        }
+
+        public void RemoveAllWatchmenFromPatient(Guid patientId)
+        {
+            var patient = db.PatientRepository.Retrieve(patientId);
+            if (patient != null)
+            {
+                db.RemoveAllWatchmen(patientId);
+                db.Save();
+            }
+        }
+        public void RemoveAllPatientFromWatchman(Guid watchmanId)
+        {
+            var watchman = db.WatchmanRepository.Retrieve(watchmanId);
+            if (watchman != null)
+            {
+                db.RemoveAllPatients(watchmanId);
+                db.Save();
+            }
         }
     }
 }
