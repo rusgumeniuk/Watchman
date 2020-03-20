@@ -14,11 +14,9 @@ namespace HealthService.API.Models.Data
         public DbSet<User> Users { get; set; }
         public DbSet<PatientProfile> Patients { get; set; }
         public DbSet<WatchmanProfileHealth> Watchmen { get; set; }
-        public DbSet<WatchmanPatient<Guid, Guid>> WatchmanPatients { get; set; }
+        public DbSet<WatchmanPatientConnection> WatchmanPatients { get; set; }
         public DbSet<HeartAndPressureHealthState> HealthStates { get; set; }
         public DbSet<Sign<Guid>> Signs { get; set; }
-
-
 
         public HealthDbContext(DbContextOptions<HealthDbContext> options)
             : base(options)
@@ -28,11 +26,6 @@ namespace HealthService.API.Models.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<NormalHealthState>();
-            //modelBuilder.Entity<CasualActivityState>();
-            //modelBuilder.Entity<PatientProfile>();
-            //modelBuilder.Entity<WatchmanProfileHealth>();
-            //modelBuilder.Entity<HeartAndPressureHealthState>();
             modelBuilder.Entity<PersonalInfo>();
 
             modelBuilder.Entity<WatchmanPatient<Guid, Guid>>()
@@ -48,10 +41,11 @@ namespace HealthService.API.Models.Data
                 .WithMany(c => c.WatchmanPatients)
                 .HasForeignKey(sc => sc.WatchmanId);
 
-
             modelBuilder.Entity<User>().ToTable("Users");
 
             base.OnModelCreating(modelBuilder);
         }
     }
+
+    public class WatchmanPatientConnection : WatchmanPatient<Guid, Guid> { }
 }
