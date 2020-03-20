@@ -1,4 +1,6 @@
 using HealthService.API.Models.Data;
+using HealthService.API.Models.Repositories;
+using HealthService.API.Models.Users;
 using HealthService.API.Services;
 
 using HealthServices.API.Models.Extensions;
@@ -10,6 +12,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
+using System;
+
+using Watchman.BusinessLogic.Models.Data;
 
 namespace HealthService.API
 {
@@ -31,11 +37,16 @@ namespace HealthService.API
             services.AddMvc();
             services.ConfigureCors();
 
-            string healthConnection = Configuration.GetConnectionString("HealthDbConnection");
+            string healthConnection = Configuration.GetConnectionString("UserDbConnection");
             services.AddDbContext<HealthDbContext>(options => options.UseSqlServer(healthConnection));
 
             string usersConnection = Configuration.GetConnectionString("UserDbConnection");
             services.AddDbContext<IdentityDbContext>(options => options.UseSqlServer(usersConnection));
+
+            services.AddTransient<IWatchmanRepository<WatchmanProfileHealth, Guid>, WatchmanRepository>();
+            services.AddTransient<IPatientRepository<PatientProfile, Guid>, PatientRepository>();
+            services.AddTransient<IWatchmanPatientUnitOfWork, WatchmanPatientUnitOfWork>();
+            services.AddTransient<IWatchmanPatientService<Guid>, WatchmanPatientService>();
         }
 
 

@@ -20,8 +20,8 @@ namespace Watchman.BusinessLogic.Models.Users
     {
         public TPatientKey Id { get; set; }
         public IEnumerable<HealthMeasurement<THealthMeasurementKey, TSignKey>> HealthMeasurements { get; set; }
-        public PatientActivityState<TActivityStateKey> CurrentActivityState { get; set; }//move to analyzer etc
-        public PatientHealthState<TPatientHealthKey> CurrentHealthState { get; set; }//move to analyzer etc
+        //public PatientActivityState<TActivityStateKey> CurrentActivityState { get; set; }//move to analyzer etc
+        //public PatientHealthState<TPatientHealthKey> CurrentHealthState { get; set; }//move to analyzer etc
         public IEnumerable<Sign<TSignKey>> IgnorableSigns { get; set; }
         public IEnumerable<WatchmanPatient<TWatchmanKey, TPatientKey>> WatchmanPatients { get; set; }
     }
