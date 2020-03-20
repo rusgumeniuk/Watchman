@@ -8,6 +8,6 @@ namespace Watchman.BusinessLogic.Models.Users
         where TKey : IEquatable<TKey>
     {
         public TKey Id { get; set; }
-        public IEnumerable<WatchmanPatient<TKey, TKey>> WatchmanPatients { get; set; }        
+        public ICollection<WatchmanPatient<TKey, TKey>> WatchmanPatients { get; set; } = new List<WatchmanPatient<TKey, TKey>>();
     }
 }
