@@ -27,6 +27,9 @@ namespace HealthService.API.Models.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<DIA>();
+            modelBuilder.Entity<SYS>();
+            modelBuilder.Entity<HeartRate>();
             modelBuilder.Entity<PersonalInfo>();
             modelBuilder.Entity<HeartAndPressureHealthState>()
                 .HasMany(hm => hm.Signs);

@@ -33,6 +33,7 @@ namespace HealthService.API.Models.Repositories
             var patient = HealthContext
                 .Patients
                 .Include(pat => pat.HealthMeasurements)
+                    .ThenInclude(hm => hm.Signs)
                 .First(pat => pat.Id.Equals(patientId));
             return patient.HealthMeasurements.TakeLast(count);
         }

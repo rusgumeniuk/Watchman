@@ -22,6 +22,9 @@ namespace Identity.API.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<DIA>();
+            modelBuilder.Entity<SYS>();
+            modelBuilder.Entity<HeartRate>();
             modelBuilder.Entity<PatientProfile>();
             modelBuilder.Entity<WatchmanIdentityProfile>();
             modelBuilder.Entity<HeartAndPressureHealthState>();
