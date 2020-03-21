@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using Watchman.BusinessLogic.Models.Signs;
 using Watchman.BusinessLogic.Models.Users;
 
 namespace Watchman.BusinessLogic.Models.Data
@@ -10,6 +10,10 @@ namespace Watchman.BusinessLogic.Models.Data
         where TKey : IEquatable<TKey>
     {
         IEnumerable<WatchmanProfile<TKey>> GetWatchmenOfPatient(TPatient patient);
+
+        HealthMeasurement<TKey, TKey> GetLastHealthMeasurement(TKey patientId);
+        IEnumerable<HealthMeasurement<TKey, TKey>> GetLastHealthMeasurements(TKey patientId, int count);
+        void AddHealthMeasurement(TKey patientId, HealthMeasurement<TKey, TKey> healthMeasurement);
 
         bool ExistPatientProfile(TKey userId);
         bool ExistPatientProfile<TUser>(TUser user)

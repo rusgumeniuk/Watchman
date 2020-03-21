@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Watchman.BusinessLogic.Models.Data;
+using Watchman.BusinessLogic.Models.Signs;
 using Watchman.BusinessLogic.Models.Users;
 
 namespace HealthService.API.Models.Repositories
@@ -17,6 +18,32 @@ namespace HealthService.API.Models.Repositories
     {
         public HealthDbContext HealthContext => Context as HealthDbContext;
         public PatientRepository(HealthDbContext context) : base(context) { }
+
+        public HealthMeasurement<Guid, Guid> GetLastHealthMeasurement(Guid patientId)
+        {
+            var patient = HealthContext
+                .Patients
+                .Include(pat => pat.HealthMeasurements)
+                .First(pat => pat.Id.Equals(patientId));
+            return patient.HealthMeasurements.ElementAt(GetIndexOfItemWithNewDate(patient.HealthMeasurements));
+        }        
+        public IEnumerable<HealthMeasurement<Guid, Guid>> GetLastHealthMeasurements(Guid patientId, int count)
+        {
+            var patient = HealthContext
+                .Patients
+                .Include(pat => pat.HealthMeasurements)
+                .First(pat => pat.Id.Equals(patientId));
+            return patient.HealthMeasurements.TakeLast(count);
+        }
+        public void AddHealthMeasurement(Guid patientId, HealthMeasurement<Guid, Guid> healthMeasurement)
+        {
+            var patient = HealthContext
+                .Patients
+                .Include(pat => pat.HealthMeasurements)
+                .First(pat => pat.Id.Equals(patientId));
+            patient.HealthMeasurements.Add(healthMeasurement);
+        }
+
 
         public void AddPatientToUser(Guid userId, PatientProfile patient = null)
         {
@@ -86,6 +113,19 @@ namespace HealthService.API.Models.Repositories
         public async Task DisposeAsync()
         {
             await Context.DisposeAsync();
+        }
+
+        private int GetIndexOfItemWithNewDate(IEnumerable<HealthMeasurement<Guid, Guid>> list)
+        {
+            if (list.Count() < 1)
+                return -1;
+            int index = 0;
+            for (int i = 0; i < list.Count() - 1; ++i)
+            {
+                if (list.ElementAt(i).MeasurementTime <= list.ElementAt(i + 1).MeasurementTime)
+                    index = i + 1;
+            }
+            return index;
         }
     }
 }

@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using System;
+using System.Collections.Generic;
+
+using Watchman.BusinessLogic.Models.Signs;
 
 namespace HealthService.API.Controllers
 {
@@ -53,6 +56,73 @@ namespace HealthService.API.Controllers
             {
                 return BadRequest(ex);
             }
+        }
+
+        [HttpPost]
+        public IActionResult AddMeasurement([FromBody]HealthMeasurementViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var res = ParseSignPairArray(model.Signs);
+                var hm = new HeartAndPressureHealthState()
+                {
+                    MeasurementTime = model.DateTime,
+                    Signs = res
+                };
+                service.AddHealthMeasurement(model.PatientId, hm);
+                return Ok();
+            }
+            else
+                return BadRequest();
+        }
+
+        [HttpGet]
+        public IActionResult GetMeasurement([FromBody]GuidFieldViewModel model)
+        {
+            var res = service.GetLastHealthMeasurement(model.Id);
+            if (res != null)
+                return Ok(res);
+            else
+                return BadRequest(res);
+        }
+
+        [HttpGet]
+        public IActionResult GetMeasurements([FromBody]GuidFieldViewModel model)
+        {
+            var res = service.GetLastHealthMeasurements(model.Id, 5);
+            if (res != null)
+                return Ok(res);
+            else
+                return BadRequest(res);
+        }
+
+        private ICollection<Sign<Guid>> ParseSignPairArray(IEnumerable<SignPair> array)
+        {
+            ICollection<Sign<Guid>> list = new List<Sign<Guid>>();
+
+            foreach (var pair in array)
+            {
+                switch (pair.Type.ToUpper())
+                {
+                    case "DIA":
+                        {
+                            list.Add(new DIA() { Value = (ushort)pair.Value });
+                            break;
+                        }
+                    case "SYS":
+                        {
+                            list.Add(new SYS() { Value = (ushort)pair.Value });
+                            break;
+                        }
+                    case "HR":
+                    case "HEARTRATE":
+                        {
+                            list.Add(new HeartRate() { Value = (ushort)pair.Value });
+                            break;
+                        }
+                }
+            }
+            return list;
         }
     }
 }

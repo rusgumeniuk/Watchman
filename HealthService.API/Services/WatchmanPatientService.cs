@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using Watchman.BusinessLogic.Models.Signs;
 using Watchman.BusinessLogic.Models.Users;
 
 namespace HealthService.API.Services
@@ -15,6 +16,34 @@ namespace HealthService.API.Services
         public WatchmanPatientService(IWatchmanPatientUnitOfWork unitOfWork)
         {
             this.db = unitOfWork;
+        }
+
+        public HealthMeasurement<Guid, Guid> GetLastHealthMeasurement(Guid patientId)
+        {
+            var patient = db.PatientRepository.Retrieve(patientId);
+            if (patient != null)
+            {
+                return db.PatientRepository.GetLastHealthMeasurement(patientId);
+            }
+            return null;
+        }
+        public IEnumerable<HealthMeasurement<Guid, Guid>> GetLastHealthMeasurements(Guid patientId, int count)
+        {
+            var patient = db.PatientRepository.Retrieve(patientId);
+            if (patient != null)
+            {
+                return db.PatientRepository.GetLastHealthMeasurements(patientId, count);
+            }
+            return null;
+        }
+        public void AddHealthMeasurement(Guid patientId, HealthMeasurement<Guid, Guid> healthMeasurement)
+        {
+            var patient = db.PatientRepository.Retrieve(patientId);
+            if (patient != null && healthMeasurement != null)
+            {
+                db.PatientRepository.AddHealthMeasurement(patientId, healthMeasurement);
+                db.Save();
+            }
         }
 
         public void CreateIfNotExistPatient(Guid userId)
