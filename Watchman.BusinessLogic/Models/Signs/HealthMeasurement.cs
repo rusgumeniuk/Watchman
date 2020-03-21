@@ -9,7 +9,7 @@ namespace Watchman.BusinessLogic.Models.Signs
         where TSignsKey : IEquatable<TSignsKey>
     {
         public TStateKey Id { get; set; }
-        public IEnumerable<Sign<TSignsKey>> Signs { get; set; }
+        public ICollection<Sign<TSignsKey>> Signs { get; set; }
         public DateTime MeasurementTime { get; set; }
     }
 }
