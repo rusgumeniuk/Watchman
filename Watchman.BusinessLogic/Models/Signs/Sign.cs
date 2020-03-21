@@ -2,6 +2,7 @@
 
 namespace Watchman.BusinessLogic.Models.Signs
 {
+    public class Sign : Sign<Guid> { }
     public class Sign<TKey> : Sign<TKey, ushort>
         where TKey : IEquatable<TKey>
     { }
@@ -10,6 +11,6 @@ namespace Watchman.BusinessLogic.Models.Signs
         where TValue : struct
     {
         public TKey Id { get; set; }
-        public TValue Value { get; }
+        public TValue Value { get; set; }
     }
 }

@@ -2,6 +2,6 @@
 
 namespace Watchman.BusinessLogic.Models.Signs
 {
-    public class DIA : Sign<Guid, ushort>
+    public class DIA : Sign
     { }
 }

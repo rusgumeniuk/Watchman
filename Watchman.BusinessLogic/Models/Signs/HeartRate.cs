@@ -2,6 +2,6 @@
 
 namespace Watchman.BusinessLogic.Models.Signs
 {
-    public class HeartRate : Sign<Guid, ushort>
+    public class HeartRate : Sign
     { }
 }
