@@ -26,7 +26,12 @@ namespace Identity.API.Data
             modelBuilder.Entity<WatchmanIdentityProfile>();
             modelBuilder.Entity<HeartAndPressureHealthState>();
             modelBuilder.Entity<WatchmanPatientGuid>();
+            modelBuilder.Entity<PatientSign>();
+            modelBuilder.Entity<Sign<Guid>>().ToTable("Sign");
 
+            #region Many to many
+
+            #region WatchmanPatient
             modelBuilder.Entity<WatchmanPatient<Guid, Guid>>()
             .HasKey(t => new { t.WatchmanId, t.PatientId });
 
@@ -39,6 +44,19 @@ namespace Identity.API.Data
                 .HasOne(sc => sc.Watchman)
                 .WithMany(c => c.WatchmanPatients)
                 .HasForeignKey(sc => sc.WatchmanId);
+            #endregion
+
+            #region PatienSign
+            modelBuilder.Entity<PatientSign<Guid, ushort>>()
+                .HasKey(t => new { t.SignType, t.PatientId });
+
+            modelBuilder.Entity<PatientSign<Guid, ushort>>()
+                .HasOne(sc => sc.Patient)
+                .WithMany(s => s.IgnorableSignPair)
+                .HasForeignKey(sc => sc.PatientId);
+            #endregion
+
+            #endregion
 
             base.OnModelCreating(modelBuilder);
         }
