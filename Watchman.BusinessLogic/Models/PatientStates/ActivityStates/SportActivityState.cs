@@ -7,7 +7,7 @@ namespace Watchman.BusinessLogic.Models.PatientStates.ActivityStates
         private static SportActivityState state;        
         public SportActivityState()
         {
-            ChangeFactor = 1.5f;
+            ChangeFactor = 0.75f;
         }
 
         public static SportActivityState GetInstance()

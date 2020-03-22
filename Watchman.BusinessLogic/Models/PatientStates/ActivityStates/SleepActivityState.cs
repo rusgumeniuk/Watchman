@@ -8,7 +8,7 @@ namespace Watchman.BusinessLogic.Models.PatientStates.ActivityStates
      
         public SleepActivityState()
         {
-            ChangeFactor = 0.8f;
+            ChangeFactor = 1.2f;
         }
 
         public static SleepActivityState GetInstance()
