@@ -108,7 +108,9 @@ namespace HealthService.API.Models.Repositories
             return await HealthContext
                 .Patients
                 .Include(pat => pat.IgnorableSignPair)
+                    .ThenInclude(pair => pair.Patient)
                 .Include(pat => pat.HealthMeasurements)
+                    .ThenInclude(hm => hm.Signs)
                 .Include(pat => pat.WatchmanPatients)
                 .FirstAsync(pat => pat.Id.Equals(id));
         }
@@ -117,8 +119,10 @@ namespace HealthService.API.Models.Repositories
             return HealthContext
                 .Patients
                 .Include(pat => pat.IgnorableSignPair)
+                    .ThenInclude(pair => pair.Patient)
                 .Include(pat => pat.HealthMeasurements)
-                .Include(pat => pat.WatchmanPatients)
+                    .ThenInclude(hm => hm.Signs)
+                .Include(pat => pat.WatchmanPatients)                    
                 .First(pat => pat.Id.Equals(id));
         }
 
