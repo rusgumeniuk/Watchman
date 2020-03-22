@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using Watchman.BusinessLogic.Models.Signs;
 using Watchman.BusinessLogic.Models.Users;
 
@@ -11,6 +12,9 @@ namespace HealthService.API.Services
         HealthMeasurement<TKey, TKey> GetLastHealthMeasurement(TKey patientId);
         IEnumerable<HealthMeasurement<TKey, TKey>> GetLastHealthMeasurements(TKey patientId, int count);
         void AddHealthMeasurement(TKey patientId, HealthMeasurement<TKey, TKey> healthMeasurement);
+
+        void AddIgnorableSignToPatient(TKey patientId, Sign<TKey> sign);
+
         void AddPatientToWatchman(TKey watchmanId, TKey patientId);
 
         void RemovePatientFromWatchman(TKey watchmanId, TKey patientId);

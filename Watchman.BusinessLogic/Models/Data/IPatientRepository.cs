@@ -15,6 +15,8 @@ namespace Watchman.BusinessLogic.Models.Data
         IEnumerable<HealthMeasurement<TKey, TKey>> GetLastHealthMeasurements(TKey patientId, int count);
         void AddHealthMeasurement(TKey patientId, HealthMeasurement<TKey, TKey> healthMeasurement);
 
+        void AddIgnorableSign(TKey patientId, Sign<TKey> sign);
+
         bool ExistPatientProfile(TKey userId);
         bool ExistPatientProfile<TUser>(TUser user)
             where TUser : IUser<TKey, TKey, TKey, TKey, TKey, TKey, TKey, TKey>;

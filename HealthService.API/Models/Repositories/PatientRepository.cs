@@ -129,5 +129,16 @@ namespace HealthService.API.Models.Repositories
             }
             return index;
         }
+
+        public void AddIgnorableSign(Guid patientId, Sign<Guid> sign)
+        {
+            var patient = HealthContext
+                .Patients
+                .Include(pat => pat.IgnorableSignPair)
+                .First(pat => pat.Id.Equals(patientId));
+            patient
+                .IgnorableSignPair
+                .Add(new PatientSign<Guid, ushort>() { PatientId = patientId, SignType = sign.GetType().ToString() });
+        }
     }
 }

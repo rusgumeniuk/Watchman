@@ -131,5 +131,15 @@ namespace HealthService.API.Services
                 db.Save();
             }
         }
+
+        public void AddIgnorableSignToPatient(Guid patientId, Sign<Guid> sign)
+        {
+            var patient = db.PatientRepository.Retrieve(patientId);            
+            if (patient != null)
+            {
+                db.PatientRepository.AddIgnorableSign(patientId, sign);
+                db.Save();
+            }
+        }
     }
 }

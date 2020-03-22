@@ -96,33 +96,55 @@ namespace HealthService.API.Controllers
                 return BadRequest(res);
         }
 
+        [HttpPost]
+        public IActionResult AddIgnorableSign([FromBody]PatientIdIgnorableSignViewModel model)
+        {
+            var sign = ParseSign(model.SignType);
+            if (sign != null)
+            {
+                service.AddIgnorableSignToPatient(model.PatientId, sign);
+                return Ok();
+            }
+
+            return BadRequest();
+        }
+
+
         private ICollection<Sign<Guid>> ParseSignPairArray(IEnumerable<SignPair> array)
         {
             ICollection<Sign<Guid>> list = new List<Sign<Guid>>();
 
             foreach (var pair in array)
             {
-                switch (pair.Type.ToUpper())
+                Sign<Guid> sign = ParseSign(pair.Type);
+                if (sign != null)
                 {
-                    case "DIA":
-                        {
-                            list.Add(new DIA() { Value = (ushort)pair.Value });
-                            break;
-                        }
-                    case "SYS":
-                        {
-                            list.Add(new SYS() { Value = (ushort)pair.Value });
-                            break;
-                        }
-                    case "HR":
-                    case "HEARTRATE":
-                        {
-                            list.Add(new HeartRate() { Value = (ushort)pair.Value });
-                            break;
-                        }
+                    sign.Value = (ushort)pair.Value;
+                    list.Add(sign);
                 }
             }
             return list;
+        }
+        private Sign<Guid> ParseSign(string type)
+        {
+            switch (type.ToUpper())
+            {
+                case "DIA":
+                    {
+                        return new DIA();
+                    }
+                case "SYS":
+                    {
+                        return new SYS();
+                    }
+                case "HR":
+                case "HEARTRATE":
+                    {
+                        return new HeartRate();
+                    }
+                default:
+                    return null;
+            }
         }
     }
 }
