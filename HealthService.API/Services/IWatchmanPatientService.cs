@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using Watchman.BusinessLogic.Models.Analysis;
 using Watchman.BusinessLogic.Models.Signs;
 using Watchman.BusinessLogic.Models.Users;
 
@@ -9,6 +9,8 @@ namespace HealthService.API.Services
     public interface IWatchmanPatientService<TKey>
         where TKey : IEquatable<TKey>
     {
+        IAnalysisResult AnalyzeLastMeasurement(TKey patientId);
+        
         HealthMeasurement<TKey, TKey> GetLastHealthMeasurement(TKey patientId);
         IEnumerable<HealthMeasurement<TKey, TKey>> GetLastHealthMeasurements(TKey patientId, int count);
         void AddHealthMeasurement(TKey patientId, HealthMeasurement<TKey, TKey> healthMeasurement);

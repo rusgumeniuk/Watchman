@@ -1,3 +1,4 @@
+using HealthService.API.Models.Analysis;
 using HealthService.API.Models.Data;
 using HealthService.API.Models.Repositories;
 using HealthService.API.Models.Users;
@@ -14,7 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using System;
-
+using Watchman.BusinessLogic.Models.Analysis;
 using Watchman.BusinessLogic.Models.Data;
 
 namespace HealthService.API
@@ -43,6 +44,9 @@ namespace HealthService.API
             string usersConnection = Configuration.GetConnectionString("UserDbConnection");
             services.AddDbContext<IdentityDbContext>(options => options.UseSqlServer(usersConnection));
 
+            services.AddTransient<IAnalysisResult, AnalysisResult>();
+            services.AddTransient<IAnalysisStrategy, MinMaxValueAnalyseStrategy>();
+            services.AddTransient<IHealthAnalyzer, HealthAnalyzer>();
             services.AddTransient<IWatchmanRepository<WatchmanProfileHealth, Guid>, WatchmanRepository>();
             services.AddTransient<IPatientRepository<PatientProfile, Guid>, PatientRepository>();
             services.AddTransient<IWatchmanPatientUnitOfWork, WatchmanPatientUnitOfWork>();

@@ -109,6 +109,20 @@ namespace HealthService.API.Controllers
             return BadRequest();
         }
 
+        [HttpPost]
+        public IActionResult AnalyzeLast([FromBody]GuidFieldViewModel model)
+        {
+            try
+            {
+                var result = service.AnalyzeLastMeasurement(model.Id);
+                return Ok(result);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex);
+            }            
+        }
+
 
         private ICollection<Sign<Guid>> ParseSignPairArray(IEnumerable<SignPair> array)
         {

@@ -4,7 +4,7 @@ using HealthService.API.Models.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using Watchman.BusinessLogic.Models.Analysis;
 using Watchman.BusinessLogic.Models.Signs;
 using Watchman.BusinessLogic.Models.Users;
 
@@ -13,9 +13,11 @@ namespace HealthService.API.Services
     public class WatchmanPatientService : IWatchmanPatientService<Guid>
     {
         private readonly IWatchmanPatientUnitOfWork db;
-        public WatchmanPatientService(IWatchmanPatientUnitOfWork unitOfWork)
+        private readonly IHealthAnalyzer analyzer;
+        public WatchmanPatientService(IWatchmanPatientUnitOfWork unitOfWork, IHealthAnalyzer analyzer)
         {
             this.db = unitOfWork;
+            this.analyzer = analyzer;
         }
 
         public HealthMeasurement<Guid, Guid> GetLastHealthMeasurement(Guid patientId)
@@ -140,6 +142,18 @@ namespace HealthService.API.Services
                 db.PatientRepository.AddIgnorableSign(patientId, sign);
                 db.Save();
             }
+        }
+
+        public IAnalysisResult AnalyzeLastMeasurement(Guid patientId)
+        {
+            var patient = db.PatientRepository.Retrieve(patientId);
+            if(patient != null)
+            {
+                var patientWithProps = db.PatientRepository.RetrieveWithAllProperties(patientId);
+                analyzer.AnalyzeLast(patientWithProps);
+                return analyzer.AnalysisResult as IAnalysisResult;
+            }
+            return null;
         }
     }
 }
