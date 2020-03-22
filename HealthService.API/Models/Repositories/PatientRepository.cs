@@ -27,7 +27,7 @@ namespace HealthService.API.Models.Repositories
                     .ThenInclude(hm => hm.Signs)
                 .First(pat => pat.Id.Equals(patientId));
             return patient.HealthMeasurements.ElementAt(GetIndexOfItemWithNewDate(patient.HealthMeasurements));
-        }        
+        }
         public IEnumerable<HealthMeasurement<Guid, Guid>> GetLastHealthMeasurements(Guid patientId, int count)
         {
             var patient = HealthContext
@@ -102,6 +102,26 @@ namespace HealthService.API.Models.Repositories
         {
             return await Context.Set<PatientProfile>().FindAsync(id);
         }
+
+        public async Task<PatientProfile> RetrieveWithAllPropertiesAsync(Guid id)
+        {
+            return await HealthContext
+                .Patients
+                .Include(pat => pat.IgnorableSignPair)
+                .Include(pat => pat.HealthMeasurements)
+                .Include(pat => pat.WatchmanPatients)
+                .FirstAsync(pat => pat.Id.Equals(id));
+        }
+        public override PatientProfile RetrieveWithAllProperties(Guid id)
+        {
+            return HealthContext
+                .Patients
+                .Include(pat => pat.IgnorableSignPair)
+                .Include(pat => pat.HealthMeasurements)
+                .Include(pat => pat.WatchmanPatients)
+                .First(pat => pat.Id.Equals(id));
+        }
+
         public async Task<IEnumerable<PatientProfile>> RetrieveAll()
         {
             return await Context.Set<PatientProfile>().ToListAsync();

@@ -68,14 +68,32 @@ namespace HealthService.API.Models.Repositories
         {
             await Context.Set<WatchmanProfileHealth>().AddAsync(entity);
         }
-        public async Task<IEnumerable<WatchmanProfileHealth>> RetrieveAll()
-        {
-            return await Context.Set<WatchmanProfileHealth>().ToListAsync();
-        }
+
         public async Task<WatchmanProfileHealth> RetrieveAsync(Guid id)
         {
             return await Context.Set<WatchmanProfileHealth>().FindAsync(id);
         }
+
+        public override WatchmanProfileHealth RetrieveWithAllProperties(Guid id)
+        {
+            return HealthContext
+                .Watchmen
+                .Include(watch => watch.WatchmanPatients)
+                .First(watchm => watchm.Id.Equals(id));
+        }
+        public async Task<WatchmanProfileHealth> RetrieveWithAllPropertiesAsync(Guid id)
+        {
+            return await HealthContext
+                .Watchmen
+                .Include(watch => watch.WatchmanPatients)
+                .FirstAsync(watchm => watchm.Id.Equals(id));
+        }
+
+        public async Task<IEnumerable<WatchmanProfileHealth>> RetrieveAll()
+        {
+            return await Context.Set<WatchmanProfileHealth>().ToListAsync();
+        }
+
 
         public async Task SaveChangesAsync()
         {

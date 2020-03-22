@@ -10,7 +10,7 @@ using Watchman.BusinessLogic.Models.Data;
 
 namespace Identity.API.Repositories
 {
-    public class Repository<TEntity, TKey> : ICRUDRepository<TEntity, TKey>
+    public abstract class Repository<TEntity, TKey> : ICRUDRepository<TEntity, TKey>
         where TEntity : class, IIdentifiedEntity<TKey>
         where TKey : IEquatable<TKey>
     {
@@ -53,5 +53,7 @@ namespace Identity.API.Repositories
         {
             Context.Dispose();
         }
+
+        public abstract TEntity RetrieveWithAllProperties(TKey id);
     }
 }

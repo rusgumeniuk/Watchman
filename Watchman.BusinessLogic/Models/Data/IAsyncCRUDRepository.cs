@@ -11,6 +11,7 @@ namespace Watchman.BusinessLogic.Models.Data
         Task CreateAsync(TEntity entity);
 
         Task<TEntity> RetrieveAsync(TKey id);
+        Task<TEntity> RetrieveWithAllPropertiesAsync(TKey id);
         Task<IEnumerable<TEntity>> RetrieveAll();
 
         Task SaveChangesAsync();

@@ -14,6 +14,7 @@ namespace Watchman.BusinessLogic.Models.Data
         void Remove(TEntity entity);
 
         TEntity Retrieve(TKey id);
+        TEntity RetrieveWithAllProperties(TKey id);
         IEnumerable<TEntity> RetrieveAll(Expression<Func<TEntity, bool>> expression);
 
         void SaveChanges();
