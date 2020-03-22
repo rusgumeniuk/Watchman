@@ -3,7 +3,7 @@
 using Microsoft.EntityFrameworkCore;
 
 using System;
-
+using Watchman.BusinessLogic.Models.PatientStates.ActivityStates;
 using Watchman.BusinessLogic.Models.Signs;
 using Watchman.BusinessLogic.Models.Users;
 
@@ -22,6 +22,7 @@ namespace Identity.API.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<CasualActivityState>();
             modelBuilder.Entity<DIA>();
             modelBuilder.Entity<SYS>();
             modelBuilder.Entity<HeartRate>();
