@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using Watchman.BusinessLogic.Models.PatientStates.ActivityStates;
 using Watchman.BusinessLogic.Models.Signs;
 
 namespace Watchman.BusinessLogic.Models.Users
@@ -18,7 +18,7 @@ namespace Watchman.BusinessLogic.Models.Users
     {
         public TPatientKey Id { get; set; }
         public ICollection<HealthMeasurement<THealthMeasurementKey, TSignKey>> HealthMeasurements { get; set; }
-
+        public PatientActivityState<TActivityStateKey> CurrentActivityState { get; set; }
         public ICollection<PatientSign<TPatientKey, ushort>> IgnorableSignPair { get; set; }
         public ICollection<WatchmanPatient<TWatchmanKey, TPatientKey>> WatchmanPatients { get; set; } 
     }
