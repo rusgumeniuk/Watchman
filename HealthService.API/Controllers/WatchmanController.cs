@@ -17,6 +17,7 @@ namespace HealthService.API.Controllers
             this.service = watchmanPatientService;
         }
 
+        [ValidationModelStateActionFilterAttribute]
         [HttpPost]
         public IActionResult Exist([FromBody]GuidFieldViewModel model)
         {
@@ -27,6 +28,7 @@ namespace HealthService.API.Controllers
                 return BadRequest();
         }
 
+        [ValidationModelStateActionFilterAttribute]
         [HttpPost]
         public IActionResult Create([FromBody]GuidFieldViewModel model)
         {
@@ -34,6 +36,7 @@ namespace HealthService.API.Controllers
             return Ok();
         }
 
+        [ValidationModelStateActionFilterAttribute]
         [HttpDelete]
         public IActionResult Remove([FromBody]GuidFieldViewModel model)
         {
@@ -41,6 +44,7 @@ namespace HealthService.API.Controllers
             return Ok();
         }
 
+        [ValidationModelStateActionFilterAttribute]
         [HttpPost]
         public IActionResult Add([FromBody] WatchmanIdPatientIdViewModel model)
         {
@@ -55,6 +59,7 @@ namespace HealthService.API.Controllers
             }
         }
 
+        [ValidationModelStateActionFilterAttribute]
         [HttpDelete]
         public IActionResult RemovePatient([FromBody]WatchmanIdPatientIdViewModel model)
         {
@@ -69,6 +74,7 @@ namespace HealthService.API.Controllers
             }
         }
 
+        [ValidationModelStateActionFilterAttribute]
         [HttpDelete]
         public IActionResult RemovePatients([FromBody]GuidFieldViewModel model)
         {

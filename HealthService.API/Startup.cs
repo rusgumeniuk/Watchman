@@ -1,3 +1,4 @@
+using HealthService.API.Models;
 using HealthService.API.Models.Analysis;
 using HealthService.API.Models.Data;
 using HealthService.API.Models.Repositories;
@@ -43,6 +44,8 @@ namespace HealthService.API
 
             string usersConnection = Configuration.GetConnectionString("UserDbConnection");
             services.AddDbContext<IdentityDbContext>(options => options.UseSqlServer(usersConnection));
+
+            services.AddScoped<ValidationModelStateActionFilterAttribute>();            
 
             services.AddTransient<IAnalysisResult, AnalysisResult>();
             services.AddTransient<IAnalysisStrategy, MinMaxValueAnalyseStrategy>();
