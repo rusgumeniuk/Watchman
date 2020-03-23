@@ -1,11 +1,10 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace HealthService.API.Models
 {
     public class GuidFieldViewModel
     {
-        [Required]
+        [NotEmptyGuid(ErrorMessage = "Id can't be default")]
         public Guid Id { get; set; }
     }
 }

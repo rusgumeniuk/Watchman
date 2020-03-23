@@ -1,13 +1,12 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace HealthService.API.Models
 {
     public class WatchmanIdPatientIdViewModel
     {
-        [Required]
+        [NotEmptyGuid(ErrorMessage = ("Watchman id can't be empty"))]
         public Guid WatchmanId { get; set; }
-        [Required]
+        [NotEmptyGuid(ErrorMessage = ("Patient id can't be empty"))]
         public Guid PatientId { get; set; }
     }
 }
