@@ -1,6 +1,7 @@
 using HealthService.API.Models;
 using HealthService.API.Models.Analysis;
 using HealthService.API.Models.Data;
+using HealthService.API.Models.Extensions;
 using HealthService.API.Models.Repositories;
 using HealthService.API.Models.Users;
 using HealthService.API.Services;
@@ -63,6 +64,8 @@ namespace HealthService.API
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.ConfigureCustomExceptionMiddleware();
 
             app.UseAuthentication();
 
