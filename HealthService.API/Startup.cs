@@ -75,7 +75,7 @@ namespace HealthService.API
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller}/{action}");
+                    pattern: "api/{controller}/{action}");
             });
         }
     }
