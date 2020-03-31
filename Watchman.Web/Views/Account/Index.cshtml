@@ -1,0 +1,20 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+@{ 
+    var token = ViewData["access_token"];
+}
+@if(token != null)
+{
+    <h1>Your token: </h1> @token
+}
+else
+{
+    <h1>"No token there :c"</h1>
+}
+
