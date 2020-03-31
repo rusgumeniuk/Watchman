@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Watchman.BusinessLogic.Models.Data;
+using Watchman.BusinessLogic.Services;
 
 namespace Identity.API.Controllers
 {

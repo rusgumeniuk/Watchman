@@ -17,6 +17,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 
 using Watchman.BusinessLogic.Models.Data;
+using Watchman.BusinessLogic.Services;
 
 namespace Identity.API
 {

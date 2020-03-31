@@ -1,12 +1,11 @@
 ﻿
-using Identity.API.Models;
-
 using System;
+using System.Threading.Tasks;
 
 using Watchman.BusinessLogic.Models;
 using Watchman.BusinessLogic.Models.Users;
 
-namespace Identity.API.Services
+namespace Watchman.BusinessLogic.Services
 {
     public interface ILoginService<TUser, TKey>
         where TUser : IIdentifiedEntity<TKey>
@@ -20,5 +19,7 @@ namespace Identity.API.Services
         void Register(string email, string password);
         void Register(PersonalInformation personalInformation);
         void Register(IUser user);
+
+        Task<string> GetToken(string email, string password);
     }
 }

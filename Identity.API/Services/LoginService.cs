@@ -2,8 +2,11 @@
 using Identity.API.Services.PasswordHashing;
 
 using System;
+using System.Threading.Tasks;
+
 using Watchman.BusinessLogic.Models.Data;
 using Watchman.BusinessLogic.Models.Users;
+using Watchman.BusinessLogic.Services;
 
 namespace Identity.API.Services
 {
@@ -55,6 +58,11 @@ namespace Identity.API.Services
         private bool AreCredentialsNotEmpty(string email, string password)
         {
             return !String.IsNullOrWhiteSpace(email) && !String.IsNullOrWhiteSpace(password);
+        }
+
+        public Task<string> GetToken(string email, string password)
+        {
+            throw new NotImplementedException();
         }
     }
 }
