@@ -11,6 +11,9 @@ namespace Watchman.BusinessLogic.Models.Data
     {
         IEnumerable<Patient<TKey>> GetPatients(TWatchman watchman);
 
+        TWatchman RetrieveByUserId(Guid userId);
+        TWatchman RetrieveWithPropertiesByUserId(Guid userId);
+
         bool ExistWatchmanProfile(TKey userId);
         bool ExistWatchmanProfile<TUser>(TUser user)
             where TUser : IUser<TKey, TKey, TKey, TKey, TKey, TKey, TKey, TKey>;

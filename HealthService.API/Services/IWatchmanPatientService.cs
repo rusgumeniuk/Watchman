@@ -35,5 +35,11 @@ namespace HealthService.API.Services
 
         void RemoveAllWatchmenFromPatient(TKey patientId);
         void RemoveAllPatientFromWatchman(TKey watchmanId);
+
+        Patient<TKey> GetPatientByUserId(TKey usedId);
+        WatchmanProfile GetWatchmanByUserId(TKey userId);
+
+        Patient<TKey> GetPatientWithPropertiesByUserId(TKey usedId);
+        WatchmanProfile GetWatchmanWithPropertiesByUserId(TKey userId);
     }
 }

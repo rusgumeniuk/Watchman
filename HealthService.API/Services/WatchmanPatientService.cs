@@ -155,5 +155,26 @@ namespace HealthService.API.Services
             }
             return null;
         }
+
+        public Patient<Guid> GetPatientByUserId(Guid userId)
+        {
+            return db.PatientRepository.RetrieveByUserId(userId);
+        }
+
+        public WatchmanProfile GetWatchmanByUserId(Guid userId)
+        {
+            return db.WatchmanRepository.RetrieveByUserId(userId);
+        }
+
+        public Patient<Guid> GetPatientWithPropertiesByUserId(Guid userId)
+        {
+            return db.PatientRepository.RetrieveWithPropertiesByUserId(userId);
+        }
+
+        public WatchmanProfile GetWatchmanWithPropertiesByUserId(Guid userId)
+        {
+            var res = db.WatchmanRepository.RetrieveWithPropertiesByUserId(userId);
+            return res;
+        }
     }
 }

@@ -103,5 +103,20 @@ namespace HealthService.API.Models.Repositories
         {
             await HealthContext.DisposeAsync();
         }
+
+        public WatchmanProfileHealth RetrieveByUserId(Guid userId)
+        {
+            return HealthContext
+            .Users
+            .Include(user => user.Watchman)
+            .First(user => user.Id.Equals(userId))
+            .Watchman as WatchmanProfileHealth;
+        }
+
+        public WatchmanProfileHealth RetrieveWithPropertiesByUserId(Guid userId)
+        {
+            var watchmanId = RetrieveByUserId(userId).Id;
+            return RetrieveWithAllProperties(watchmanId);
+        }
     }
 }

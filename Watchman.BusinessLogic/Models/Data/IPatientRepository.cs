@@ -17,6 +17,9 @@ namespace Watchman.BusinessLogic.Models.Data
 
         void AddIgnorableSign(TKey patientId, Sign<TKey> sign);
 
+        TPatient RetrieveByUserId(Guid userId);
+        TPatient RetrieveWithPropertiesByUserId(Guid userId);
+
         bool ExistPatientProfile(TKey userId);
         bool ExistPatientProfile<TUser>(TUser user)
             where TUser : IUser<TKey, TKey, TKey, TKey, TKey, TKey, TKey, TKey>;

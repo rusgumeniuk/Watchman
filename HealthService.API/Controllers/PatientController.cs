@@ -4,6 +4,8 @@ using HealthService.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using Newtonsoft.Json;
+
 using System;
 using System.Collections.Generic;
 
@@ -20,7 +22,23 @@ namespace HealthService.API.Controllers
             this.service = watchmanPatientService;
         }
 
+        [ValidationModelStateActionFilter]
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult GetPatientByUserId([FromBody]GuidFieldViewModel model)
+        {
+            return Ok(service.GetPatientByUserId(model.Id));
+        }
 
+        [ValidationModelStateActionFilter]
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult GetPatientwithPropsByUserId([FromBody]GuidFieldViewModel model)
+        {
+            return Ok(JsonConvert.SerializeObject(service.GetPatientWithPropertiesByUserId(model.Id)));
+        }
+
+        [ValidationModelStateActionFilter]
         [HttpPost]
         public IActionResult Exist([FromBody]GuidFieldViewModel model)
         {
@@ -31,7 +49,7 @@ namespace HealthService.API.Controllers
                 return BadRequest();
         }
 
-        [ValidationModelStateActionFilterAttribute]
+        [ValidationModelStateActionFilter]
         [HttpPost]
         public IActionResult Create([FromBody]GuidFieldViewModel model)
         {
@@ -39,7 +57,7 @@ namespace HealthService.API.Controllers
             return Ok();
         }
 
-        [ValidationModelStateActionFilterAttribute]
+        [ValidationModelStateActionFilter]
         [HttpDelete]
         public IActionResult Remove([FromBody]GuidFieldViewModel model)
         {
@@ -47,7 +65,7 @@ namespace HealthService.API.Controllers
             return Ok();
         }
 
-        [ValidationModelStateActionFilterAttribute]
+        [ValidationModelStateActionFilter]
         [HttpDelete]
         public IActionResult RemoveWatchmen([FromBody] GuidFieldViewModel model)
         {
@@ -62,7 +80,7 @@ namespace HealthService.API.Controllers
             }
         }
 
-        [ValidationModelStateActionFilterAttribute]
+        [ValidationModelStateActionFilter]
         [HttpPost]
         public IActionResult AddMeasurement([FromBody]HealthMeasurementViewModel model)
         {
@@ -76,7 +94,7 @@ namespace HealthService.API.Controllers
             return Ok();
         }
 
-        [ValidationModelStateActionFilterAttribute]
+        [ValidationModelStateActionFilter]
         [HttpGet]
         public IActionResult GetMeasurement([FromBody]GuidFieldViewModel model)
         {
@@ -87,7 +105,7 @@ namespace HealthService.API.Controllers
                 return BadRequest(res);
         }
 
-        [ValidationModelStateActionFilterAttribute]
+        [ValidationModelStateActionFilter]
         [HttpGet]
         public IActionResult GetMeasurements([FromBody]GuidFieldViewModel model)
         {
@@ -98,7 +116,7 @@ namespace HealthService.API.Controllers
                 return BadRequest(res);
         }
 
-        [ValidationModelStateActionFilterAttribute]
+        [ValidationModelStateActionFilter]
         [HttpPost]
         public IActionResult AddIgnorableSign([FromBody]PatientIdIgnorableSignViewModel model)
         {

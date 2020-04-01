@@ -119,10 +119,10 @@ namespace HealthService.API.Models.Repositories
             return HealthContext
                 .Patients
                 .Include(pat => pat.IgnorableSignPair)
-                    .ThenInclude(pair => pair.Patient)
+                    //.ThenInclude(pair => pair.Patient)
                 .Include(pat => pat.HealthMeasurements)
                     .ThenInclude(hm => hm.Signs)
-                .Include(pat => pat.WatchmanPatients)                    
+                .Include(pat => pat.WatchmanPatients)
                 .First(pat => pat.Id.Equals(id));
         }
 
@@ -130,6 +130,7 @@ namespace HealthService.API.Models.Repositories
         {
             return await Context.Set<PatientProfile>().ToListAsync();
         }
+
 
 
         public async Task SaveChangesAsync()
@@ -163,6 +164,22 @@ namespace HealthService.API.Models.Repositories
             patient
                 .IgnorableSignPair
                 .Add(new PatientSign<Guid, ushort>() { PatientId = patientId, SignType = sign.GetType().ToString() });
+        }
+
+        public PatientProfile RetrieveByUserId(Guid userId)
+        {
+            return HealthContext
+                .Users
+                .Include(user => user.Patient)
+                .First(user => user.Id.Equals(userId))
+                .Patient as PatientProfile;
+        }
+
+        public PatientProfile RetrieveWithPropertiesByUserId(Guid userId)
+        {
+            var patientId = RetrieveByUserId(userId).Id;
+            var res = RetrieveWithAllProperties(patientId);
+            return res;
         }
     }
 }
