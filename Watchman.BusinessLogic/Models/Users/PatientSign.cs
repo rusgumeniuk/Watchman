@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+
+using System;
 
 using Watchman.BusinessLogic.Models.Signs;
 
@@ -17,6 +19,7 @@ namespace Watchman.BusinessLogic.Models.Users
         public string SignType { get; set; }
 
         public virtual TKey PatientId { get; set; }
+        [JsonIgnore]
         public Patient<TKey> Patient { get; set; }
 
         public PatientSign() { }

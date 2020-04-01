@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+
+using System;
 
 namespace Watchman.BusinessLogic.Models.Users
 {
@@ -8,9 +10,11 @@ namespace Watchman.BusinessLogic.Models.Users
     {
 
         public virtual TWatchman WatchmanId { get; set; }
+        [JsonIgnore]
         public WatchmanProfile<TWatchman> Watchman { get; set; }
 
         public virtual TPatient PatientId { get; set; }
+        [JsonIgnore]
         public Patient<TPatient> Patient { get; set; }
     }
 }
