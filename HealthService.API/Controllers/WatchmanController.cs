@@ -3,7 +3,7 @@ using HealthService.API.Services;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using Newtonsoft.Json;
 using System;
 
 namespace HealthService.API.Controllers
@@ -17,7 +17,22 @@ namespace HealthService.API.Controllers
             this.service = watchmanPatientService;
         }
 
-        [ValidationModelStateActionFilterAttribute]
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult GetWatchmanByUserId([FromBody]GuidFieldViewModel model)
+        {
+            return Ok(service.GetWatchmanByUserId(model.Id));
+        }
+
+        [ValidationModelStateActionFilter]
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult GetWatchmantWithPropsByUserId([FromBody]GuidFieldViewModel model)
+        {
+            return Ok(JsonConvert.SerializeObject(service.GetWatchmanWithPropertiesByUserId(model.Id)));
+        }
+
+        [ValidationModelStateActionFilter]
         [HttpPost]
         public IActionResult Exist([FromBody]GuidFieldViewModel model)
         {
@@ -28,7 +43,7 @@ namespace HealthService.API.Controllers
                 return BadRequest();
         }
 
-        [ValidationModelStateActionFilterAttribute]
+        [ValidationModelStateActionFilter]
         [HttpPost]
         public IActionResult Create([FromBody]GuidFieldViewModel model)
         {
@@ -36,7 +51,7 @@ namespace HealthService.API.Controllers
             return Ok();
         }
 
-        [ValidationModelStateActionFilterAttribute]
+        [ValidationModelStateActionFilter]
         [HttpDelete]
         public IActionResult Remove([FromBody]GuidFieldViewModel model)
         {
@@ -44,7 +59,7 @@ namespace HealthService.API.Controllers
             return Ok();
         }
 
-        [ValidationModelStateActionFilterAttribute]
+        [ValidationModelStateActionFilter]
         [HttpPost]
         public IActionResult Add([FromBody] WatchmanIdPatientIdViewModel model)
         {
@@ -59,7 +74,7 @@ namespace HealthService.API.Controllers
             }
         }
 
-        [ValidationModelStateActionFilterAttribute]
+        [ValidationModelStateActionFilter]
         [HttpDelete]
         public IActionResult RemovePatient([FromBody]WatchmanIdPatientIdViewModel model)
         {
@@ -74,7 +89,7 @@ namespace HealthService.API.Controllers
             }
         }
 
-        [ValidationModelStateActionFilterAttribute]
+        [ValidationModelStateActionFilter]
         [HttpDelete]
         public IActionResult RemovePatients([FromBody]GuidFieldViewModel model)
         {
