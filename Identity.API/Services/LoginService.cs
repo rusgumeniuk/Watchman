@@ -21,34 +21,34 @@ namespace Identity.API.Services
             this.Hasher = hasher;
         }
 
-        public void Register(string email, string password)
+        public async Task RegisterAsync(string email, string password)
         {
-            Register(new PersonalInfo() { Email = email, HashedPassword = Hasher.Hash(password) });
+            await RegisterAsync(new PersonalInfo() { Email = email, HashedPassword = Hasher.Hash(password) });
         }
-        public void Register(PersonalInformation personalInformation)
+        public async Task RegisterAsync(PersonalInformation personalInformation)
         {
-            Register(new WatchmanUser() { PersonalInformation = personalInformation as PersonalInformation });
+            await RegisterAsync(new WatchmanUser() { PersonalInformation = personalInformation as PersonalInformation });
         }
-        public void Register(IUser user)
+        public async Task RegisterAsync(IUser user)
         {
             if (!AreCredentialsNotEmpty(user.PersonalInformation.Email, user.PersonalInformation.HashedPassword))
                 throw new ArgumentNullException("Please input valid credentials");
             if (UserRepository.GetByEmailAsync(user.PersonalInformation.Email).Result == null)
             {
-                UserRepository.Create(user as WatchmanUser);
-                UserRepository.SaveChanges();
+                await UserRepository.CreateAsync(user as WatchmanUser);
+                await UserRepository.SaveChangesAsync();
             }
             else
                 throw new ArgumentException($"User with email '{user.PersonalInformation.Email}' already exist");
         }
 
-        public WatchmanUser FindByEmail(string email)
+        public async Task<WatchmanUser> FindByEmailAsync(string email)
         {
-            return UserRepository.GetByEmailAsync(email).Result as WatchmanUser;
+            return await UserRepository.GetByEmailAsync(email);
         }
-        public WatchmanUser FindById(Guid key)
+        public async Task<WatchmanUser> FindByIdAsync(Guid key)
         {
-            return UserRepository.Retrieve(key) as WatchmanUser;
+            return await UserRepository.RetrieveAsync(key);
         }
 
         public bool ValidateCredentials(WatchmanUser user, string password)
@@ -60,7 +60,7 @@ namespace Identity.API.Services
             return !String.IsNullOrWhiteSpace(email) && !String.IsNullOrWhiteSpace(password);
         }
 
-        public Task<string> GetToken(string email, string password)
+        public Task<string> GetTokenAsync(string email, string password)
         {
             throw new NotImplementedException();
         }

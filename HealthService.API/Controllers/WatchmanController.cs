@@ -3,8 +3,11 @@ using HealthService.API.Services;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 using Newtonsoft.Json;
+
 using System;
+using System.Threading.Tasks;
 
 namespace HealthService.API.Controllers
 {
@@ -19,24 +22,24 @@ namespace HealthService.API.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult GetWatchmanByUserId([FromBody]GuidFieldViewModel model)
+        public async Task<IActionResult> GetWatchmanByUserId([FromBody]GuidFieldViewModel model)
         {
-            return Ok(service.GetWatchmanByUserId(model.Id));
+            return Ok(await service.GetWatchmanByUserIdAsync(model.Id));
         }
 
         [ValidationModelStateActionFilter]
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult GetWatchmantWithPropsByUserId([FromBody]GuidFieldViewModel model)
+        public async Task<IActionResult> GetWatchmantWithPropsByUserId([FromBody]GuidFieldViewModel model)
         {
-            return Ok(JsonConvert.SerializeObject(service.GetWatchmanWithPropertiesByUserId(model.Id)));
+            return Ok(JsonConvert.SerializeObject(await service.GetWatchmanWithPropertiesByUserIdAsync(model.Id)));
         }
 
         [ValidationModelStateActionFilter]
         [HttpPost]
-        public IActionResult Exist([FromBody]GuidFieldViewModel model)
+        public async Task<IActionResult> Exist([FromBody]GuidFieldViewModel model)
         {
-            var res = service.ExistWatchman(model.Id);
+            var res = await service.ExistWatchmanAsync(model.Id);
             if (res)
                 return Ok();
             else
@@ -45,9 +48,9 @@ namespace HealthService.API.Controllers
 
         [ValidationModelStateActionFilter]
         [HttpPost]
-        public IActionResult Create([FromBody]GuidFieldViewModel model)
+        public async Task<IActionResult> Create([FromBody]GuidFieldViewModel model)
         {
-            service.AddWatchmanToUser(model.Id);
+            await service.AddWatchmanToUserAsync(model.Id);
             return Ok();
         }
 
@@ -61,11 +64,11 @@ namespace HealthService.API.Controllers
 
         [ValidationModelStateActionFilter]
         [HttpPost]
-        public IActionResult Add([FromBody] WatchmanIdPatientIdViewModel model)
+        public async Task<IActionResult> Add([FromBody] WatchmanIdPatientIdViewModel model)
         {
             try
             {
-                service.AddPatientToWatchman(model.WatchmanId, model.PatientId);
+                await service.AddPatientToWatchmanAsync(model.WatchmanId, model.PatientId);
                 return Ok();
             }
             catch (Exception ex)
@@ -76,11 +79,11 @@ namespace HealthService.API.Controllers
 
         [ValidationModelStateActionFilter]
         [HttpDelete]
-        public IActionResult RemovePatient([FromBody]WatchmanIdPatientIdViewModel model)
+        public async Task<IActionResult> RemovePatient([FromBody]WatchmanIdPatientIdViewModel model)
         {
             try
             {
-                service.RemovePatientFromWatchman(model.WatchmanId, model.PatientId);
+                await service.RemovePatientFromWatchmanAsync(model.WatchmanId, model.PatientId);
                 return Ok();
             }
             catch (Exception ex)

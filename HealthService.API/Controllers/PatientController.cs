@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using Watchman.BusinessLogic.Models.Signs;
 
@@ -25,24 +26,24 @@ namespace HealthService.API.Controllers
         [ValidationModelStateActionFilter]
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult GetPatientByUserId([FromBody]GuidFieldViewModel model)
+        public async Task<IActionResult> GetPatientByUserId([FromBody]GuidFieldViewModel model)
         {
-            return Ok(service.GetPatientByUserId(model.Id));
+            return Ok(await service.GetPatientByUserIdAsync(model.Id));
         }
 
         [ValidationModelStateActionFilter]
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult GetPatientwithPropsByUserId([FromBody]GuidFieldViewModel model)
+        public async Task<IActionResult> GetPatientwithPropsByUserId([FromBody]GuidFieldViewModel model)
         {
-            return Ok(JsonConvert.SerializeObject(service.GetPatientWithPropertiesByUserId(model.Id)));
+            return Ok(JsonConvert.SerializeObject(await service.GetPatientWithPropertiesByUserIdAsync(model.Id)));
         }
 
         [ValidationModelStateActionFilter]
         [HttpPost]
-        public IActionResult Exist([FromBody]GuidFieldViewModel model)
+        public async Task<IActionResult> Exist([FromBody]GuidFieldViewModel model)
         {
-            var res = service.ExistPatient(model.Id);
+            var res = await service.ExistPatientAsync(model.Id);
             if (res)
                 return Ok();
             else
@@ -51,9 +52,9 @@ namespace HealthService.API.Controllers
 
         [ValidationModelStateActionFilter]
         [HttpPost]
-        public IActionResult Create([FromBody]GuidFieldViewModel model)
+        public async Task<IActionResult> Create([FromBody]GuidFieldViewModel model)
         {
-            service.AddPatientToUser(model.Id);
+            await service.AddPatientToUserAsync(model.Id);
             return Ok();
         }
 
@@ -82,7 +83,7 @@ namespace HealthService.API.Controllers
 
         [ValidationModelStateActionFilter]
         [HttpPost]
-        public IActionResult AddMeasurement([FromBody]HealthMeasurementViewModel model)
+        public async Task<IActionResult> AddMeasurement([FromBody]HealthMeasurementViewModel model)
         {
             var res = ParseSignPairArray(model.Signs);
             var hm = new HeartAndPressureHealthState()
@@ -90,15 +91,15 @@ namespace HealthService.API.Controllers
                 MeasurementTime = model.DateTime,
                 Signs = res
             };
-            service.AddHealthMeasurement(model.PatientId, hm);
+            await service.AddHealthMeasurementAsync(model.PatientId, hm);
             return Ok();
         }
 
         [ValidationModelStateActionFilter]
         [HttpGet]
-        public IActionResult GetMeasurement([FromBody]GuidFieldViewModel model)
+        public async Task<IActionResult> GetMeasurement([FromBody]GuidFieldViewModel model)
         {
-            var res = service.GetLastHealthMeasurement(model.Id);
+            var res = await service.GetLastHealthMeasurementAsync(model.Id);
             if (res != null)
                 return Ok(res);
             else
@@ -107,9 +108,9 @@ namespace HealthService.API.Controllers
 
         [ValidationModelStateActionFilter]
         [HttpGet]
-        public IActionResult GetMeasurements([FromBody]GuidFieldViewModel model)
+        public async Task<IActionResult> GetMeasurements([FromBody]GuidFieldViewModel model)
         {
-            var res = service.GetLastHealthMeasurements(model.Id, 5);
+            var res = await service.GetLastHealthMeasurementsAsync(model.Id, 5);
             if (res != null)
                 return Ok(res);
             else
@@ -118,12 +119,12 @@ namespace HealthService.API.Controllers
 
         [ValidationModelStateActionFilter]
         [HttpPost]
-        public IActionResult AddIgnorableSign([FromBody]PatientIdIgnorableSignViewModel model)
+        public async Task<IActionResult> AddIgnorableSign([FromBody]PatientIdIgnorableSignViewModel model)
         {
             var sign = ParseSign(model.SignType);
             if (sign != null)
             {
-                service.AddIgnorableSignToPatient(model.PatientId, sign);
+                await service.AddIgnorableSignToPatientAsync(model.PatientId, sign);
                 return Ok();
             }
 
@@ -131,11 +132,11 @@ namespace HealthService.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult AnalyzeLast([FromBody]GuidFieldViewModel model)
+        public async Task<IActionResult> AnalyzeLast([FromBody]GuidFieldViewModel model)
         {
             try
             {
-                var result = service.AnalyzeLastMeasurement(model.Id);
+                var result = await service.AnalyzeLastMeasurementAsync(model.Id);
                 return Ok(result);
             }
             catch (Exception ex)

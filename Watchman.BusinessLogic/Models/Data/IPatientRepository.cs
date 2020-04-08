@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+
 using Watchman.BusinessLogic.Models.Signs;
 using Watchman.BusinessLogic.Models.Users;
 
@@ -9,23 +11,23 @@ namespace Watchman.BusinessLogic.Models.Data
         where TPatient : Patient<TKey>
         where TKey : IEquatable<TKey>
     {
-        IEnumerable<WatchmanProfile<TKey>> GetWatchmenOfPatient(TPatient patient);
+        Task<IEnumerable<WatchmanProfile<TKey>>> GetWatchmenOfPatientAsync(TPatient patient);
 
-        HealthMeasurement<TKey, TKey> GetLastHealthMeasurement(TKey patientId);
-        IEnumerable<HealthMeasurement<TKey, TKey>> GetLastHealthMeasurements(TKey patientId, int count);
-        void AddHealthMeasurement(TKey patientId, HealthMeasurement<TKey, TKey> healthMeasurement);
+        Task<HealthMeasurement<TKey, TKey>> GetLastHealthMeasurementAsync(TKey patientId);
+        Task<IEnumerable<HealthMeasurement<TKey, TKey>>> GetLastHealthMeasurementsAsync(TKey patientId, int count);
+        Task AddHealthMeasurementAsync(TKey patientId, HealthMeasurement<TKey, TKey> healthMeasurement);
 
-        void AddIgnorableSign(TKey patientId, Sign<TKey> sign);
+        Task AddIgnorableSignAsync(TKey patientId, Sign<TKey> sign);
 
-        TPatient RetrieveByUserId(Guid userId);
-        TPatient RetrieveWithPropertiesByUserId(Guid userId);
+        Task<TPatient> RetrieveByUserIdAsync(Guid userId);
+        Task<TPatient> RetrieveWithPropertiesByUserIdAsync(Guid userId);
 
-        bool ExistPatientProfile(TKey userId);
-        bool ExistPatientProfile<TUser>(TUser user)
+        Task<bool> ExistPatientProfileAsync(TKey userId);
+        Task<bool> ExistPatientProfileAsync<TUser>(TUser user)
             where TUser : IUser<TKey, TKey, TKey, TKey, TKey, TKey, TKey, TKey>;
 
-        void AddPatientToUser(TKey userId, TPatient patient = null);
-        void AddPatientToUser<TUser>(TUser user, TPatient patient = null)
+        Task AddPatientToUserAsync(TKey userId, TPatient patient = null);
+        Task AddPatientToUserAsync<TUser>(TUser user, TPatient patient = null)
             where TUser : IUser<TKey, TKey, TKey, TKey, TKey, TKey, TKey, TKey>;
 
         void RemovePatientFromUser(TKey userId);

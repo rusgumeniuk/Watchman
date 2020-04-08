@@ -27,7 +27,7 @@ namespace Watchman.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel viewModel)
         {
-            var token = await loginService.GetToken(viewModel.Email, viewModel.Password);
+            var token = await loginService.GetTokenAsync(viewModel.Email, viewModel.Password);
 
             ViewData["access_token"] = token;
             return View("Index");

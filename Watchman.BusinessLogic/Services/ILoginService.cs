@@ -13,13 +13,13 @@ namespace Watchman.BusinessLogic.Services
     {
         bool ValidateCredentials(TUser user, string password);
 
-        TUser FindByEmail(string email);
-        TUser FindById(TKey key);
+        Task<TUser> FindByEmailAsync(string email);
+        Task<TUser> FindByIdAsync(TKey key);
 
-        void Register(string email, string password);
-        void Register(PersonalInformation personalInformation);
-        void Register(IUser user);
+        Task RegisterAsync(string email, string password);
+        Task RegisterAsync(PersonalInformation personalInformation);
+        Task RegisterAsync(IUser user);
 
-        Task<string> GetToken(string email, string password);
+        Task<string> GetTokenAsync(string email, string password);
     }
 }

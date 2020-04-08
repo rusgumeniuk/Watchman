@@ -27,12 +27,12 @@ namespace HealthService.API.Models.Repositories
         public IPatientRepository<PatientProfile, Guid> PatientRepository
             => patientRepository ?? (patientRepository = new PatientRepository(context));
 
-        public void AddWatchmanToPatient(Guid watchmanId, Guid patientId)
+        public async Task AddWatchmanToPatientAsync(Guid watchmanId, Guid patientId)
         {
-            var watchman = context
+            var watchman = await context
                 .Watchmen
                 .Include(wm => wm.WatchmanPatients)
-                .FirstOrDefault(wm => wm.Id.Equals(watchmanId));
+                .FirstOrDefaultAsync(wm => wm.Id.Equals(watchmanId));
             watchman.WatchmanPatients.Add(new WatchmanPatientConnection() { WatchmanId = watchmanId, PatientId = patientId });
         }
         public void RemoveWatchmanFromPatient(Guid watchmanId, Guid patientId)
@@ -50,10 +50,6 @@ namespace HealthService.API.Models.Repositories
             context.Dispose();
         }
 
-        public void Save()
-        {
-            context.SaveChanges();
-        }
         public async Task SaveAsync()
         {
             await context.SaveChangesAsync();

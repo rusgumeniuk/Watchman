@@ -4,13 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 using Watchman.BusinessLogic.Models;
 using Watchman.BusinessLogic.Models.Data;
 
 namespace HealthService.API.Models.Repositories
 {
-    public abstract class Repository<TEntity, TKey> : ICRUDRepository<TEntity, TKey>
+    public abstract class Repository<TEntity, TKey> : IAsyncCRUDRepository<TEntity, TKey>
         where TEntity : class, IIdentifiedEntity<TKey>
         where TKey : IEquatable<TKey>
     {
@@ -21,39 +22,47 @@ namespace HealthService.API.Models.Repositories
             this.Context = context;
         }
 
-        public void Create(TEntity entity)
+        public async Task CreateAsync(TEntity entity)
         {
-            Context.Set<TEntity>().Add(entity);
+            await Context.Set<TEntity>().AddAsync(entity);
         }
-        public TEntity Update(TEntity oldEntity, TKey id = default)
+        public async Task<TEntity> UpdateAsync(TEntity oldEntity)
         {
             Context.Entry(oldEntity).State = EntityState.Modified;
             Context.SaveChanges();
-            return Context.Set<TEntity>().Find(oldEntity.Id);
+            return await Context.Set<TEntity>().FindAsync(oldEntity.Id);
         }
         public void Remove(TEntity entity)
         {
             Context.Set<TEntity>().Remove(entity);
         }
 
-        public TEntity Retrieve(TKey id)
+        public async Task<TEntity> RetrieveAsync(TKey id)
         {
-            return Context.Set<TEntity>().Find(id);
+            return await Context.Set<TEntity>().FindAsync(id);
         }
-        public IEnumerable<TEntity> RetrieveAll(Expression<Func<TEntity, bool>> expression)
+        public async Task<IEnumerable<TEntity>> RetrieveAllAsync()
         {
-            return Context.Set<TEntity>().Where(expression);
+            return await Context.Set<TEntity>().ToListAsync();
+        }
+        public async Task<IEnumerable<TEntity>> RetrieveAllAsync(Expression<Func<TEntity, bool>> expression)
+        {
+            return await Context.Set<TEntity>().Where(expression).ToListAsync();
         }
 
-        public void SaveChanges()
+        public async Task SaveChangesAsync()
         {
-            Context.SaveChanges();
+            await Context.SaveChangesAsync();
         }
         public void Dispose()
         {
             Context.Dispose();
         }
+        public async Task DisposeAsync()
+        {
+            await Context.DisposeAsync();
+        }
 
-        public abstract TEntity RetrieveWithAllProperties(TKey id);
+        public abstract Task<TEntity> RetrieveWithAllPropertiesAsync(TKey id);
     }
 }

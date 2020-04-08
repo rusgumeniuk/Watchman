@@ -19,56 +19,56 @@ namespace HealthService.API.Models.Repositories
         public HealthDbContext HealthContext => Context as HealthDbContext;
         public PatientRepository(HealthDbContext context) : base(context) { }
 
-        public HealthMeasurement<Guid, Guid> GetLastHealthMeasurement(Guid patientId)
+        public async Task<HealthMeasurement<Guid, Guid>> GetLastHealthMeasurementAsync(Guid patientId)
         {
-            var patient = HealthContext
+            var patient = await HealthContext
                 .Patients
                 .Include(pat => pat.HealthMeasurements)
                     .ThenInclude(hm => hm.Signs)
-                .First(pat => pat.Id.Equals(patientId));
+                .FirstAsync(pat => pat.Id.Equals(patientId));
             return patient.HealthMeasurements.ElementAt(GetIndexOfItemWithNewDate(patient.HealthMeasurements));
         }
-        public IEnumerable<HealthMeasurement<Guid, Guid>> GetLastHealthMeasurements(Guid patientId, int count)
+        public async Task<IEnumerable<HealthMeasurement<Guid, Guid>>> GetLastHealthMeasurementsAsync(Guid patientId, int count)
         {
-            var patient = HealthContext
+            var patient = await HealthContext
                 .Patients
                 .Include(pat => pat.HealthMeasurements)
                     .ThenInclude(hm => hm.Signs)
-                .First(pat => pat.Id.Equals(patientId));
+                .FirstAsync(pat => pat.Id.Equals(patientId));
             return patient.HealthMeasurements.TakeLast(count);
         }
-        public void AddHealthMeasurement(Guid patientId, HealthMeasurement<Guid, Guid> healthMeasurement)
+        public async Task AddHealthMeasurementAsync(Guid patientId, HealthMeasurement<Guid, Guid> healthMeasurement)
         {
-            var patient = HealthContext
+            var patient = await HealthContext
                 .Patients
                 .Include(pat => pat.HealthMeasurements)
-                .First(pat => pat.Id.Equals(patientId));
+                .FirstAsync(pat => pat.Id.Equals(patientId));
             patient.HealthMeasurements.Add(healthMeasurement);
         }
 
 
-        public void AddPatientToUser(Guid userId, PatientProfile patient = null)
+        public async Task AddPatientToUserAsync(Guid userId, PatientProfile patient = null)
         {
-            var user = HealthContext.Users.Find(userId);
+            var user = await HealthContext.Users.FindAsync(userId);
             user.Patient = patient ?? new PatientProfile();
         }
-        public void AddPatientToUser<TUser>(TUser user, PatientProfile patient = null) where TUser : IUser<Guid, Guid, Guid, Guid, Guid, Guid, Guid, Guid>
+        public async Task AddPatientToUserAsync<TUser>(TUser user, PatientProfile patient = null) where TUser : IUser<Guid, Guid, Guid, Guid, Guid, Guid, Guid, Guid>
         {
-            AddPatientToUser(user.Id, patient);
+            await AddPatientToUserAsync(user.Id, patient);
         }
 
-        public bool ExistPatientProfile(Guid userId)
+        public async Task<bool> ExistPatientProfileAsync(Guid userId)
         {
-            var patient = HealthContext
+            var user = await HealthContext
                 .Users
                 .Include(us => us.Patient)
-                .FirstOrDefault(us => us.Id.Equals(userId))
-                .Patient;
-            return patient != null;
+                .FirstOrDefaultAsync(us => us.Id.Equals(userId));
+
+            return user?.Patient != null;
         }
-        public bool ExistPatientProfile<TUser>(TUser user) where TUser : IUser<Guid, Guid, Guid, Guid, Guid, Guid, Guid, Guid>
+        public async Task<bool> ExistPatientProfileAsync<TUser>(TUser user) where TUser : IUser<Guid, Guid, Guid, Guid, Guid, Guid, Guid, Guid>
         {
-            return ExistPatientProfile(user.Id);
+            return await ExistPatientProfileAsync(user.Id);
         }
 
         public void RemovePatientFromUser(Guid userId)
@@ -85,62 +85,28 @@ namespace HealthService.API.Models.Repositories
             RemovePatientFromUser(user.Id);
         }
 
-        public IEnumerable<WatchmanProfile<Guid>> GetWatchmenOfPatient(PatientProfile patient)
+        public async Task<IEnumerable<WatchmanProfile<Guid>>> GetWatchmenOfPatientAsync(PatientProfile patient)
         {
-            return HealthContext
+            return await HealthContext
                 .WatchmanPatients
                 .Where(pair => pair.PatientId.Equals(patient.Id))
-                .Select(pair => pair.Watchman);
+                .Select(pair => pair.Watchman)
+                .ToListAsync();
         }
 
-        public async Task CreateAsync(PatientProfile entity)
-        {
-            await Context.Set<PatientProfile>().AddAsync(entity);
-        }
 
-        public async Task<PatientProfile> RetrieveAsync(Guid id)
-        {
-            return await Context.Set<PatientProfile>().FindAsync(id);
-        }
-
-        public async Task<PatientProfile> RetrieveWithAllPropertiesAsync(Guid id)
+        public async override Task<PatientProfile> RetrieveWithAllPropertiesAsync(Guid id)
         {
             return await HealthContext
                 .Patients
                 .Include(pat => pat.IgnorableSignPair)
-                    .ThenInclude(pair => pair.Patient)
+                //.ThenInclude(pair => pair.Patient)
                 .Include(pat => pat.HealthMeasurements)
                     .ThenInclude(hm => hm.Signs)
                 .Include(pat => pat.WatchmanPatients)
                 .FirstAsync(pat => pat.Id.Equals(id));
         }
-        public override PatientProfile RetrieveWithAllProperties(Guid id)
-        {
-            return HealthContext
-                .Patients
-                .Include(pat => pat.IgnorableSignPair)
-                    //.ThenInclude(pair => pair.Patient)
-                .Include(pat => pat.HealthMeasurements)
-                    .ThenInclude(hm => hm.Signs)
-                .Include(pat => pat.WatchmanPatients)
-                .First(pat => pat.Id.Equals(id));
-        }
 
-        public async Task<IEnumerable<PatientProfile>> RetrieveAll()
-        {
-            return await Context.Set<PatientProfile>().ToListAsync();
-        }
-
-
-
-        public async Task SaveChangesAsync()
-        {
-            await Context.SaveChangesAsync();
-        }
-        public async Task DisposeAsync()
-        {
-            await Context.DisposeAsync();
-        }
 
         private int GetIndexOfItemWithNewDate(IEnumerable<HealthMeasurement<Guid, Guid>> list)
         {
@@ -155,30 +121,30 @@ namespace HealthService.API.Models.Repositories
             return index;
         }
 
-        public void AddIgnorableSign(Guid patientId, Sign<Guid> sign)
+        public async Task AddIgnorableSignAsync(Guid patientId, Sign<Guid> sign)
         {
-            var patient = HealthContext
+            var patient = await HealthContext
                 .Patients
                 .Include(pat => pat.IgnorableSignPair)
-                .First(pat => pat.Id.Equals(patientId));
+                .FirstAsync(pat => pat.Id.Equals(patientId));
             patient
                 .IgnorableSignPair
                 .Add(new PatientSign<Guid, ushort>() { PatientId = patientId, SignType = sign.GetType().ToString() });
         }
 
-        public PatientProfile RetrieveByUserId(Guid userId)
+        public async Task<PatientProfile> RetrieveByUserIdAsync(Guid userId)
         {
-            return HealthContext
+            var res = await HealthContext
                 .Users
                 .Include(user => user.Patient)
-                .First(user => user.Id.Equals(userId))
-                .Patient as PatientProfile;
+                .FirstAsync(user => user.Id.Equals(userId));
+            return res.Patient as PatientProfile;
         }
 
-        public PatientProfile RetrieveWithPropertiesByUserId(Guid userId)
+        public async Task<PatientProfile> RetrieveWithPropertiesByUserIdAsync(Guid userId)
         {
-            var patientId = RetrieveByUserId(userId).Id;
-            var res = RetrieveWithAllProperties(patientId);
+            var patientId = await RetrieveByUserIdAsync(userId);
+            var res = await RetrieveWithAllPropertiesAsync(patientId.Id);
             return res;
         }
     }

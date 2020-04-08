@@ -18,28 +18,27 @@ namespace HealthService.API.Models.Repositories
         public HealthDbContext HealthContext => Context as HealthDbContext;
         public WatchmanRepository(HealthDbContext context) : base(context) { }
 
-        public void AddWatchmanToUser(Guid userId, WatchmanProfileHealth watchman = null)
+        public async Task AddWatchmanToUserAsync(Guid userId, WatchmanProfileHealth watchman = null)
         {
-            var user = HealthContext.Users.Find(userId);
+            var user = await HealthContext.Users.FindAsync(userId);
             user.Watchman = watchman ?? new WatchmanProfileHealth();
         }
-        public void AddWatchmanToUser<TUser>(TUser user, WatchmanProfileHealth watchman = null) where TUser : IUser<Guid, Guid, Guid, Guid, Guid, Guid, Guid, Guid>
+        public async Task AddWatchmanToUserAsync<TUser>(TUser user, WatchmanProfileHealth watchman = null) where TUser : IUser<Guid, Guid, Guid, Guid, Guid, Guid, Guid, Guid>
         {
-            AddWatchmanToUser(user.Id, watchman);
+            await AddWatchmanToUserAsync(user.Id, watchman);
         }
 
-        public bool ExistWatchmanProfile(Guid userId)
+        public async Task<bool> ExistWatchmanProfileAsync(Guid userId)
         {
-            var watchman = HealthContext
+            var user = await HealthContext
                 .Users
                 .Include(us => us.Watchman)
-                .FirstOrDefault(us => us.Id.Equals(userId))?
-                .Watchman;
-            return watchman != null;
+                .FirstOrDefaultAsync(us => us.Id.Equals(userId));
+            return user?.Watchman != null;
         }
-        public bool ExistWatchmanProfile<TUser>(TUser user) where TUser : IUser<Guid, Guid, Guid, Guid, Guid, Guid, Guid, Guid>
+        public async Task<bool> ExistWatchmanProfileAsync<TUser>(TUser user) where TUser : IUser<Guid, Guid, Guid, Guid, Guid, Guid, Guid, Guid>
         {
-            return ExistWatchmanProfile(user.Id);
+            return await ExistWatchmanProfileAsync(user.Id);
         }
 
         public void RemoveWatchmanFromUser(Guid userId)
@@ -56,32 +55,17 @@ namespace HealthService.API.Models.Repositories
             RemoveWatchmanFromUser(user.Id);
         }
 
-        public IEnumerable<Patient<Guid>> GetPatients(WatchmanProfileHealth watchman)
+        public async Task<IEnumerable<Patient<Guid>>> GetPatientsAsync(WatchmanProfileHealth watchman)
         {
-            return HealthContext
+            return await HealthContext
                 .WatchmanPatients
                 .Where(pair => pair.WatchmanId.Equals(watchman.Id))
-                .Select(pair => pair.Patient);
+                .Select(pair => pair.Patient)
+                .ToListAsync();
         }
 
-        public async Task CreateAsync(WatchmanProfileHealth entity)
-        {
-            await Context.Set<WatchmanProfileHealth>().AddAsync(entity);
-        }
 
-        public async Task<WatchmanProfileHealth> RetrieveAsync(Guid id)
-        {
-            return await Context.Set<WatchmanProfileHealth>().FindAsync(id);
-        }
-
-        public override WatchmanProfileHealth RetrieveWithAllProperties(Guid id)
-        {
-            return HealthContext
-                .Watchmen
-                .Include(watch => watch.WatchmanPatients)
-                .First(watchm => watchm.Id.Equals(id));
-        }
-        public async Task<WatchmanProfileHealth> RetrieveWithAllPropertiesAsync(Guid id)
+        public async override Task<WatchmanProfileHealth> RetrieveWithAllPropertiesAsync(Guid id)
         {
             return await HealthContext
                 .Watchmen
@@ -89,34 +73,21 @@ namespace HealthService.API.Models.Repositories
                 .FirstAsync(watchm => watchm.Id.Equals(id));
         }
 
-        public async Task<IEnumerable<WatchmanProfileHealth>> RetrieveAll()
-        {
-            return await Context.Set<WatchmanProfileHealth>().ToListAsync();
-        }
 
 
-        public async Task SaveChangesAsync()
+        public async Task<WatchmanProfileHealth> RetrieveByUserIdAsync(Guid userId)
         {
-            await HealthContext.SaveChangesAsync();
-        }
-        public async Task DisposeAsync()
-        {
-            await HealthContext.DisposeAsync();
-        }
-
-        public WatchmanProfileHealth RetrieveByUserId(Guid userId)
-        {
-            return HealthContext
+            var res = await HealthContext
             .Users
             .Include(user => user.Watchman)
-            .First(user => user.Id.Equals(userId))
-            .Watchman as WatchmanProfileHealth;
+            .FirstAsync(user => user.Id.Equals(userId));
+            return res.Watchman as WatchmanProfileHealth;
         }
 
-        public WatchmanProfileHealth RetrieveWithPropertiesByUserId(Guid userId)
+        public async Task<WatchmanProfileHealth> RetrieveWithPropertiesByUserIdAsync(Guid userId)
         {
-            var watchmanId = RetrieveByUserId(userId).Id;
-            return RetrieveWithAllProperties(watchmanId);
+            var watchmanId = await RetrieveByUserIdAsync(userId);
+            return await RetrieveWithAllPropertiesAsync(watchmanId.Id);
         }
     }
 }

@@ -17,38 +17,38 @@ namespace Watchman.Web.Services
         {
             this.client = httpClient;
         }
-        public async Task<string> GetToken(string email, string password)
+        public async Task<string> GetTokenAsync(string email, string password)
         {
             var uri = loginUrl + "/login";
             var json = JsonConvert.SerializeObject(new LoginViewModel() { Email = email, Password = password });
             var content = new StringContent(json, UTF8Encoding.UTF8, "application/json");
             var response = await client.PostAsync(uri, content);
-            var result = await response.Content.ReadAsStringAsync();            
-            
-            return result != null ? JsonConvert.DeserializeObject<TokenModel>(result).Token : String.Empty;
+            var result = await response.Content.ReadAsStringAsync();
+
+            return String.IsNullOrWhiteSpace(result) || result.Equals("No way") ? "Forbidden" : JsonConvert.DeserializeObject<TokenModel>(result).Token;
         }
 
-        public WatchmanUser FindByEmail(string email)
+        public Task<WatchmanUser> FindByEmailAsync(string email)
         {
             throw new NotImplementedException();
         }
-
-        public WatchmanUser FindById(Guid key)
+               
+        public Task<WatchmanUser> FindByIdAsync(Guid key)
         {
             throw new NotImplementedException();
         }        
 
-        public void Register(string email, string password)
+        public Task RegisterAsync(string email, string password)
         {
             throw new NotImplementedException();
         }
-
-        public void Register(PersonalInformation personalInformation)
+               
+        public Task RegisterAsync(PersonalInformation personalInformation)
         {
             throw new NotImplementedException();
         }
-
-        public void Register(IUser user)
+               
+        public Task RegisterAsync(IUser user)
         {
             throw new NotImplementedException();
         }

@@ -1,6 +1,6 @@
 ﻿using Identity.API.Models;
-using Identity.API.Services;
 using Identity.API.Services.JWT;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Threading.Tasks;
+
 using Watchman.BusinessLogic.Models.Data;
 using Watchman.BusinessLogic.Services;
 
@@ -39,14 +41,14 @@ namespace Identity.API.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult Register([FromBody]RegisterViewModel model)
+        public async Task<IActionResult> Register([FromBody]RegisterViewModel model)
         {
             try
             {
                 if (!ModelState.IsValid)
                     throw new ArgumentException("not valid model");
 
-                _loginService.Register(model.Email, model.Password);
+                await _loginService.RegisterAsync(model.Email, model.Password);
 
                 return StatusCode(201, "Logged up");
             }
@@ -59,9 +61,9 @@ namespace Identity.API.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult Login([FromBody]RegisterViewModel model)
+        public async Task<IActionResult> Login([FromBody]RegisterViewModel model)
         {
-            var user = _loginService.FindByEmail(model.Email);
+            var user = await _loginService.FindByEmailAsync(model.Email);
             if (user != null && _loginService.ValidateCredentials(user, model.Password))
             {
                 Claim[] claims = new Claim[]
