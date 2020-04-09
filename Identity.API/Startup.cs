@@ -47,6 +47,7 @@ namespace Identity.API
 
             services.AddTransient<IUserRepository<WatchmanUser>, UserRepository>();
             services.AddTransient<ICustomPasswordHasher, PasswordHasher>();
+            services.AddTransient<IUserManager<WatchmanUser, Guid>, UserManager>();
             services.AddTransient<ILoginService<WatchmanUser, Guid>, LoginService>();
             services.AddTransient<IJwtValidator, JwtValidator>();
             services.AddTransient<IJwtGenerator, JwtGenerator>();

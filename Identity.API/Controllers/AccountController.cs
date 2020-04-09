@@ -20,6 +20,7 @@ namespace Identity.API.Controllers
     public class AccountController : ControllerBase
     {
         private readonly ILoginService<WatchmanUser, Guid> _loginService;
+        private readonly IUserManager<WatchmanUser, Guid> userManager;
         private readonly ILogger<AccountController> _logger;
         private readonly IConfiguration _configuration;
         private readonly IJwtGenerator _jwtGenerator;
@@ -27,12 +28,14 @@ namespace Identity.API.Controllers
 
         public AccountController(
             ILoginService<WatchmanUser, Guid> loginService,
+            IUserManager<WatchmanUser, Guid> userManager,
             ILogger<AccountController> logger,
             IConfiguration configuration,
             IJwtGenerator jwtGenerator,
             IJwtValidator jwtValidator)
         {
             this._loginService = loginService;
+            this.userManager = userManager;
             this._logger = logger;
             this._configuration = configuration;
             this._jwtGenerator = jwtGenerator;
@@ -47,8 +50,16 @@ namespace Identity.API.Controllers
             {
                 if (!ModelState.IsValid)
                     throw new ArgumentException("not valid model");
-
-                await _loginService.RegisterAsync(model.Email, model.Password);
+                PersonalInfo info = new PersonalInfo()
+                {
+                    Email = model.Email,
+                    BirthDay = model.BirthDay,
+                    Phone = model.Phone,
+                    FirstName = model.FirstName,
+                    SecondName = model.SecondName,
+                    LastName = model.LastName
+                };
+                await userManager.RegisterAsync(info, model.Password);
 
                 return StatusCode(201, "Logged up");
             }
@@ -62,9 +73,8 @@ namespace Identity.API.Controllers
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody]RegisterViewModel model)
-        {
-            var user = await _loginService.FindByEmailAsync(model.Email);
-            if (user != null && _loginService.ValidateCredentials(user, model.Password))
+        {            
+            if (await _loginService.ValidateCredentialsAsync(model.Email, model.Password))
             {
                 Claim[] claims = new Claim[]
                 {
