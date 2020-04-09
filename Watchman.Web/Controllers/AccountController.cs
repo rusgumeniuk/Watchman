@@ -49,7 +49,7 @@ namespace Watchman.Web.Controllers
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPricipal);
 
-                return View("Index");
+                return RedirectToAction("Index", "Home");
             }            
         }
 
@@ -73,7 +73,7 @@ namespace Watchman.Web.Controllers
                 ModelState.AddModelError("", ex.Message);
                 return View(viewModel);
             }
-            return View("Index");
+            return RedirectToAction("Index", "Home");
         }
 
         public async Task<IActionResult> Logout()
