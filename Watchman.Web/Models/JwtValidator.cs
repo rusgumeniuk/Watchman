@@ -68,5 +68,24 @@ namespace Watchman.Web.Models
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])) // The same key as the one that generate the token
             };
         }
+
+        public ClaimsPrincipal GetClaimsPrincipal(string authToken)
+        {
+            try
+            {
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var validationParameters = GetValidationParameters();
+
+                SecurityToken validatedToken;
+                IPrincipal principal = tokenHandler.ValidateToken(authToken, validationParameters, out validatedToken);
+                                
+                var res = new ClaimsPrincipal(principal);
+                return res;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
     }
 }

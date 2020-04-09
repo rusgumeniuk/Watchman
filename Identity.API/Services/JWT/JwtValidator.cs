@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
 
@@ -77,6 +78,11 @@ namespace Identity.API.Services.JWT
         }
 
         public string GetClaimValueFromToken(string authToken, string claimType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ClaimsPrincipal GetClaimsPrincipal(string authToken)
         {
             throw new NotImplementedException();
         }

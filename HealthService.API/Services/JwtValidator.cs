@@ -68,5 +68,10 @@ namespace HealthService.API.Services
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])) // The same key as the one that generate the token
             };
         }
+
+        public ClaimsPrincipal GetClaimsPrincipal(string authToken)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

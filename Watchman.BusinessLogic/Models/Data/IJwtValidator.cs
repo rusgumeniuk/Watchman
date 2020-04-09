@@ -1,4 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace Watchman.BusinessLogic.Models.Data
 {
@@ -7,5 +8,6 @@ namespace Watchman.BusinessLogic.Models.Data
         bool ValidateToken(string token);
         TokenValidationParameters GetValidationParameters();
         string GetClaimValueFromToken(string authToken, string claimType);
+        ClaimsPrincipal GetClaimsPrincipal(string authToken);
     }
 }
