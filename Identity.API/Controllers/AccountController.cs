@@ -78,7 +78,9 @@ namespace Identity.API.Controllers
             {
                 Claim[] claims = new Claim[]
                 {
-                    new Claim(JwtRegisteredClaimNames.Email, model.Email)
+                    new Claim(JwtRegisteredClaimNames.Email, model.Email),
+                    new Claim(ClaimsIdentity.DefaultNameClaimType, model.Email),
+                    new Claim(ClaimsIdentity.DefaultRoleClaimType, "User")
                 };
                 var tokenString = _jwtGenerator.GenerateJSONWebToken(claims);
                 return Ok(new { token = tokenString });
