@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -5,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Net.Http;
-
+using Watchman.BusinessLogic.Models.Data;
 using Watchman.BusinessLogic.Services;
 using Watchman.Web.Models;
 using Watchman.Web.Services;
@@ -22,8 +24,16 @@ namespace Watchman.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+             .AddCookie(options =>
+             {
+                 options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
+                 options.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
+             });
+
             services.AddControllersWithViews();
             services.AddTransient<HttpClient>();
+            services.AddTransient<IJwtValidator, JwtValidator>();
             services.AddTransient<IUserManager<WatchmanUser, Guid>, UserManager>();
             services.AddTransient<ITokenService, TokenService>();
         }

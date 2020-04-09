@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Watchman.BusinessLogic.Models.Data;
 using Watchman.BusinessLogic.Models.Users;
 using Watchman.BusinessLogic.Services;
 using Watchman.Web.Models;
@@ -15,11 +19,13 @@ namespace Watchman.Web.Controllers
     {
         private readonly ITokenService tokenService;
         private readonly IUserManager<WatchmanUser, Guid> userManager;
+        private readonly IJwtValidator jwtValidator;
         
-        public AccountController(ITokenService tokenService, IUserManager<WatchmanUser, Guid> userManager)
+        public AccountController(ITokenService tokenService, IUserManager<WatchmanUser, Guid> userManager, IJwtValidator jwtValidator)
         {
             this.tokenService = tokenService;
-            this.userManager = userManager; 
+            this.userManager = userManager;
+            this.jwtValidator = jwtValidator;
         }
 
         [HttpGet]
@@ -38,7 +44,11 @@ namespace Watchman.Web.Controllers
             }
             else
             {
-                ViewData["access_token"] = token;
+                ViewData["access_token"] = token;                
+                var claimsPricipal = jwtValidator.GetClaimsPrincipal(token);
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPricipal);
+
                 return View("Index");
             }            
         }
@@ -64,6 +74,12 @@ namespace Watchman.Web.Controllers
                 return View(viewModel);
             }
             return View("Index");
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login", "Account");
         }
     }
 }
