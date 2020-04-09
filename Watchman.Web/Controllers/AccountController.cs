@@ -12,11 +12,11 @@ namespace Watchman.Web.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly ILoginService<WatchmanUser, Guid> loginService;
+        private readonly ITokenService tokenService;
         
-        public AccountController(ILoginService<WatchmanUser, Guid> loginService)
+        public AccountController(ITokenService tokenService)
         {
-            this.loginService = loginService;
+            this.tokenService = tokenService;
         }
 
         [HttpGet]
@@ -27,10 +27,17 @@ namespace Watchman.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel viewModel)
         {
-            var token = await loginService.GetTokenAsync(viewModel.Email, viewModel.Password);
-
-            ViewData["access_token"] = token;
-            return View("Index");
+            var token = await tokenService.GetTokenAsync(viewModel.Email, viewModel.Password);
+            if (String.IsNullOrWhiteSpace(token))
+            {
+                ModelState.AddModelError("", "Wrong credentials");
+                return View(viewModel);
+            }
+            else
+            {
+                ViewData["access_token"] = token;
+                return View("Index");
+            }            
         }
 
 

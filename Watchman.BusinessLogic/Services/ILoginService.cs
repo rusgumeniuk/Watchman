@@ -19,7 +19,5 @@ namespace Watchman.BusinessLogic.Services
         Task RegisterAsync(string email, string password);
         Task RegisterAsync(PersonalInformation personalInformation);
         Task RegisterAsync(IUser user);
-
-        Task<string> GetTokenAsync(string email, string password);
     }
 }

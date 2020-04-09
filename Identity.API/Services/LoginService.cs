@@ -59,10 +59,5 @@ namespace Identity.API.Services
         {
             return !String.IsNullOrWhiteSpace(email) && !String.IsNullOrWhiteSpace(password);
         }
-
-        public Task<string> GetTokenAsync(string email, string password)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
