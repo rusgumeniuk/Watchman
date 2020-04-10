@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Net.Http;
 using Watchman.BusinessLogic.Models.Data;
+using Watchman.BusinessLogic.Models.Users;
 using Watchman.BusinessLogic.Services;
 using Watchman.Web.Models;
 using Watchman.Web.Services;
@@ -33,7 +34,9 @@ namespace Watchman.Web
 
             services.AddControllersWithViews();
             services.AddTransient<HttpClient>();
-            services.AddTransient<IHttpClient, WatchmanHttpClient>();            
+            services.AddTransient<PersonalInformation<Guid>, PersonalInfo>();
+            services.AddTransient<IHttpClient, WatchmanHttpClient>();
+            services.AddTransient<IWatchmanPatientService<Guid>, WatchmanPatientService>();
             services.AddTransient<IJwtValidator, JwtValidator>();
             services.AddTransient<IUserManager<WatchmanUser, Guid>, UserManager>();
             services.AddTransient<ITokenService, TokenService>();
