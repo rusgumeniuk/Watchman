@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 
 using Watchman.BusinessLogic.Services;
-using Watchman.Web.Models;
+using Watchman.Web.ViewModels;
 
 namespace Watchman.Web.Services
 {

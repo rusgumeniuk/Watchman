@@ -1,7 +1,7 @@
 using Identity.API.Data;
+using Identity.API.Extensions;
+using Identity.API.Infrastructure.Repositories;
 using Identity.API.Models;
-using Identity.API.Models.Extensions;
-using Identity.API.Repositories;
 using Identity.API.Services;
 using Identity.API.Services.JWT;
 using Identity.API.Services.PasswordHashing;

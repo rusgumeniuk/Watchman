@@ -1,4 +1,4 @@
-﻿using HealthService.API.Models.Repositories;
+﻿using HealthService.API.Models.Infrastructure.Repositories;
 using HealthService.API.Models.Users;
 
 using System;

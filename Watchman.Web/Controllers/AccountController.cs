@@ -1,17 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 
-using Newtonsoft.Json;
 using System;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
+
 using Watchman.BusinessLogic.Models.Data;
 using Watchman.BusinessLogic.Models.Users;
 using Watchman.BusinessLogic.Services;
 using Watchman.Web.Models;
+using Watchman.Web.ViewModels;
 
 namespace Watchman.Web.Controllers
 {
@@ -20,7 +18,7 @@ namespace Watchman.Web.Controllers
         private readonly ITokenService tokenService;
         private readonly IUserManager<WatchmanUser, Guid> userManager;
         private readonly IJwtValidator jwtValidator;
-        
+
         public AccountController(ITokenService tokenService, IUserManager<WatchmanUser, Guid> userManager, IJwtValidator jwtValidator)
         {
             this.tokenService = tokenService;
@@ -44,13 +42,13 @@ namespace Watchman.Web.Controllers
             }
             else
             {
-                HttpContext.Response.Cookies.Append("access_token", token);                
+                HttpContext.Response.Cookies.Append("access_token", token);
                 var claimsPricipal = jwtValidator.GetClaimsPrincipal(token);
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPricipal);
 
                 return RedirectToAction("Index", "Home");
-            }            
+            }
         }
 
         [HttpGet]
@@ -68,7 +66,7 @@ namespace Watchman.Web.Controllers
                 PersonalInformation info = new PersonalInfo(viewModel);
                 await userManager.RegisterAsync(info, viewModel.Password);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
                 return View(viewModel);

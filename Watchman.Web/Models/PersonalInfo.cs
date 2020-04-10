@@ -1,4 +1,5 @@
 ﻿using Watchman.BusinessLogic.Models.Users;
+using Watchman.Web.ViewModels;
 
 namespace Watchman.Web.Models
 {

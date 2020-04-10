@@ -1,4 +1,5 @@
-﻿using HealthService.API.Models;
+﻿using HealthService.API.Attributes;
+using HealthService.API.ViewModels;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -1,5 +1,6 @@
 ﻿using Identity.API.Models;
 using Identity.API.Services.JWT;
+using Identity.API.ViewModels;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -73,7 +74,7 @@ namespace Identity.API.Controllers
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody]RegisterViewModel model)
-        {            
+        {
             if (await _loginService.ValidateCredentialsAsync(model.Email, model.Password))
             {
                 Claim[] claims = new Claim[]

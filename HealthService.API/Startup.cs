@@ -1,12 +1,10 @@
-using HealthService.API.Models;
+using HealthService.API.Attributes;
+using HealthService.API.Data;
+using HealthService.API.Extensions;
 using HealthService.API.Models.Analysis;
-using HealthService.API.Models.Data;
-using HealthService.API.Models.Extensions;
-using HealthService.API.Models.Repositories;
+using HealthService.API.Models.Infrastructure.Repositories;
 using HealthService.API.Models.Users;
 using HealthService.API.Services;
-
-using HealthServices.API.Models.Extensions;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;

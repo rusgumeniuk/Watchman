@@ -1,4 +1,4 @@
-﻿using HealthService.API.Models.Extensions;
+﻿using HealthService.API.Extensions;
 using HealthService.API.Services;
 
 using Microsoft.AspNetCore.Authorization;
@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 
 namespace HealthService.API.Controllers
 {
@@ -36,8 +35,8 @@ namespace HealthService.API.Controllers
         public IActionResult Email()
         {
             var email = this.GetUserEmailFromHttpContext();
-            var token = this.GetBearerTokenFromRequest();
-            var res = new JwtValidator(_configuration).GetClaimValueFromToken(token, JwtRegisteredClaimNames.Email);            
+            //var token = this.GetBearerTokenFromRequest();
+            //var res = new JwtValidator(_configuration).GetClaimValueFromToken(token, JwtRegisteredClaimNames.Email);
             return Ok(email);
         }
     }
