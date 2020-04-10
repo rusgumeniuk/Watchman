@@ -44,7 +44,7 @@ namespace Watchman.Web.Controllers
             }
             else
             {
-                ViewData["access_token"] = token;                
+                HttpContext.Response.Cookies.Append("access_token", token);                
                 var claimsPricipal = jwtValidator.GetClaimsPrincipal(token);
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPricipal);
