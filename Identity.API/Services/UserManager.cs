@@ -36,11 +36,11 @@ namespace Identity.API.Services
                 throw new ArgumentException($"User with email '{user.PersonalInformation.Email}' already exist");
         }
 
-        public async Task<WatchmanUser> FindByEmailAsync(string email)
+        public async Task<WatchmanUser> FindByEmailAsync(string email, string token = null)
         {
             return await UserRepository.GetByEmailAsync(email);
         }
-        public async Task<WatchmanUser> FindByIdAsync(Guid key)
+        public async Task<WatchmanUser> FindByIdAsync(Guid key, string token = null)
         {
             return await UserRepository.RetrieveAsync(key);
         }
