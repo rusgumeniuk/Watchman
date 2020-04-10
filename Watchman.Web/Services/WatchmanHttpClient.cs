@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 
+using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,9 +17,16 @@ namespace Watchman.Web.Services
             this.client = httpClient;
             this.baseUrl = baseURL ?? baseUrl;
         }
-        public async Task<string> GetResponseResult(HttpMethod httpMethod, string url, object contentToSerialize, string newUrl = null)
+
+        public async Task<T> GetResponseResultOrDefault<T>(HttpResponseMessage responseMessage)
         {
-            var response = await SendRequest(httpMethod, url, contentToSerialize, newUrl);
+            var result = await GetResponseResult(responseMessage);
+            return responseMessage.IsSuccessStatusCode && !String.IsNullOrWhiteSpace(result) ? JsonConvert.DeserializeObject<T>(result) : default(T);
+        }
+
+        public async Task<string> GetResponseResult(HttpMethod httpMethod, string url, object contentToSerialize, string newUrl = null, string token = null)
+        {
+            var response = await SendRequest(httpMethod, url, contentToSerialize, newUrl, token);
             return await GetResponseResult(response);
         }
         public async Task<string> GetResponseResult(HttpResponseMessage response)
@@ -26,7 +34,7 @@ namespace Watchman.Web.Services
             return await response.Content.ReadAsStringAsync();
         }
 
-        public async Task<HttpResponseMessage> SendRequest(HttpMethod httpMethod, string url, object contentToSerialize, string newUrl = null)
+        public async Task<HttpResponseMessage> SendRequest(HttpMethod httpMethod, string url, object contentToSerialize, string newUrl = null, string token = null)
         {
             var uri = newUrl ?? $"{baseUrl}/{url}";
             var jsonObject = JsonConvert.SerializeObject(contentToSerialize);
@@ -36,6 +44,8 @@ namespace Watchman.Web.Services
             {
                 Content = content
             };
+            if (token != null)
+                message.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             return await client.SendAsync(message);
         }
     }
