@@ -89,6 +89,17 @@ namespace Identity.API.Controllers
         }
 
         [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> GetUserByEmail([FromBody]EmailViewModel model)
+        {
+            var user = await userManager.FindByEmailAsync(model.Email);
+            if (user != null)
+                return Ok(user);
+            else
+                return BadRequest();
+        }
+
+        [HttpPost]
         [AllowAnonymous]
         public IActionResult Token([FromBody] TokenViewModel model)
         {
