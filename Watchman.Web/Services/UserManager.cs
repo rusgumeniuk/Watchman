@@ -1,4 +1,5 @@
 ﻿
+using Newtonsoft.Json;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -19,12 +20,21 @@ namespace Watchman.Web.Services
             this.client = httpClient;
         }
 
-        public Task<WatchmanUser> FindByEmailAsync(string email)
+        public async Task<WatchmanUser> FindByEmailAsync(string email, string token = null)
         {
-            throw new NotImplementedException();
+            var uri = $"{accountUrl}/GetUserByEmail";
+            var obj = new { Email = email };
+            var response = await client.SendRequest(HttpMethod.Post, null, obj, uri, token);
+            var result = await client.GetResponseResult(response);
+            if (response.IsSuccessStatusCode)
+            {
+                var dto = JsonConvert.DeserializeObject<UserDTO>(result);
+                return new WatchmanUser() { Id = dto.Id, PersonalInformation = dto.PersonalInformation };
+            }
+            return null;
         }
 
-        public Task<WatchmanUser> FindByIdAsync(Guid key)
+        public Task<WatchmanUser> FindByIdAsync(Guid key, string token = null)
         {
             throw new NotImplementedException();
         }
@@ -55,4 +65,10 @@ namespace Watchman.Web.Services
             throw new NotImplementedException();
         }
     }
+}
+
+class UserDTO
+{
+    public Guid Id { get; set; }
+    public PersonalInfo PersonalInformation { get; set; }
 }
