@@ -1,5 +1,4 @@
 ﻿using HealthService.API.Models;
-using HealthService.API.Services;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +7,8 @@ using Newtonsoft.Json;
 
 using System;
 using System.Threading.Tasks;
+
+using Watchman.BusinessLogic.Services;
 
 namespace HealthService.API.Controllers
 {

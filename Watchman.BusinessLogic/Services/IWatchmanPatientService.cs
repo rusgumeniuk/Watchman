@@ -6,7 +6,7 @@ using Watchman.BusinessLogic.Models.Analysis;
 using Watchman.BusinessLogic.Models.Signs;
 using Watchman.BusinessLogic.Models.Users;
 
-namespace HealthService.API.Services
+namespace Watchman.BusinessLogic.Services
 {
     public interface IWatchmanPatientService<TKey>
         where TKey : IEquatable<TKey>

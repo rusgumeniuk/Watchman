@@ -17,8 +17,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using System;
+
 using Watchman.BusinessLogic.Models.Analysis;
 using Watchman.BusinessLogic.Models.Data;
+using Watchman.BusinessLogic.Services;
 
 namespace HealthService.API
 {
@@ -46,7 +48,7 @@ namespace HealthService.API
             string usersConnection = Configuration.GetConnectionString("UserDbConnection");
             services.AddDbContext<IdentityDbContext>(options => options.UseSqlServer(usersConnection));
 
-            services.AddScoped<ValidationModelStateActionFilterAttribute>();            
+            services.AddScoped<ValidationModelStateActionFilterAttribute>();
 
             services.AddTransient<IAnalysisResult, AnalysisResult>();
             services.AddTransient<IAnalysisStrategy, MinMaxValueAnalyseStrategy>();

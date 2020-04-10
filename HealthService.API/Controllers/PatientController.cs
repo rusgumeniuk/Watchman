@@ -1,5 +1,4 @@
 ﻿using HealthService.API.Models;
-using HealthService.API.Services;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +10,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using Watchman.BusinessLogic.Models.Signs;
+using Watchman.BusinessLogic.Services;
 
 namespace HealthService.API.Controllers
 {

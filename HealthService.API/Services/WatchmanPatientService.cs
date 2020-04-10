@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Watchman.BusinessLogic.Models.Analysis;
 using Watchman.BusinessLogic.Models.Signs;
 using Watchman.BusinessLogic.Models.Users;
+using Watchman.BusinessLogic.Services;
 
 namespace HealthService.API.Services
 {
