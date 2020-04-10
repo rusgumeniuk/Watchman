@@ -33,6 +33,7 @@ namespace Watchman.Web
 
             services.AddControllersWithViews();
             services.AddTransient<HttpClient>();
+            services.AddTransient<IHttpClient, WatchmanHttpClient>();            
             services.AddTransient<IJwtValidator, JwtValidator>();
             services.AddTransient<IUserManager<WatchmanUser, Guid>, UserManager>();
             services.AddTransient<ITokenService, TokenService>();
