@@ -4,11 +4,26 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Main page</h1>
 
-<h2>
-    @ViewData["Result"]
-</h2>
-<h2>
-    @ViewData["Code"]
-</h2>
+@{
+    var token = Context.Request.Cookies["access_token"];
+}
+@if (token != null)
+{
+    <h2>Length of your access token: </h2>
+    <h3>@token.ToString().Length</h3>
+}
+@if (User.IsInRole("Admin"))
+{
+    <h2>Cool, you are an admin</h2>
+}
+else if (User.Identity.IsAuthenticated)
+{
+    <h2>Hello there, user</h2>
+}
+else
+{
+    <h2>Nihil verum est licet omnia, anonymus</h2>
+}
+
