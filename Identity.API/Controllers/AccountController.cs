@@ -10,10 +10,12 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
 using Watchman.BusinessLogic.Models.Data;
+using Watchman.BusinessLogic.Models.Users;
 using Watchman.BusinessLogic.Services;
 
 namespace Identity.API.Controllers
@@ -22,6 +24,7 @@ namespace Identity.API.Controllers
     {
         private readonly ILoginService<WatchmanUser, Guid> _loginService;
         private readonly IUserManager<WatchmanUser, Guid> userManager;
+        private readonly IRoleService<Guid> roleService;
         private readonly ILogger<AccountController> _logger;
         private readonly IConfiguration _configuration;
         private readonly IJwtGenerator _jwtGenerator;
@@ -30,6 +33,7 @@ namespace Identity.API.Controllers
         public AccountController(
             ILoginService<WatchmanUser, Guid> loginService,
             IUserManager<WatchmanUser, Guid> userManager,
+            IRoleService<Guid> roleService,
             ILogger<AccountController> logger,
             IConfiguration configuration,
             IJwtGenerator jwtGenerator,
@@ -37,6 +41,7 @@ namespace Identity.API.Controllers
         {
             this._loginService = loginService;
             this.userManager = userManager;
+            this.roleService = roleService;
             this._logger = logger;
             this._configuration = configuration;
             this._jwtGenerator = jwtGenerator;
@@ -58,7 +63,8 @@ namespace Identity.API.Controllers
                     Phone = model.Phone,
                     FirstName = model.FirstName,
                     SecondName = model.SecondName,
-                    LastName = model.LastName
+                    LastName = model.LastName,
+                    Roles = model.Roles ?? $"{UserRoles.User}"
                 };
                 await userManager.RegisterAsync(info, model.Password);
 
@@ -73,19 +79,30 @@ namespace Identity.API.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody]RegisterViewModel model)
+        public async Task<IActionResult> Login([FromBody]LoginViewModel model)
         {
             if (await _loginService.ValidateCredentialsAsync(model.Email, model.Password))
             {
-                Claim[] claims = new Claim[]
+                var roles = await roleService.GetRoleByUser(model.Email);
+                IList<Claim> claims = new List<Claim>
+                    {
+                        new Claim(JwtRegisteredClaimNames.Email, model.Email),
+                        new Claim(ClaimsIdentity.DefaultNameClaimType, model.Email)
+                    };
+                if (roles.Contains(','))
                 {
-                    new Claim(JwtRegisteredClaimNames.Email, model.Email),
-                    new Claim(ClaimsIdentity.DefaultNameClaimType, model.Email),
-                    new Claim(ClaimsIdentity.DefaultRoleClaimType, "User")
-                };
-                var tokenString = _jwtGenerator.GenerateJSONWebToken(claims);
+                    foreach (var role in roles.Split(','))
+                    {
+                        claims.Add(new Claim(ClaimsIdentity.DefaultRoleClaimType, role));
+                    }
+                }
+                else
+                    claims.Add(new Claim(ClaimsIdentity.DefaultRoleClaimType, roles));
+
+                var tokenString = _jwtGenerator.GenerateJSONWebToken(claims.ToArray());
                 return Ok(new { token = tokenString });
             }
+
             return BadRequest("No way");
         }
 

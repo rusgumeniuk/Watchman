@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 
 using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 using Watchman.BusinessLogic.Models.Data;
@@ -45,7 +46,8 @@ namespace Watchman.Web.Controllers
                 HttpContext.Response.Cookies.Append("access_token", token);
                 var claimsPricipal = jwtValidator.GetClaimsPrincipal(token);
 
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPricipal);
+                ClaimsIdentity id = new ClaimsIdentity(claimsPricipal.Claims, "ApplicationCookie", ClaimTypes.Email, ClaimsIdentity.DefaultRoleClaimType);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
 
                 return RedirectToAction("Index", "Home");
             }
@@ -77,6 +79,7 @@ namespace Watchman.Web.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            HttpContext.Response.Cookies.Delete("access_token");
             return RedirectToAction("Login", "Account");
         }
     }
