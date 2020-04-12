@@ -14,5 +14,13 @@ namespace Watchman.BusinessLogic.Models.Users
         public string Phone { get; set; }
         public string Email { get; set; }
         public string HashedPassword { get; set; }
+        public string Roles { get; set; } = $"{UserRoles.User}";
+    }
+
+    public enum UserRoles : byte
+    {
+        Anonymus,
+        User,
+        Admin
     }
 }

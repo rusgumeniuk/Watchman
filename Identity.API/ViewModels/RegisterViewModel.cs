@@ -37,5 +37,7 @@ namespace Identity.API.ViewModels
         [DataType(DataType.Password)]
         [MinLength(5, ErrorMessage = "Password should have length of 5+ chars")]
         public string Password { get; set; }
+                
+        public string Roles { get; set; }
     }
 }
