@@ -14,6 +14,6 @@ namespace Watchman.BusinessLogic.Services
         Task<TUser> FindByIdAsync(TKey key, string token = null);
 
         Task RegisterAsync(PersonalInformation personalInformation, string clearPassword);
-        Task RegisterAsync(IUser user, string clearPassword);
+        Task RegisterAsync(User<TKey> user, string clearPassword);
     }
 }

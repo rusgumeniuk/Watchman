@@ -45,10 +45,10 @@ namespace Identity.API
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<WatchmanDbContext>(options => options.UseSqlServer(connection));
 
-            services.AddTransient<IUserRepository<WatchmanUser>, UserRepository>();
+            services.AddTransient<IUserRepository<IdentityUser>, UserRepository>();
             services.AddTransient<ICustomPasswordHasher, PasswordHasher>();
-            services.AddTransient<IUserManager<WatchmanUser, Guid>, UserManager>();
-            services.AddTransient<ILoginService<WatchmanUser, Guid>, LoginService>();
+            services.AddTransient<IUserManager<IdentityUser, Guid>, UserManager>();
+            services.AddTransient<ILoginService<IdentityUser, Guid>, LoginService>();
             services.AddTransient<IRoleService<Guid>, RoleService>();
             services.AddTransient<IJwtValidator, JwtValidator>();
             services.AddTransient<IJwtGenerator, JwtGenerator>();

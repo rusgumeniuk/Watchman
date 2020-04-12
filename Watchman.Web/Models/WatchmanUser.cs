@@ -4,11 +4,7 @@ using Watchman.BusinessLogic.Models.Users;
 
 namespace Watchman.Web.Models
 {
-    public class WatchmanUser : IUser
+    public class WatchmanUser : User<Guid>
     {
-        public Patient<Guid> Patient { get; set; }
-        public WatchmanProfile<Guid> Watchman { get; set; }
-        public PersonalInformation<Guid> PersonalInformation { get; set; }
-        public Guid Id { get; set; }
     }
 }

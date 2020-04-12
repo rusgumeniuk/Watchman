@@ -22,8 +22,8 @@ namespace Identity.API.Controllers
 {
     public class AccountController : ControllerBase
     {
-        private readonly ILoginService<WatchmanUser, Guid> _loginService;
-        private readonly IUserManager<WatchmanUser, Guid> userManager;
+        private readonly ILoginService<IdentityUser, Guid> _loginService;
+        private readonly IUserManager<IdentityUser, Guid> userManager;
         private readonly IRoleService<Guid> roleService;
         private readonly ILogger<AccountController> _logger;
         private readonly IConfiguration _configuration;
@@ -31,8 +31,8 @@ namespace Identity.API.Controllers
         private readonly IJwtValidator _jwtValidator;
 
         public AccountController(
-            ILoginService<WatchmanUser, Guid> loginService,
-            IUserManager<WatchmanUser, Guid> userManager,
+            ILoginService<IdentityUser, Guid> loginService,
+            IUserManager<IdentityUser, Guid> userManager,
             IRoleService<Guid> roleService,
             ILogger<AccountController> logger,
             IConfiguration configuration,

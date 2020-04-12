@@ -12,7 +12,7 @@ namespace HealthService.API.Data
 {
     public class HealthDbContext : DbContext
     {
-        public DbSet<User> Users { get; set; }
+        public DbSet<HealthUser> Users { get; set; }
         public DbSet<PatientProfile> Patients { get; set; }
         public DbSet<WatchmanProfileHealth> Watchmen { get; set; }
         public DbSet<WatchmanPatientConnection> WatchmanPatients { get; set; }

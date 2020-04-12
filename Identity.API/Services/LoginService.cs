@@ -10,12 +10,12 @@ using Watchman.BusinessLogic.Services;
 
 namespace Identity.API.Services
 {
-    public class LoginService : ILoginService<WatchmanUser, Guid>
+    public class LoginService : ILoginService<IdentityUser, Guid>
     {        
         private readonly ICustomPasswordHasher hasher;
-        private readonly IUserManager<WatchmanUser, Guid> userManager;
+        private readonly IUserManager<IdentityUser, Guid> userManager;
 
-        public LoginService(ICustomPasswordHasher hasher, IUserManager<WatchmanUser, Guid> userManager)
+        public LoginService(ICustomPasswordHasher hasher, IUserManager<IdentityUser, Guid> userManager)
         {
             this.hasher = hasher;
             this.userManager = userManager;
@@ -26,7 +26,7 @@ namespace Identity.API.Services
             var user = await userManager.FindByEmailAsync(email);
             return user != null && hasher.Verify(user.PersonalInformation?.HashedPassword, password);
         }
-        public bool ValidateCredentials(WatchmanUser user, string password)
+        public bool ValidateCredentials(IdentityUser user, string password)
         {
             return hasher.Verify(user?.PersonalInformation?.HashedPassword, password);
         }

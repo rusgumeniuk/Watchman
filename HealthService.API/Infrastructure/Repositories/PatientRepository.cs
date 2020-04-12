@@ -52,7 +52,7 @@ namespace HealthService.API.Models.Infrastructure.Repositories
             var user = await HealthContext.Users.FindAsync(userId);
             user.Patient = patient ?? new PatientProfile();
         }
-        public async Task AddPatientToUserAsync<TUser>(TUser user, PatientProfile patient = null) where TUser : IUser<Guid, Guid, Guid, Guid, Guid, Guid, Guid, Guid>
+        public async Task AddPatientToUserAsync<TUser>(TUser user, PatientProfile patient = null) where TUser : User<Guid, Guid, Guid, Guid, Guid, Guid, Guid, Guid>
         {
             await AddPatientToUserAsync(user.Id, patient);
         }
@@ -66,7 +66,7 @@ namespace HealthService.API.Models.Infrastructure.Repositories
 
             return user?.Patient != null;
         }
-        public async Task<bool> ExistPatientProfileAsync<TUser>(TUser user) where TUser : IUser<Guid, Guid, Guid, Guid, Guid, Guid, Guid, Guid>
+        public async Task<bool> ExistPatientProfileAsync<TUser>(TUser user) where TUser : User<Guid, Guid, Guid, Guid, Guid, Guid, Guid, Guid>
         {
             return await ExistPatientProfileAsync(user.Id);
         }
@@ -80,7 +80,7 @@ namespace HealthService.API.Models.Infrastructure.Repositories
             if (user != null && user.Patient != null)
                 user.Patient = null;
         }
-        public void RemovePatientFromUser<TUser>(TUser user) where TUser : IUser<Guid, Guid, Guid, Guid, Guid, Guid, Guid, Guid>
+        public void RemovePatientFromUser<TUser>(TUser user) where TUser : User<Guid, Guid, Guid, Guid, Guid, Guid, Guid, Guid>
         {
             RemovePatientFromUser(user.Id);
         }

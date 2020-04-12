@@ -17,14 +17,14 @@ namespace Watchman.BusinessLogic.Models.Data
 
         Task<bool> ExistWatchmanProfileAsync(TKey userId);
         Task<bool> ExistWatchmanProfileAsync<TUser>(TUser user)
-            where TUser : IUser<TKey, TKey, TKey, TKey, TKey, TKey, TKey, TKey>;
+            where TUser : User<TKey, TKey, TKey, TKey, TKey, TKey, TKey, TKey>;
 
         Task AddWatchmanToUserAsync(TKey userId, TWatchman watchman = null);
         Task AddWatchmanToUserAsync<TUser>(TUser user, TWatchman watchman = null)
-            where TUser : IUser<TKey, TKey, TKey, TKey, TKey, TKey, TKey, TKey>;
+            where TUser : User<TKey, TKey, TKey, TKey, TKey, TKey, TKey, TKey>;
 
         void RemoveWatchmanFromUser(TKey userId);
         void RemoveWatchmanFromUser<TUser>(TUser user)
-            where TUser : IUser<TKey, TKey, TKey, TKey, TKey, TKey, TKey, TKey>;
+            where TUser : User<TKey, TKey, TKey, TKey, TKey, TKey, TKey, TKey>;
     }
 }

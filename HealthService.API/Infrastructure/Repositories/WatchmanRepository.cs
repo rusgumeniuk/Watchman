@@ -23,7 +23,7 @@ namespace HealthService.API.Models.Infrastructure.Repositories
             var user = await HealthContext.Users.FindAsync(userId);
             user.Watchman = watchman ?? new WatchmanProfileHealth();
         }
-        public async Task AddWatchmanToUserAsync<TUser>(TUser user, WatchmanProfileHealth watchman = null) where TUser : IUser<Guid, Guid, Guid, Guid, Guid, Guid, Guid, Guid>
+        public async Task AddWatchmanToUserAsync<TUser>(TUser user, WatchmanProfileHealth watchman = null) where TUser : User<Guid, Guid, Guid, Guid, Guid, Guid, Guid, Guid>
         {
             await AddWatchmanToUserAsync(user.Id, watchman);
         }
@@ -36,7 +36,7 @@ namespace HealthService.API.Models.Infrastructure.Repositories
                 .FirstOrDefaultAsync(us => us.Id.Equals(userId));
             return user?.Watchman != null;
         }
-        public async Task<bool> ExistWatchmanProfileAsync<TUser>(TUser user) where TUser : IUser<Guid, Guid, Guid, Guid, Guid, Guid, Guid, Guid>
+        public async Task<bool> ExistWatchmanProfileAsync<TUser>(TUser user) where TUser : User<Guid, Guid, Guid, Guid, Guid, Guid, Guid, Guid>
         {
             return await ExistWatchmanProfileAsync(user.Id);
         }
@@ -50,7 +50,7 @@ namespace HealthService.API.Models.Infrastructure.Repositories
             if (user != null && user.Watchman != null)
                 user.Watchman = null;
         }
-        public void RemoveWatchmanFromUser<TUser>(TUser user) where TUser : IUser<Guid, Guid, Guid, Guid, Guid, Guid, Guid, Guid>
+        public void RemoveWatchmanFromUser<TUser>(TUser user) where TUser : User<Guid, Guid, Guid, Guid, Guid, Guid, Guid, Guid>
         {
             RemoveWatchmanFromUser(user.Id);
         }

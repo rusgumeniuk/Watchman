@@ -10,9 +10,9 @@ namespace Identity.API.Services
 {
     public class RoleService : IRoleService<Guid>
     {
-        private readonly IUserRepository<WatchmanUser> userRepository;
+        private readonly IUserRepository<IdentityUser> userRepository;
 
-        public RoleService(IUserRepository<WatchmanUser> userRepository)
+        public RoleService(IUserRepository<IdentityUser> userRepository)
         {
             this.userRepository = userRepository;
         }

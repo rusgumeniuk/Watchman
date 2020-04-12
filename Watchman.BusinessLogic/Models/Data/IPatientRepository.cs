@@ -24,14 +24,14 @@ namespace Watchman.BusinessLogic.Models.Data
 
         Task<bool> ExistPatientProfileAsync(TKey userId);
         Task<bool> ExistPatientProfileAsync<TUser>(TUser user)
-            where TUser : IUser<TKey, TKey, TKey, TKey, TKey, TKey, TKey, TKey>;
+            where TUser : User<TKey, TKey, TKey, TKey, TKey, TKey, TKey, TKey>;
 
         Task AddPatientToUserAsync(TKey userId, TPatient patient = null);
         Task AddPatientToUserAsync<TUser>(TUser user, TPatient patient = null)
-            where TUser : IUser<TKey, TKey, TKey, TKey, TKey, TKey, TKey, TKey>;
+            where TUser : User<TKey, TKey, TKey, TKey, TKey, TKey, TKey, TKey>;
 
         void RemovePatientFromUser(TKey userId);
         void RemovePatientFromUser<TUser>(TUser user)
-            where TUser : IUser<TKey, TKey, TKey, TKey, TKey, TKey, TKey, TKey>;
+            where TUser : User<TKey, TKey, TKey, TKey, TKey, TKey, TKey, TKey>;
     }
 }

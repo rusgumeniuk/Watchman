@@ -60,7 +60,7 @@ namespace Watchman.Web.Services
             }
         }
 
-        public Task RegisterAsync(IUser user, string clearPassword)
+        public Task RegisterAsync(User<Guid> user, string clearPassword)
         {
             throw new NotImplementedException();
         }

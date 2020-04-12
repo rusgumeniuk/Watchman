@@ -10,19 +10,19 @@ using Watchman.BusinessLogic.Models.Data;
 
 namespace Identity.API.Infrastructure.Repositories
 {
-    public class UserRepository : Repository<WatchmanUser, Guid>, IUserRepository<WatchmanUser>
+    public class UserRepository : Repository<IdentityUser, Guid>, IUserRepository<IdentityUser>
     {
         public WatchmanDbContext WatchmanContext => Context as WatchmanDbContext;
         public UserRepository(WatchmanDbContext context) : base(context) { }
 
-        public async Task<WatchmanUser> GetByEmailAsync(string email)
+        public async Task<IdentityUser> GetByEmailAsync(string email)
         {
-            return await WatchmanContext.Set<WatchmanUser>()
+            return await WatchmanContext.Set<IdentityUser>()
                 .Include(user => user.PersonalInformation)
                 .FirstOrDefaultAsync(user => user.PersonalInformation.Email.Equals(email));
         }
 
-        public async override Task<WatchmanUser> RetrieveWithAllPropertiesAsync(Guid id)
+        public async override Task<IdentityUser> RetrieveWithAllPropertiesAsync(Guid id)
         {
             return await
                 WatchmanContext
