@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Watchman.BusinessLogic.Models.Users
 {
@@ -14,9 +15,9 @@ namespace Watchman.BusinessLogic.Models.Users
         where TSignKey : IEquatable<TSignKey>
         where TWatchmanKey : IEquatable<TWatchmanKey>
     {
-        public TKey Id { get; set; }
-        public Patient<TKey> Patient { get; set; }
-        public WatchmanProfile<TWatchmanKey> Watchman { get; set; }
-        public PersonalInformation<TKey> PersonalInformation { get; set; }
+        public TKey Id { get; set; }        
+        public TKey PatientId { get; set; }        
+        public TKey WatcmanId { get; set; }        
+        public TKey PersonalInformationId { get; set; }       
     }
 }
