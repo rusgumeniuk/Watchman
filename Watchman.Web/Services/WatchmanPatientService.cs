@@ -1,4 +1,5 @@
 ﻿
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,15 +14,16 @@ using Watchman.Web.Models;
 
 namespace Watchman.Web.Services
 {
-    public class WatchmanPatientService : IWatchmanPatientService<Guid>
+    public class WatchmanPatientService : IUserWatchmanPatientService<Guid>, IWatchmanPatientService<Guid>
     {
         private const string patientUrl = "https://localhost:44383/patient";
         private const string watchmanUrl = "https://localhost:44383/watchman";
-        private readonly IHttpClient client;
+        private const string userUrl = "https://localhost:44383/user";
+        private readonly IHttpClient _client;
 
         public WatchmanPatientService(IHttpClient httpClient)
         {
-            this.client = httpClient;
+            this._client = httpClient;
         }
 
         public Task AddHealthMeasurementAsync(Guid patientId, HealthMeasurement<Guid, Guid> healthMeasurement)
@@ -34,17 +36,25 @@ namespace Watchman.Web.Services
             throw new NotImplementedException();
         }
 
-        public Task AddPatientToUserAsync(Guid userId, Patient<Guid> patient = null)
+        public async Task AddPatientToUserAsync(Guid userId, Guid patientId, string token = null)
         {
-            throw new NotImplementedException();
+            var uri = userUrl + "/AddPatientToUser";
+            var obj = new { UserId = userId, SecondId = patientId};
+
+            var response = await _client.SendRequest(HttpMethod.Post, null, obj, uri, token);
+            var result = await _client.GetResponseResult(response);
+
+            var res = !response.IsSuccessStatusCode || String.IsNullOrWhiteSpace(result)
+                ? String.Empty : JsonConvert.DeserializeObject<Guid>(result).ToString();
+            var a = "";
         }
 
         public Task AddPatientToWatchmanAsync(Guid watchmanId, Guid patientId)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
-        public Task AddWatchmanToUserAsync(Guid userId, WatchmanProfile watchman = null)
+        public Task AddWatchmanToUserAsync(Guid userId, Guid watchmanId)
         {
             throw new NotImplementedException();
         }
@@ -54,12 +64,30 @@ namespace Watchman.Web.Services
             throw new NotImplementedException();
         }
 
-        public Task CreateIfNotExistPatientAsync(Guid userId)
+        public Task<Guid> CreateIfNotExistPatientAsync(Guid userId)
         {
             throw new NotImplementedException();
         }
 
-        public Task CreateIfNotExistWatchmanAsync(Guid userId)
+        public Task<Guid> CreateIfNotExistWatchmanAsync(Guid userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task CreatePatient(Patient<Guid> patient, string token = null)
+        {
+            var uri = patientUrl + "/Create";
+            var obj =  new { Id = patient.Id };
+
+            var response = await _client.SendRequest(HttpMethod.Post, null, obj, uri, token);
+            var result = await _client.GetResponseResult(response);
+
+            var res = !response.IsSuccessStatusCode || String.IsNullOrWhiteSpace(result)
+                ? String.Empty : JsonConvert.DeserializeObject<Guid>(result).ToString();
+            var a = "";
+        }
+
+        public Task CreateWatchman(WatchmanProfile<Guid> watchman)
         {
             throw new NotImplementedException();
         }
@@ -103,8 +131,8 @@ namespace Watchman.Web.Services
         {
             var uri = $"{watchmanUrl}/GetWatchmantWithPropsByUserId";
             var obj = new { Id = userId };
-            var response = await client.SendRequest(HttpMethod.Get, null, obj, uri);
-            var dto = await client.GetResponseResultOrDefault<WatchmanDTO>(response);
+            var response = await _client.SendRequest(HttpMethod.Get, null, obj, uri);
+            var dto = await _client.GetResponseResultOrDefault<WatchmanDTO>(response);
             if (dto == null)
                 return null;
             var watchman = new WatchmanInfo()
