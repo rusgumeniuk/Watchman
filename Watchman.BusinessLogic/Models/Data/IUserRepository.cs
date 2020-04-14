@@ -1,7 +1,6 @@
 ﻿
 using System;
 using System.Threading.Tasks;
-
 using Watchman.BusinessLogic.Models.Users;
 
 namespace Watchman.BusinessLogic.Models.Data
@@ -20,6 +19,8 @@ namespace Watchman.BusinessLogic.Models.Data
         where TWatchmanKey : IEquatable<TWatchmanKey>
         where TPersonalInfoKey : IEquatable<TPersonalInfoKey>
     {
-        Task<TUser> GetByEmailAsync(string email);
+        Task<TUser> GetByPatientId(TPatientKey patientId);
+        Task<TUser> GetByWatchmanId(TWatchmanKey watchmanId);
+        Task<TUser> GetByPersonalInformationId(TPersonalInfoKey personalInfoId);
     }
 }

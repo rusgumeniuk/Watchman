@@ -18,20 +18,5 @@ namespace Watchman.BusinessLogic.Models.Data
         Task AddHealthMeasurementAsync(TKey patientId, HealthMeasurement<TKey, TKey> healthMeasurement);
 
         Task AddIgnorableSignAsync(TKey patientId, Sign<TKey> sign);
-
-        Task<TPatient> RetrieveByUserIdAsync(Guid userId);
-        Task<TPatient> RetrieveWithPropertiesByUserIdAsync(Guid userId);
-
-        Task<bool> ExistPatientProfileAsync(TKey userId);
-        Task<bool> ExistPatientProfileAsync<TUser>(TUser user)
-            where TUser : User<TKey, TKey, TKey, TKey, TKey, TKey, TKey, TKey>;
-
-        Task AddPatientToUserAsync(TKey userId, TPatient patient = null);
-        Task AddPatientToUserAsync<TUser>(TUser user, TPatient patient = null)
-            where TUser : User<TKey, TKey, TKey, TKey, TKey, TKey, TKey, TKey>;
-
-        void RemovePatientFromUser(TKey userId);
-        void RemovePatientFromUser<TUser>(TUser user)
-            where TUser : User<TKey, TKey, TKey, TKey, TKey, TKey, TKey, TKey>;
     }
 }

@@ -42,13 +42,15 @@ namespace Identity.API
             services.ConfigureCors();
 
 
-            string connection = Configuration.GetConnectionString("DefaultConnection");
+            string connection = Configuration.GetConnectionString("UserDb");
             services.AddDbContext<WatchmanDbContext>(options => options.UseSqlServer(connection));
 
+            services.AddTransient<IPersonalInformationRepository<PersonalInfo, Guid>, PersonalInfoRepository>();
             services.AddTransient<IUserRepository<IdentityUser>, UserRepository>();
             services.AddTransient<ICustomPasswordHasher, PasswordHasher>();
             services.AddTransient<IUserManager<IdentityUser, Guid>, UserManager>();
             services.AddTransient<ILoginService<IdentityUser, Guid>, LoginService>();
+            services.AddTransient<IUserWatchmanPatientService<Guid>, UserWatchmanPatientService>();
             services.AddTransient<IRoleService<Guid>, RoleService>();
             services.AddTransient<IJwtValidator, JwtValidator>();
             services.AddTransient<IJwtGenerator, JwtGenerator>();

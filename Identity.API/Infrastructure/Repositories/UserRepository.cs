@@ -15,26 +15,36 @@ namespace Identity.API.Infrastructure.Repositories
         public WatchmanDbContext WatchmanContext => Context as WatchmanDbContext;
         public UserRepository(WatchmanDbContext context) : base(context) { }
 
-        public async Task<IdentityUser> GetByEmailAsync(string email)
-        {
-            return await WatchmanContext.Set<IdentityUser>()
-                .Include(user => user.PersonalInformation)
-                .FirstOrDefaultAsync(user => user.PersonalInformation.Email.Equals(email));
-        }
-
         public async override Task<IdentityUser> RetrieveWithAllPropertiesAsync(Guid id)
         {
             return await
                 WatchmanContext
                 .Users
-                .Include(user => user.Patient)
-                    .ThenInclude(pat => pat.CurrentActivityState)
-                .Include(user => user.Patient)
-                  .ThenInclude(pat => pat.HealthMeasurements)
-                    .ThenInclude(meas => meas.Signs)
-                .Include(user => user.PersonalInformation)
-                .Include(user => user.Watchman)
                 .FirstAsync(user => user.Id.Equals(id));
+        }
+
+        public async Task<IdentityUser> GetByPatientId(Guid patientId)
+        {
+            return await
+                WatchmanContext
+                .Users
+                .FirstAsync(user => user.PatientId.Equals(patientId));
+        }
+
+        public async Task<IdentityUser> GetByWatchmanId(Guid watchmanId)
+        {
+            return await
+                WatchmanContext
+                .Users
+                .FirstAsync(user => user.WatcmanId.Equals(watchmanId));
+        }
+
+        public async Task<IdentityUser> GetByPersonalInformationId(Guid personalInfoId)
+        {
+            return await
+                WatchmanContext
+                .Users
+                .FirstAsync(user => user.PersonalInformationId.Equals(personalInfoId));
         }
     }
 }

@@ -46,45 +46,6 @@ namespace HealthService.API.Models.Infrastructure.Repositories
             patient.HealthMeasurements.Add(healthMeasurement);
         }
 
-
-        public async Task AddPatientToUserAsync(Guid userId, PatientProfile patient = null)
-        {
-            var user = await HealthContext.Users.FindAsync(userId);
-            user.Patient = patient ?? new PatientProfile();
-        }
-        public async Task AddPatientToUserAsync<TUser>(TUser user, PatientProfile patient = null) where TUser : User<Guid, Guid, Guid, Guid, Guid, Guid, Guid, Guid>
-        {
-            await AddPatientToUserAsync(user.Id, patient);
-        }
-
-        public async Task<bool> ExistPatientProfileAsync(Guid userId)
-        {
-            var user = await HealthContext
-                .Users
-                .Include(us => us.Patient)
-                .FirstOrDefaultAsync(us => us.Id.Equals(userId));
-
-            return user?.Patient != null;
-        }
-        public async Task<bool> ExistPatientProfileAsync<TUser>(TUser user) where TUser : User<Guid, Guid, Guid, Guid, Guid, Guid, Guid, Guid>
-        {
-            return await ExistPatientProfileAsync(user.Id);
-        }
-
-        public void RemovePatientFromUser(Guid userId)
-        {
-            var user = HealthContext
-                .Users
-                .Include(us => us.Patient)
-                .FirstOrDefault(us => us.Id.Equals(userId));
-            if (user != null && user.Patient != null)
-                user.Patient = null;
-        }
-        public void RemovePatientFromUser<TUser>(TUser user) where TUser : User<Guid, Guid, Guid, Guid, Guid, Guid, Guid, Guid>
-        {
-            RemovePatientFromUser(user.Id);
-        }
-
         public async Task<IEnumerable<WatchmanProfile<Guid>>> GetWatchmenOfPatientAsync(PatientProfile patient)
         {
             return await HealthContext
@@ -100,26 +61,12 @@ namespace HealthService.API.Models.Infrastructure.Repositories
             return await HealthContext
                 .Patients
                 .Include(pat => pat.IgnorableSignPair)
-                //.ThenInclude(pair => pair.Patient)
                 .Include(pat => pat.HealthMeasurements)
                     .ThenInclude(hm => hm.Signs)
                 .Include(pat => pat.WatchmanPatients)
                 .FirstAsync(pat => pat.Id.Equals(id));
         }
 
-
-        private int GetIndexOfItemWithNewDate(IEnumerable<HealthMeasurement<Guid, Guid>> list)
-        {
-            if (list.Count() < 1)
-                return -1;
-            int index = 0;
-            for (int i = 0; i < list.Count() - 1; ++i)
-            {
-                if (list.ElementAt(i).MeasurementTime <= list.ElementAt(i + 1).MeasurementTime)
-                    index = i + 1;
-            }
-            return index;
-        }
 
         public async Task AddIgnorableSignAsync(Guid patientId, Sign<Guid> sign)
         {
@@ -132,20 +79,17 @@ namespace HealthService.API.Models.Infrastructure.Repositories
                 .Add(new PatientSign<Guid, ushort>() { PatientId = patientId, SignType = sign.GetType().ToString() });
         }
 
-        public async Task<PatientProfile> RetrieveByUserIdAsync(Guid userId)
+        private int GetIndexOfItemWithNewDate(IEnumerable<HealthMeasurement<Guid, Guid>> list)
         {
-            var res = await HealthContext
-                .Users
-                .Include(user => user.Patient)
-                .FirstAsync(user => user.Id.Equals(userId));
-            return res.Patient as PatientProfile;
-        }
-
-        public async Task<PatientProfile> RetrieveWithPropertiesByUserIdAsync(Guid userId)
-        {
-            var patientId = await RetrieveByUserIdAsync(userId);
-            var res = await RetrieveWithAllPropertiesAsync(patientId.Id);
-            return res;
+            if (list.Count() < 1)
+                return -1;
+            int index = 0;
+            for (int i = 0; i < list.Count() - 1; ++i)
+            {
+                if (list.ElementAt(i).MeasurementTime <= list.ElementAt(i + 1).MeasurementTime)
+                    index = i + 1;
+            }
+            return index;
         }
     }
 }

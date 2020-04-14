@@ -1,10 +1,9 @@
 ﻿using HealthService.API.Attributes;
+using HealthService.API.Models.Users;
 using HealthService.API.ViewModels;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
-using Newtonsoft.Json;
 
 using System;
 using System.Collections.Generic;
@@ -24,48 +23,56 @@ namespace HealthService.API.Controllers
             this.service = watchmanPatientService;
         }
 
-        [ValidationModelStateActionFilter]
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetPatientByUserId([FromBody]GuidFieldViewModel model)
-        {
-            return Ok(await service.GetPatientByUserIdAsync(model.Id));
-        }
+        //[ValidationModelStateActionFilter]
+        //[HttpGet]
+        //[AllowAnonymous]
+        //public async Task<IActionResult> GetPatientByUserId([FromBody]GuidFieldViewModel model)
+        //{
+        //    return Ok(await service.GetPatientByUserIdAsync(model.Id));
+        //}
 
-        [ValidationModelStateActionFilter]
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetPatientwithPropsByUserId([FromBody]GuidFieldViewModel model)
-        {
-            return Ok(JsonConvert.SerializeObject(await service.GetPatientWithPropertiesByUserIdAsync(model.Id)));
-        }
+        //[ValidationModelStateActionFilter]
+        //[HttpGet]
+        //[AllowAnonymous]
+        //public async Task<IActionResult> GetPatientwithPropsByUserId([FromBody]GuidFieldViewModel model)
+        //{
+        //    return Ok(JsonConvert.SerializeObject(await service.GetPatientWithPropertiesByUserIdAsync(model.Id)));
+        //}
 
-        [ValidationModelStateActionFilter]
-        [HttpPost]
-        public async Task<IActionResult> Exist([FromBody]GuidFieldViewModel model)
-        {
-            var res = await service.ExistPatientAsync(model.Id);
-            if (res)
-                return Ok();
-            else
-                return BadRequest();
-        }
+        //[ValidationModelStateActionFilter]
+        //[HttpPost]
+        //public async Task<IActionResult> Exist([FromBody]GuidFieldViewModel model)
+        //{
+        //    var res = await service.ExistPatientAsync(model.Id);
+        //    if (res)
+        //        return Ok();
+        //    else
+        //        return BadRequest();
+        //}
 
         [ValidationModelStateActionFilter]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody]GuidFieldViewModel model)
         {
-            await service.AddPatientToUserAsync(model.Id);
-            return Ok();
+            try
+            {
+                await service.CreatePatient(new PatientProfile(){Id = model.Id});
+                
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        [ValidationModelStateActionFilter]
-        [HttpDelete]
-        public IActionResult Remove([FromBody]GuidFieldViewModel model)
-        {
-            service.RemovePatientFromUser(model.Id);
-            return Ok();
-        }
+        //[ValidationModelStateActionFilter]
+        //[HttpDelete]
+        //public IActionResult Remove([FromBody]GuidFieldViewModel model)
+        //{
+        //    service.RemovePatientFromUser(model.Id);
+        //    return Ok();
+        //}
 
         [ValidationModelStateActionFilter]
         [HttpDelete]

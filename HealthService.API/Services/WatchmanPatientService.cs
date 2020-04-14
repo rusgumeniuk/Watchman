@@ -1,6 +1,5 @@
 ﻿using HealthService.API.Models.Infrastructure.Repositories;
 using HealthService.API.Models.Users;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +20,28 @@ namespace HealthService.API.Services
         {
             this.db = unitOfWork;
             this.analyzer = analyzer;
+        }
+
+        public async Task AddIgnorableSignToPatientAsync(Guid patientId, Sign<Guid> sign)
+        {
+            var patient = db.PatientRepository.RetrieveAsync(patientId);
+            if (patient != null)
+            {
+                await db.PatientRepository.AddIgnorableSignAsync(patientId, sign);
+                await db.SaveAsync();
+            }
+        }
+
+        public async Task<IAnalysisResult> AnalyzeLastMeasurementAsync(Guid patientId)
+        {
+            var patient = await db.PatientRepository.RetrieveAsync(patientId);
+            if (patient != null)
+            {
+                var patientWithProps = await db.PatientRepository.RetrieveWithAllPropertiesAsync(patientId);
+                analyzer.AnalyzeLast(patientWithProps);
+                return analyzer.AnalysisResult as IAnalysisResult;
+            }
+            return null;
         }
 
         public async Task<HealthMeasurement<Guid, Guid>> GetLastHealthMeasurementAsync(Guid patientId)
@@ -49,48 +70,6 @@ namespace HealthService.API.Services
                 await db.PatientRepository.AddHealthMeasurementAsync(patientId, healthMeasurement);
                 await db.SaveAsync();
             }
-        }
-
-        public async Task CreateIfNotExistPatientAsync(Guid userId)
-        {
-            if (!(await ExistPatientAsync(userId)))
-                await AddPatientToUserAsync(userId);
-        }
-        public async Task CreateIfNotExistWatchmanAsync(Guid userId)
-        {
-            if (!(await ExistWatchmanAsync(userId)))
-                await AddWatchmanToUserAsync(userId);
-        }
-
-        public async Task<bool> ExistPatientAsync(Guid userId)
-        {
-            return await db.PatientRepository.ExistPatientProfileAsync(userId);
-        }
-        public async Task<bool> ExistWatchmanAsync(Guid userId)
-        {
-            return await db.WatchmanRepository.ExistWatchmanProfileAsync(userId);
-        }
-
-        public async Task AddPatientToUserAsync(Guid userId, Patient<Guid> patient = null)
-        {
-            await db.PatientRepository.AddPatientToUserAsync(userId, patient as PatientProfile);
-            await db.SaveAsync();
-        }
-        public async Task AddWatchmanToUserAsync(Guid userId, WatchmanProfile watchman = null)
-        {
-            await db.WatchmanRepository.AddWatchmanToUserAsync(userId, watchman as WatchmanProfileHealth);
-            await db.SaveAsync();
-        }
-
-        public void RemovePatientFromUser(Guid userId)
-        {
-            db.PatientRepository.RemovePatientFromUser(userId);
-            db.SaveAsync();
-        }
-        public void RemoveWatchmanFromUser(Guid userId)
-        {
-            db.WatchmanRepository.RemoveWatchmanFromUser(userId);
-            db.SaveAsync();
         }
 
         public async Task AddPatientToWatchmanAsync(Guid watchmanId, Guid patientId)
@@ -137,47 +116,15 @@ namespace HealthService.API.Services
             }
         }
 
-        public async Task AddIgnorableSignToPatientAsync(Guid patientId, Sign<Guid> sign)
+        public async Task CreatePatient(Patient<Guid> patient, string token = null)
         {
-            var patient = db.PatientRepository.RetrieveAsync(patientId);
-            if (patient != null)
-            {
-                await db.PatientRepository.AddIgnorableSignAsync(patientId, sign);
-                await db.SaveAsync();
-            }
+            await db.PatientRepository.CreateAsync(patient as PatientProfile);
+            await db.SaveAsync();
         }
 
-        public async Task<IAnalysisResult> AnalyzeLastMeasurementAsync(Guid patientId)
+        public Task CreateWatchman(WatchmanProfile<Guid> watchman)
         {
-            var patient = await db.PatientRepository.RetrieveAsync(patientId);
-            if (patient != null)
-            {
-                var patientWithProps = await db.PatientRepository.RetrieveWithAllPropertiesAsync(patientId);
-                analyzer.AnalyzeLast(patientWithProps);
-                return analyzer.AnalysisResult as IAnalysisResult;
-            }
-            return null;
-        }
-
-        public async Task<Patient<Guid>> GetPatientByUserIdAsync(Guid userId)
-        {
-            return await db.PatientRepository.RetrieveByUserIdAsync(userId);
-        }
-
-        public async Task<WatchmanProfile> GetWatchmanByUserIdAsync(Guid userId)
-        {
-            return await db.WatchmanRepository.RetrieveByUserIdAsync(userId);
-        }
-
-        public async Task<Patient<Guid>> GetPatientWithPropertiesByUserIdAsync(Guid userId)
-        {
-            return await db.PatientRepository.RetrieveWithPropertiesByUserIdAsync(userId);
-        }
-
-        public async Task<WatchmanProfile> GetWatchmanWithPropertiesByUserIdAsync(Guid userId)
-        {
-            var res = await db.WatchmanRepository.RetrieveWithPropertiesByUserIdAsync(userId);
-            return res;
+            throw new NotImplementedException();
         }
     }
 }

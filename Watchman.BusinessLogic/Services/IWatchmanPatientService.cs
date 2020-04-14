@@ -23,25 +23,10 @@ namespace Watchman.BusinessLogic.Services
 
         Task RemovePatientFromWatchmanAsync(TKey watchmanId, TKey patientId);
 
-        Task<bool> ExistPatientAsync(TKey userId);
-        Task<bool> ExistWatchmanAsync(TKey userId);
-
-        Task AddPatientToUserAsync(TKey userId, Patient<TKey> patient = null);
-        Task AddWatchmanToUserAsync(TKey userId, WatchmanProfile watchman = null);
-
-        Task CreateIfNotExistPatientAsync(TKey userId);
-        Task CreateIfNotExistWatchmanAsync(TKey userId);
-
-        void RemovePatientFromUser(TKey userId);
-        void RemoveWatchmanFromUser(TKey userId);
+        Task CreatePatient(Patient<TKey> patient, string token = null);
+        Task CreateWatchman(WatchmanProfile<TKey> watchman);
 
         void RemoveAllWatchmenFromPatient(TKey patientId);
         void RemoveAllPatientFromWatchman(TKey watchmanId);
-
-        Task<Patient<TKey>> GetPatientByUserIdAsync(TKey usedId);
-        Task<WatchmanProfile> GetWatchmanByUserIdAsync(TKey userId);
-
-        Task<Patient<TKey>> GetPatientWithPropertiesByUserIdAsync(TKey usedId);
-        Task<WatchmanProfile> GetWatchmanWithPropertiesByUserIdAsync(TKey userId);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Identity.API.Models;
 using Identity.API.Services.PasswordHashing;
+
 using System;
 using System.Threading.Tasks;
 
@@ -11,38 +12,45 @@ namespace Identity.API.Services
 {
     public class UserManager : IUserManager<IdentityUser, Guid>
     {
-        private readonly IUserRepository<IdentityUser> UserRepository;
+        private readonly IPersonalInformationRepository<PersonalInfo, Guid> _personalInfoRepository;
+        private readonly IUserRepository<IdentityUser> _userRepository;
         private readonly ICustomPasswordHasher Hasher;
 
-        public UserManager(IUserRepository<IdentityUser> userRepository, ICustomPasswordHasher hasher)
+        public UserManager(IUserRepository<IdentityUser> userRepository, ICustomPasswordHasher hasher, IPersonalInformationRepository<PersonalInfo, Guid> personalInformationRepository)
         {
-            this.UserRepository = userRepository;
+            this._userRepository = userRepository;
             this.Hasher = hasher;
+            this._personalInfoRepository = personalInformationRepository;
         }
 
-        public async Task RegisterAsync(PersonalInformation personalInformation, string clearPassword)
+        public async Task CreateUserWithPersonalInformationAsync(PersonalInformation personalInformation, string clearPassword)
         {
-            await RegisterAsync(new IdentityUser() { PersonalInformation = personalInformation as PersonalInformation }, clearPassword);
-        }
-        public async Task RegisterAsync(User<Guid> user, string clearPassword)
-        {
-            if (UserRepository.GetByEmailAsync(user.PersonalInformation.Email).Result == null)
+            if (_personalInfoRepository.GetByEmailAsync(personalInformation.Email).Result == null)
             {
-                user.PersonalInformation.HashedPassword = Hasher.Hash(clearPassword);
-                await UserRepository.CreateAsync(user as IdentityUser);
-                await UserRepository.SaveChangesAsync();
+                personalInformation.Id = personalInformation.Id == Guid.Empty ? Guid.NewGuid() : personalInformation.Id;
+                personalInformation.HashedPassword = Hasher.Hash(clearPassword);
+
+                var user = new IdentityUser
+                {
+                    PersonalInformationId = personalInformation.Id
+                };
+
+                await _userRepository.CreateAsync(user);
+                await _userRepository.SaveChangesAsync();
+
+                await _personalInfoRepository.CreateAsync(personalInformation as PersonalInfo);
+                await _personalInfoRepository.SaveChangesAsync();
             }
-            else
-                throw new ArgumentException($"User with email '{user.PersonalInformation.Email}' already exist");
         }
 
         public async Task<IdentityUser> FindByEmailAsync(string email, string token = null)
         {
-            return await UserRepository.GetByEmailAsync(email);
+            var personalnfo = await _personalInfoRepository.GetByEmailAsync(email);
+            return personalnfo != null ? await _userRepository.GetByPersonalInformationId(personalnfo.Id) : null;
         }
         public async Task<IdentityUser> FindByIdAsync(Guid key, string token = null)
         {
-            return await UserRepository.RetrieveAsync(key);
+            return await _userRepository.RetrieveAsync(key);
         }
     }
 }
