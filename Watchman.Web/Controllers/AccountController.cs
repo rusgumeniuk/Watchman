@@ -66,7 +66,7 @@ namespace Watchman.Web.Controllers
             try
             {
                 PersonalInformation info = new PersonalInfo(viewModel);
-                await userManager.RegisterAsync(info, viewModel.Password);
+                await userManager.CreateUserWithPersonalInformationAsync(info, viewModel.Password);
             }
             catch (Exception ex)
             {
