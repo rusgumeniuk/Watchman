@@ -23,8 +23,8 @@ namespace Identity.API.Controllers
     public class AccountController : ControllerBase
     {
         private readonly ILoginService<IdentityUser, Guid> _loginService;
-        private readonly IUserManager<IdentityUser, Guid> userManager;
-        private readonly IRoleService<Guid> roleService;
+        private readonly IUserManager<IdentityUser, Guid> _userManager;
+        private readonly IRoleService<Guid> _roleService;
         private readonly ILogger<AccountController> _logger;
         private readonly IConfiguration _configuration;
         private readonly IJwtGenerator _jwtGenerator;
@@ -40,8 +40,8 @@ namespace Identity.API.Controllers
             IJwtValidator jwtValidator)
         {
             this._loginService = loginService;
-            this.userManager = userManager;
-            this.roleService = roleService;
+            this._userManager = userManager;
+            this._roleService = roleService;
             this._logger = logger;
             this._configuration = configuration;
             this._jwtGenerator = jwtGenerator;
@@ -58,6 +58,7 @@ namespace Identity.API.Controllers
                     throw new ArgumentException("not valid model");
                 PersonalInfo info = new PersonalInfo()
                 {
+                    Id = Guid.NewGuid(),
                     Email = model.Email,
                     BirthDay = model.BirthDay,
                     Phone = model.Phone,
@@ -66,7 +67,7 @@ namespace Identity.API.Controllers
                     LastName = model.LastName,
                     Roles = model.Roles ?? $"{UserRoles.User}"
                 };
-                await userManager.RegisterAsync(info, model.Password);
+                await _userManager.CreateUserWithPersonalInformationAsync(info, model.Password);
 
                 return StatusCode(201, "Logged up");
             }
@@ -74,7 +75,6 @@ namespace Identity.API.Controllers
             {
                 return BadRequest(ex.Message);
             }
-
         }
 
         [HttpPost]
@@ -83,7 +83,7 @@ namespace Identity.API.Controllers
         {
             if (await _loginService.ValidateCredentialsAsync(model.Email, model.Password))
             {
-                var roles = await roleService.GetRoleByUser(model.Email);
+                var roles = await _roleService.GetRoleByUser(model.Email);
                 IList<Claim> claims = new List<Claim>
                     {
                         new Claim(JwtRegisteredClaimNames.Email, model.Email),
@@ -110,7 +110,7 @@ namespace Identity.API.Controllers
         [Authorize]
         public async Task<IActionResult> GetUserByEmail([FromBody]EmailViewModel model)
         {
-            var user = await userManager.FindByEmailAsync(model.Email);
+            var user = await _userManager.FindByEmailAsync(model.Email);
             if (user != null)
                 return Ok(user);
             else
@@ -126,13 +126,6 @@ namespace Identity.API.Controllers
                 return Ok();
             else
                 return BadRequest();
-        }
-
-        [HttpPost]
-        [Authorize]
-        public IActionResult GetAll()
-        {
-            return Ok(new List<int>() { 1, 2, 3, 4, 5 });
         }
     }
 }

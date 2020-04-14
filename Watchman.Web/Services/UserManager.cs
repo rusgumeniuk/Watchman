@@ -1,5 +1,6 @@
 ﻿
 using Newtonsoft.Json;
+
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -28,8 +29,7 @@ namespace Watchman.Web.Services
             var result = await client.GetResponseResult(response);
             if (response.IsSuccessStatusCode)
             {
-                var dto = JsonConvert.DeserializeObject<UserDTO>(result);
-                return new WatchmanUser() { Id = dto.Id, PersonalInformation = dto.PersonalInformation };
+                return JsonConvert.DeserializeObject<WatchmanUser>(result);
             }
             return null;
         }
@@ -39,7 +39,7 @@ namespace Watchman.Web.Services
             throw new NotImplementedException();
         }
 
-        public async Task RegisterAsync(PersonalInformation personalInformation, string clearPassword)
+        public async Task CreateUserWithPersonalInformationAsync(PersonalInformation personalInformation, string clearPassword)
         {
             var obj = new
             {
@@ -65,10 +65,4 @@ namespace Watchman.Web.Services
             throw new NotImplementedException();
         }
     }
-}
-
-class UserDTO
-{
-    public Guid Id { get; set; }
-    public PersonalInfo PersonalInformation { get; set; }
 }
