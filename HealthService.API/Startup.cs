@@ -40,11 +40,9 @@ namespace HealthService.API
             services.AddMvc();
             services.ConfigureCors();
 
-            string healthConnection = Configuration.GetConnectionString("UserDbConnection");
+            string healthConnection = Configuration.GetConnectionString("HealthDbConnection");
             services.AddDbContext<HealthDbContext>(options => options.UseSqlServer(healthConnection));
-
-            string usersConnection = Configuration.GetConnectionString("UserDbConnection");
-            services.AddDbContext<IdentityDbContext>(options => options.UseSqlServer(usersConnection));
+                      
 
             services.AddScoped<ValidationModelStateActionFilterAttribute>();
 

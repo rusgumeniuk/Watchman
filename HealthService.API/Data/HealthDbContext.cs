@@ -12,7 +12,6 @@ namespace HealthService.API.Data
 {
     public class HealthDbContext : DbContext
     {
-        public DbSet<HealthUser> Users { get; set; }
         public DbSet<PatientProfile> Patients { get; set; }
         public DbSet<WatchmanProfileHealth> Watchmen { get; set; }
         public DbSet<WatchmanPatientConnection> WatchmanPatients { get; set; }
@@ -32,10 +31,10 @@ namespace HealthService.API.Data
             modelBuilder.Entity<DIA>();
             modelBuilder.Entity<SYS>();
             modelBuilder.Entity<HeartRate>();
-            modelBuilder.Entity<PersonalInfo>();
             modelBuilder.Entity<HeartAndPressureHealthState>()
                 .HasMany(hm => hm.Signs);
             modelBuilder.Entity<Sign<Guid>>().ToTable("Sign");
+
             #region Many to many
 
             #region WatchmanPatient
