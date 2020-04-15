@@ -40,6 +40,7 @@ namespace Watchman.Web
             services.AddTransient<IWatchmanPatientService<Guid>, WatchmanPatientService>();//
             services.AddTransient<IJwtValidator, JwtValidator>();
             services.AddTransient<IUserManager<WatchmanUser, Guid>, UserManager>();
+            services.AddTransient<IPersonalInformationService<PersonalInfo, Guid>, PersonalInfoService>();
             services.AddTransient<ITokenService, TokenService>();
         }
 

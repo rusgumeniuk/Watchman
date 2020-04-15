@@ -52,6 +52,7 @@ namespace Identity.API
             services.AddTransient<IUserRepository<IdentityUser>, UserRepository>();
             services.AddTransient<ICustomPasswordHasher, PasswordHasher>();
             services.AddTransient<IUserManager<IdentityUser, Guid>, UserManager>();
+            services.AddTransient<IPersonalInformationService<PersonalInfo, Guid>, PersonalInfoService>();
             services.AddTransient<ILoginService<IdentityUser, Guid>, LoginService>();
             services.AddTransient<IUserWatchmanPatientService<Guid>, UserWatchmanPatientService>();
             services.AddTransient<IRoleService<Guid>, RoleService>();
