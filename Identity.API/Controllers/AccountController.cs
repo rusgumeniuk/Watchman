@@ -84,6 +84,8 @@ namespace Identity.API.Controllers
             if (await _loginService.ValidateCredentialsAsync(model.Email, model.Password))
             {
                 var roles = await _roleService.GetRoleByUser(model.Email);
+                var user = await _userManager.FindByEmailAsync(model.Email);
+
                 IList<Claim> claims = new List<Claim>
                     {
                         new Claim(JwtRegisteredClaimNames.Email, model.Email),
@@ -98,6 +100,15 @@ namespace Identity.API.Controllers
                 }
                 else
                     claims.Add(new Claim(ClaimsIdentity.DefaultRoleClaimType, roles));
+
+                if (user.PersonalInformationId != Guid.Empty)
+                    claims.Add(new Claim("infoIdClaim", user.PersonalInformationId.ToString()));
+
+                if (user.PatientId != Guid.Empty)
+                    claims.Add(new Claim("patientIdClaim", user.PatientId.ToString()));
+
+                if (user.WatcmanId != Guid.Empty)
+                    claims.Add(new Claim("watchmanIdClaim", user.WatcmanId.ToString()));
 
                 var tokenString = _jwtGenerator.GenerateJSONWebToken(claims.ToArray());
                 return Ok(new { token = tokenString });
