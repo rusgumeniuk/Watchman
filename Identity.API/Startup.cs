@@ -1,5 +1,4 @@
 using Identity.API.Data;
-using Identity.API.Extensions;
 using Identity.API.Infrastructure.Repositories;
 using Identity.API.Models;
 using Identity.API.Services;
@@ -15,7 +14,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using System;
-
+using Watchman.API.Common.Attributes;
+using Watchman.API.Common.Extensions;
+using Watchman.API.Common.Services.JWT;
 using Watchman.BusinessLogic.Models.Data;
 using Watchman.BusinessLogic.Services;
 
@@ -45,6 +46,8 @@ namespace Identity.API
             string connection = Configuration.GetConnectionString("UserDb");
             services.AddDbContext<WatchmanDbContext>(options => options.UseSqlServer(connection));
 
+            services.AddScoped<ValidationModelStateActionFilterAttribute>();
+
             services.AddTransient<IPersonalInformationRepository<PersonalInfo, Guid>, PersonalInfoRepository>();
             services.AddTransient<IUserRepository<IdentityUser>, UserRepository>();
             services.AddTransient<ICustomPasswordHasher, PasswordHasher>();
@@ -62,6 +65,8 @@ namespace Identity.API
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.ConfigureCustomExceptionMiddleware();
+
             app.UseAuthentication();
 
             app.UseRouting();

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HealthService.API.Attributes
+namespace Watchman.API.Common.Attributes
 {
     public class ValidationModelStateActionFilterAttribute : ActionFilterAttribute
     {

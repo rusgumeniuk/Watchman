@@ -3,14 +3,14 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 
-namespace HealthService.API.Extensions
+namespace Watchman.API.Common.Extensions
 {
     public static class ControllerTokenExtension
     {
         public static string GetBearerTokenFromRequest(this Controller controller)
         {
             var header = controller.Request.Headers.Values
-                .FirstOrDefault(header => header.ToString().Contains("Bearer"));
+                .FirstOrDefault(head => head.ToString().Contains("Bearer"));
             var token = header.ToString().Remove(0, 7);
             return token;
         }

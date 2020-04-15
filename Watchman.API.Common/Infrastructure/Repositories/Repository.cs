@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Watchman.BusinessLogic.Models;
 using Watchman.BusinessLogic.Models.Data;
 
-namespace Identity.API.Infrastructure.Repositories
+namespace Watchman.API.Common.Infrastructure.Repositories
 {
     public abstract class Repository<TEntity, TKey> : IAsyncCRUDRepository<TEntity, TKey>
         where TEntity : class, IIdentifiedEntity<TKey>

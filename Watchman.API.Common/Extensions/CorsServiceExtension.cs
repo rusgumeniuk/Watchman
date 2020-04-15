@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Identity.API.Extensions
+namespace Watchman.API.Common.Extensions
 {
     public static class CorsServiceExtension
     {

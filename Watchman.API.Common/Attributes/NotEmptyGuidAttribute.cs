@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace HealthService.API.Attributes
+namespace Watchman.API.Common.Attributes
 {
 
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]

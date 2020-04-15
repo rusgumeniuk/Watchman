@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 
-namespace HealthService.API.Extensions
+namespace Watchman.API.Common.Extensions
 {
     public static class ExceptionMiddlewareExtension
     {

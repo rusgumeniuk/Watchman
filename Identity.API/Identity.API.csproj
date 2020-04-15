@@ -12,7 +12,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Watchman.API.Common\Watchman.API.Common.csproj" />
     <ProjectReference Include="..\Watchman.BusinessLogic\Watchman.BusinessLogic.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Extensions\" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace HealthService.API.Extensions
+﻿namespace Watchman.API.Common.Extensions
 {
     public class ErrorDetails
     {

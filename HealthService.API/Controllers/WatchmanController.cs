@@ -1,14 +1,13 @@
-﻿using HealthService.API.Attributes;
-using HealthService.API.ViewModels;
+﻿using HealthService.API.ViewModels;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using Newtonsoft.Json;
-
 using System;
 using System.Threading.Tasks;
 
+using Watchman.API.Common.Attributes;
+using Watchman.API.Common.ViewModels;
 using Watchman.BusinessLogic.Services;
 
 namespace HealthService.API.Controllers

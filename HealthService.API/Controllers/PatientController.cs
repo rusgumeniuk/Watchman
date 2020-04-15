@@ -1,5 +1,4 @@
-﻿using HealthService.API.Attributes;
-using HealthService.API.Models.Users;
+﻿using HealthService.API.Models.Users;
 using HealthService.API.ViewModels;
 
 using Microsoft.AspNetCore.Authorization;
@@ -9,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using Watchman.API.Common.Attributes;
+using Watchman.API.Common.ViewModels;
 using Watchman.BusinessLogic.Models.Signs;
 using Watchman.BusinessLogic.Services;
 
@@ -56,8 +57,8 @@ namespace HealthService.API.Controllers
         {
             try
             {
-                await service.CreatePatient(new PatientProfile(){Id = model.Id});
-                
+                await service.CreatePatient(new PatientProfile() { Id = model.Id });
+
                 return Ok();
             }
             catch (Exception ex)

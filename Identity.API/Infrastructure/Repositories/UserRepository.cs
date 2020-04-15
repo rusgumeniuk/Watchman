@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
 
+using Watchman.API.Common.Infrastructure.Repositories;
 using Watchman.BusinessLogic.Models.Data;
 
 namespace Identity.API.Infrastructure.Repositories

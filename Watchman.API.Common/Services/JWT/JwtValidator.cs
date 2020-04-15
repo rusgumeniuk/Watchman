@@ -10,7 +10,7 @@ using System.Text;
 
 using Watchman.BusinessLogic.Models.Data;
 
-namespace HealthService.API.Services
+namespace Watchman.API.Common.Services.JWT
 {
     public class JwtValidator : IJwtValidator
     {
@@ -27,8 +27,7 @@ namespace HealthService.API.Services
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var validationParameters = GetValidationParameters();
 
-                SecurityToken validatedToken;
-                tokenHandler.ValidateToken(authToken, validationParameters, out validatedToken);
+                tokenHandler.ValidateToken(authToken, validationParameters, out SecurityToken validatedToken);
             }
             catch (Exception)
             {
@@ -44,11 +43,10 @@ namespace HealthService.API.Services
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var validationParameters = GetValidationParameters();
 
-                SecurityToken validatedToken;
-                IPrincipal principal = tokenHandler.ValidateToken(authToken, validationParameters, out validatedToken);
+                IPrincipal principal = tokenHandler.ValidateToken(authToken, validationParameters, out SecurityToken validatedToken);
 
                 Claim resultClaim = (principal as ClaimsPrincipal).Claims.FirstOrDefault(claim => claim.Type.Contains(claimType) || claim.Type.Equals(claimType));
-                
+
                 return resultClaim?.Value;
             }
             catch (Exception)

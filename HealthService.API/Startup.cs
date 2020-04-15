@@ -1,6 +1,4 @@
-using HealthService.API.Attributes;
 using HealthService.API.Data;
-using HealthService.API.Extensions;
 using HealthService.API.Models.Analysis;
 using HealthService.API.Models.Infrastructure.Repositories;
 using HealthService.API.Models.Users;
@@ -16,6 +14,9 @@ using Microsoft.Extensions.Hosting;
 
 using System;
 
+using Watchman.API.Common.Attributes;
+using Watchman.API.Common.Extensions;
+using Watchman.API.Common.Services.JWT;
 using Watchman.BusinessLogic.Models.Analysis;
 using Watchman.BusinessLogic.Models.Data;
 using Watchman.BusinessLogic.Services;
@@ -42,7 +43,7 @@ namespace HealthService.API
 
             string healthConnection = Configuration.GetConnectionString("HealthDbConnection");
             services.AddDbContext<HealthDbContext>(options => options.UseSqlServer(healthConnection));
-                      
+
 
             services.AddScoped<ValidationModelStateActionFilterAttribute>();
 

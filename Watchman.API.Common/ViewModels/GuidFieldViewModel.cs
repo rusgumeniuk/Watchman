@@ -1,8 +1,7 @@
-﻿using HealthService.API.Attributes;
+﻿using System;
+using Watchman.API.Common.Attributes;
 
-using System;
-
-namespace HealthService.API.ViewModels
+namespace Watchman.API.Common.ViewModels
 {
     public class GuidFieldViewModel
     {
