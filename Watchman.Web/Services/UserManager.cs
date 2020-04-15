@@ -39,7 +39,7 @@ namespace Watchman.Web.Services
             throw new NotImplementedException();
         }
 
-        public async Task CreateUserWithPersonalInformationAsync(PersonalInformation personalInformation, string clearPassword)
+        public async Task CreateUserWithPersonalInformationAsync(PersonalInformation<Guid> personalInformation, string clearPassword)
         {
             var obj = new
             {
@@ -58,11 +58,6 @@ namespace Watchman.Web.Services
                 var result = await client.GetResponseResult(response);
                 throw new ArgumentException(result);
             }
-        }
-
-        public Task RegisterAsync(User<Guid> user, string clearPassword)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Identity.API.Services
             this._personalInfoRepository = personalInformationRepository;
         }
 
-        public async Task CreateUserWithPersonalInformationAsync(PersonalInformation personalInformation, string clearPassword)
+        public async Task CreateUserWithPersonalInformationAsync(PersonalInformation<Guid> personalInformation, string clearPassword)
         {
             if (_personalInfoRepository.GetByEmailAsync(personalInformation.Email).Result == null)
             {

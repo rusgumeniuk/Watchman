@@ -13,6 +13,6 @@ namespace Watchman.BusinessLogic.Services
         Task<TUser> FindByEmailAsync(string email, string token = null);
         Task<TUser> FindByIdAsync(TKey key, string token = null);
 
-        Task CreateUserWithPersonalInformationAsync(PersonalInformation personalInformation, string clearPassword);
+        Task CreateUserWithPersonalInformationAsync(PersonalInformation<TKey> personalInformation, string clearPassword);
     }
 }
