@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using System;
@@ -16,15 +17,22 @@ namespace Watchman.Web.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly ITokenService tokenService;
-        private readonly IUserManager<WatchmanUser, Guid> userManager;
-        private readonly IJwtValidator jwtValidator;
+        private readonly ITokenService _tokenService;
+        private readonly IUserManager<WatchmanUser, Guid> _userManager;
+        private readonly IPersonalInformationService<PersonalInfo, Guid> _infoService;
+        private readonly IJwtValidator _jwtValidator;
 
-        public AccountController(ITokenService tokenService, IUserManager<WatchmanUser, Guid> userManager, IJwtValidator jwtValidator)
+        public AccountController(
+            ITokenService tokenService,
+            IUserManager<WatchmanUser, Guid> userManager,
+            IPersonalInformationService<PersonalInfo, Guid> personalInformationService,
+            IJwtValidator jwtValidator
+            )
         {
-            this.tokenService = tokenService;
-            this.userManager = userManager;
-            this.jwtValidator = jwtValidator;
+            this._tokenService = tokenService;
+            this._userManager = userManager;
+            this._infoService = personalInformationService;
+            this._jwtValidator = jwtValidator;
         }
 
         [HttpGet]
@@ -35,7 +43,7 @@ namespace Watchman.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel viewModel)
         {
-            var token = await tokenService.GetTokenAsync(viewModel.Email, viewModel.Password);
+            var token = await _tokenService.GetTokenAsync(viewModel.Email, viewModel.Password);
             if (String.IsNullOrWhiteSpace(token))
             {
                 ModelState.AddModelError("", "Wrong credentials");
@@ -44,7 +52,7 @@ namespace Watchman.Web.Controllers
             else
             {
                 HttpContext.Response.Cookies.Append("access_token", token);
-                var claimsPricipal = jwtValidator.GetClaimsPrincipal(token);
+                var claimsPricipal = _jwtValidator.GetClaimsPrincipal(token);
 
                 ClaimsIdentity id = new ClaimsIdentity(claimsPricipal.Claims, "ApplicationCookie", ClaimTypes.Email, ClaimsIdentity.DefaultRoleClaimType);
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
@@ -66,7 +74,7 @@ namespace Watchman.Web.Controllers
             try
             {
                 PersonalInformation info = new PersonalInfo(viewModel);
-                await userManager.CreateUserWithPersonalInformationAsync(info, viewModel.Password);
+                await _userManager.CreateUserWithPersonalInformationAsync(info, viewModel.Password);
             }
             catch (Exception ex)
             {
@@ -76,6 +84,19 @@ namespace Watchman.Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Account()
+        {
+            var infoId = Guid.Parse(User.FindFirstValue("infoIdClaim"));
+            var token = Request.Cookies["access_token"];
+
+            var personalInfo = await _infoService.GetPersonalInformation(infoId, token);
+
+            return View(personalInfo);
+        }
+
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
