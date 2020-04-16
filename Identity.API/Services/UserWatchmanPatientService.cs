@@ -26,19 +26,12 @@ namespace Identity.API.Services
             await _userRepository.SaveChangesAsync();
         }
 
-        public Task AddWatchmanToUserAsync(Guid userId, Guid watchmanId)
+        public async Task AddWatchmanToUserAsync(Guid userId, Guid watchmanId, string token = null)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<Guid> CreateIfNotExistPatientAsync(Guid userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Guid> CreateIfNotExistWatchmanAsync(Guid userId)
-        {
-            throw new NotImplementedException();
+            var user = await _userRepository.RetrieveAsync(userId);
+            user.WatcmanId = watchmanId;
+            await _userRepository.UpdateAsync(user);
+            await _userRepository.SaveChangesAsync();
         }
 
         public async Task<bool> ExistPatientAsync(Guid userId)
@@ -55,31 +48,28 @@ namespace Identity.API.Services
         public Task<Patient<Guid>> GetPatientByUserIdAsync(Guid usedId)
         {
             throw new NotImplementedException();
-        }
-
-        public Task<Patient<Guid>> GetPatientWithPropertiesByUserIdAsync(Guid usedId)
-        {
-            throw new NotImplementedException();
-        }
+        }      
 
         public Task<WatchmanProfile> GetWatchmanByUserIdAsync(Guid userId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<WatchmanProfile> GetWatchmanWithPropertiesByUserIdAsync(Guid userId)
+
+        public async Task RemovePatientFromUser(Guid userId)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.RetrieveAsync(userId);
+            user.PatientId = Guid.Empty;
+            await _userRepository.UpdateAsync(user);
+            await _userRepository.SaveChangesAsync();
         }
 
-        public void RemovePatientFromUser(Guid userId)
+        public async Task RemoveWatchmanFromUser(Guid userId)
         {
-            throw new NotImplementedException();
-        }
-
-        public void RemoveWatchmanFromUser(Guid userId)
-        {
-            throw new NotImplementedException();
+            var user = await _userRepository.RetrieveAsync(userId);
+            user.WatcmanId = Guid.Empty;
+            await _userRepository.UpdateAsync(user);
+            await _userRepository.SaveChangesAsync();
         }
     }
 }
