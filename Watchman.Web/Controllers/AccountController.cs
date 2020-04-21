@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Watchman.BusinessLogic.Models.Data;
 using Watchman.BusinessLogic.Models.Users;
 using Watchman.BusinessLogic.Services;
+using Watchman.Web.Extensions;
 using Watchman.Web.Models;
 using Watchman.Web.ViewModels;
 
@@ -17,6 +18,7 @@ namespace Watchman.Web.Controllers
 {
     public class AccountController : Controller
     {
+        private const string AccessTokenKey = "access_token";
         private readonly ITokenService _tokenService;
         private readonly IUserManager<WatchmanUser, Guid> _userManager;
         private readonly IPersonalInformationService<PersonalInfo, Guid> _infoService;
@@ -40,6 +42,7 @@ namespace Watchman.Web.Controllers
         {
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel viewModel)
         {
@@ -51,12 +54,7 @@ namespace Watchman.Web.Controllers
             }
             else
             {
-                HttpContext.Response.Cookies.Append("access_token", token);
-                var claimsPricipal = _jwtValidator.GetClaimsPrincipal(token);
-
-                ClaimsIdentity id = new ClaimsIdentity(claimsPricipal.Claims, "ApplicationCookie", ClaimTypes.Email, ClaimsIdentity.DefaultRoleClaimType);
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
-
+                await Authenticate(token);
                 return RedirectToAction("Index", "Home");
             }
         }
@@ -89,7 +87,7 @@ namespace Watchman.Web.Controllers
         public async Task<IActionResult> Account()
         {
             var infoId = Guid.Parse(User.FindFirstValue("infoIdClaim"));
-            var token = Request.Cookies["access_token"];
+            var token = Request.Cookies[AccessTokenKey];
 
             var personalInfo = await _infoService.GetPersonalInformation(infoId, token);
 
@@ -97,11 +95,51 @@ namespace Watchman.Web.Controllers
         }
 
         [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> RefreshToken(string returnUrl = null)
+        {
+            var token = this.GetAccessTokenFromCookies();
+            var email = this.GetUserEmailFromHttpContext();
+
+            string newToken = await _tokenService.RefreshToken(email, token);
+
+            await LogoutUser();
+            await Authenticate(newToken);
+
+            if (returnUrl == null)
+                return RedirectToAction("Account");
+            else
+                return Redirect(returnUrl);
+        }
+
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            HttpContext.Response.Cookies.Delete("access_token");
+            await LogoutUser();
             return RedirectToAction("Login", "Account");
+        }
+
+        [Authorize]
+        [NonAction]
+        private async Task LogoutUser()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            HttpContext.Response.Cookies.Delete(AccessTokenKey);
+        }
+
+        [Authorize]
+        [NonAction]
+        private async Task Authenticate(string token)
+        {
+            if (HttpContext.Request.Cookies.ContainsKey(AccessTokenKey))
+            {
+                HttpContext.Response.Cookies.Delete(AccessTokenKey);
+            }
+            HttpContext.Response.Cookies.Append(AccessTokenKey, token);
+            var claimsPrincipal = _jwtValidator.GetClaimsPrincipal(token);
+
+            ClaimsIdentity id = new ClaimsIdentity(claimsPrincipal.Claims, "ApplicationCookie", ClaimTypes.Email, ClaimsIdentity.DefaultRoleClaimType);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
         }
     }
 }
