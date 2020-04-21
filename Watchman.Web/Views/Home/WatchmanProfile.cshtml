@@ -1,4 +1,4 @@
-﻿@model Watchman.BusinessLogic.Models.Users.WatchmanProfile
+﻿@model Watchman.Web.Models.WatchmanInfo
 
 @{
     ViewData["Title"] = "WatchmanProfile";
@@ -22,6 +22,7 @@
         @foreach (var pair in Model.WatchmanPatients)
         {
             <h4>@pair.PatientId</h4>
+            <button value="@pair.PatientId" asp-action="PatientProfile" asp-controller="Home">Look at</button>
         }
     </div>
 </div>
