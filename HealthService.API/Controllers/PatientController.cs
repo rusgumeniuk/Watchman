@@ -18,10 +18,10 @@ namespace HealthService.API.Controllers
     [Authorize]
     public class PatientController : Controller
     {
-        private readonly IWatchmanPatientService<Guid> service;
+        private readonly IWatchmanPatientService<Guid> _service;
         public PatientController(IWatchmanPatientService<Guid> watchmanPatientService)
         {
-            this.service = watchmanPatientService;
+            this._service = watchmanPatientService;
         }
 
         //[ValidationModelStateActionFilter]
@@ -57,7 +57,7 @@ namespace HealthService.API.Controllers
         {
             try
             {
-                await service.CreatePatient(new PatientProfile() { Id = model.Id });
+                await _service.CreatePatientAsync(new PatientProfile() { Id = model.Id });
 
                 return Ok();
             }
@@ -66,6 +66,16 @@ namespace HealthService.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [ValidationModelStateActionFilter]
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Get([FromBody]GuidFieldViewModel model)
+        {
+            var patient = await _service.GetPatientAsync(model.Id);
+            return Ok(patient);
+        }
+
 
         //[ValidationModelStateActionFilter]
         //[HttpDelete]
@@ -81,7 +91,7 @@ namespace HealthService.API.Controllers
         {
             try
             {
-                service.RemoveAllWatchmenFromPatient(model.Id);
+                _service.RemoveAllWatchmenFromPatient(model.Id);
                 return Ok();
             }
             catch (Exception ex)
@@ -100,7 +110,7 @@ namespace HealthService.API.Controllers
                 MeasurementTime = model.DateTime,
                 Signs = res
             };
-            await service.AddHealthMeasurementAsync(model.PatientId, hm);
+            await _service.AddHealthMeasurementAsync(model.PatientId, hm);
             return Ok();
         }
 
@@ -108,7 +118,7 @@ namespace HealthService.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetMeasurement([FromBody]GuidFieldViewModel model)
         {
-            var res = await service.GetLastHealthMeasurementAsync(model.Id);
+            var res = await _service.GetLastHealthMeasurementAsync(model.Id);
             if (res != null)
                 return Ok(res);
             else
@@ -119,7 +129,7 @@ namespace HealthService.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetMeasurements([FromBody]GuidFieldViewModel model)
         {
-            var res = await service.GetLastHealthMeasurementsAsync(model.Id, 5);
+            var res = await _service.GetLastHealthMeasurementsAsync(model.Id, 5);
             if (res != null)
                 return Ok(res);
             else
@@ -133,7 +143,7 @@ namespace HealthService.API.Controllers
             var sign = ParseSign(model.SignType);
             if (sign != null)
             {
-                await service.AddIgnorableSignToPatientAsync(model.PatientId, sign);
+                await _service.AddIgnorableSignToPatientAsync(model.PatientId, sign);
                 return Ok();
             }
 
@@ -145,7 +155,7 @@ namespace HealthService.API.Controllers
         {
             try
             {
-                var result = await service.AnalyzeLastMeasurementAsync(model.Id);
+                var result = await _service.AnalyzeLastMeasurementAsync(model.Id);
                 return Ok(result);
             }
             catch (Exception ex)
