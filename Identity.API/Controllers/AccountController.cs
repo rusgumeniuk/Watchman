@@ -14,6 +14,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
+using Watchman.API.Common.Attributes;
 using Watchman.BusinessLogic.Models.Data;
 using Watchman.BusinessLogic.Models.Users;
 using Watchman.BusinessLogic.Services;
@@ -48,6 +49,7 @@ namespace Identity.API.Controllers
             this._jwtValidator = jwtValidator;
         }
 
+        [ValidationModelStateActionFilter]
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody]RegisterViewModel model)
@@ -77,46 +79,20 @@ namespace Identity.API.Controllers
             }
         }
 
+        [ValidationModelStateActionFilter]
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody]LoginViewModel model)
         {
             if (await _loginService.ValidateCredentialsAsync(model.Email, model.Password))
             {
-                var roles = await _roleService.GetRoleByUser(model.Email);
-                var user = await _userManager.FindByEmailAsync(model.Email);
-
-                IList<Claim> claims = new List<Claim>
-                    {
-                        new Claim(JwtRegisteredClaimNames.Email, model.Email),
-                        new Claim(ClaimsIdentity.DefaultNameClaimType, model.Email)
-                    };
-                if (roles.Contains(','))
-                {
-                    foreach (var role in roles.Split(','))
-                    {
-                        claims.Add(new Claim(ClaimsIdentity.DefaultRoleClaimType, role));
-                    }
-                }
-                else
-                    claims.Add(new Claim(ClaimsIdentity.DefaultRoleClaimType, roles));
-
-                if (user.PersonalInformationId != Guid.Empty)
-                    claims.Add(new Claim("infoIdClaim", user.PersonalInformationId.ToString()));
-
-                if (user.PatientId != Guid.Empty)
-                    claims.Add(new Claim("patientIdClaim", user.PatientId.ToString()));
-
-                if (user.WatcmanId != Guid.Empty)
-                    claims.Add(new Claim("watchmanIdClaim", user.WatcmanId.ToString()));
-
-                var tokenString = _jwtGenerator.GenerateJSONWebToken(claims.ToArray());
-                return Ok(new { token = tokenString });
+                return Ok(await GenerateTokenWithClaims(model.Email));
             }
-
-            return BadRequest("No way");
+            else
+                return BadRequest("No way");
         }
 
+        [ValidationModelStateActionFilter]
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> GetUserByEmail([FromBody]EmailViewModel model)
@@ -128,6 +104,7 @@ namespace Identity.API.Controllers
                 return BadRequest();
         }
 
+        [ValidationModelStateActionFilter]
         [HttpPost]
         [AllowAnonymous]
         public IActionResult Token([FromBody] TokenViewModel model)
@@ -137,6 +114,47 @@ namespace Identity.API.Controllers
                 return Ok();
             else
                 return BadRequest();
+        }
+
+        [ValidationModelStateActionFilter]
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> RefreshToken([FromBody] EmailViewModel model)
+        {
+            return Ok(await GenerateTokenWithClaims(model.Email));
+        }
+
+        [NonAction]
+        private async Task<string> GenerateTokenWithClaims(string email)
+        {
+            var roles = await _roleService.GetRoleByUser(email);
+            var user = await _userManager.FindByEmailAsync(email);
+
+            IList<Claim> claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Email, email),
+                new Claim(ClaimsIdentity.DefaultNameClaimType, email)
+            };
+            if (roles.Contains(','))
+            {
+                foreach (var role in roles.Split(','))
+                {
+                    claims.Add(new Claim(ClaimsIdentity.DefaultRoleClaimType, role));
+                }
+            }
+            else
+                claims.Add(new Claim(ClaimsIdentity.DefaultRoleClaimType, roles));
+
+            if (user.PersonalInformationId != Guid.Empty)
+                claims.Add(new Claim("infoIdClaim", user.PersonalInformationId.ToString()));
+
+            if (user.PatientId != Guid.Empty)
+                claims.Add(new Claim("patientIdClaim", user.PatientId.ToString()));
+
+            if (user.WatcmanId != Guid.Empty)
+                claims.Add(new Claim("watchmanIdClaim", user.WatcmanId.ToString()));
+
+            return _jwtGenerator.GenerateJSONWebToken(claims.ToArray());
         }
     }
 }
