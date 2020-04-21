@@ -6,6 +6,8 @@ using Microsoft.Extensions.Logging;
 
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Watchman.API.Common.Attributes;
 using Watchman.BusinessLogic.Services;
 
 namespace Identity.API.Controllers
@@ -33,7 +35,9 @@ namespace Identity.API.Controllers
             this._userHealthService = userWatchmanPatientService;
         }
 
+        [ValidationModelStateActionFilter]
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> AddPatientToUser([FromBody]UserIdSecondIdViewModel model)
         {
             if(model?.UserId != Guid.Empty && model?.SecondId != Guid.Empty)
@@ -45,6 +49,18 @@ namespace Identity.API.Controllers
             return BadRequest(model);
         }
 
-
+        [ValidationModelStateActionFilter]
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> AddWatchmanToUser([FromBody]UserIdSecondIdViewModel model)
+        {
+            if (model?.UserId != Guid.Empty && model?.SecondId != Guid.Empty)
+            {
+                await _userHealthService.AddWatchmanToUserAsync(model.UserId, model.SecondId);
+                var user = await _userManager.FindByIdAsync(model.UserId);
+                return Ok(user.WatcmanId);
+            }
+            return BadRequest(model);
+        }
     }
 }
