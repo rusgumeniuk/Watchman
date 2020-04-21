@@ -1,4 +1,5 @@
-﻿using HealthService.API.ViewModels;
+﻿using HealthService.API.Models.Users;
+using HealthService.API.ViewModels;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,17 +16,17 @@ namespace HealthService.API.Controllers
     [Authorize]
     public class WatchmanController : Controller
     {
-        private readonly IWatchmanPatientService<Guid> service;
+        private readonly IWatchmanPatientService<Guid> _service;
         public WatchmanController(IWatchmanPatientService<Guid> watchmanPatientService)
         {
-            this.service = watchmanPatientService;
+            this._service = watchmanPatientService;
         }
 
         //[HttpGet]
         //[AllowAnonymous]
         //public async Task<IActionResult> GetWatchmanByUserId([FromBody]GuidFieldViewModel model)
         //{
-        //    return Ok(await service.GetWatchmanByUserIdAsync(model.Id));
+        //    return Ok(await _service.GetWatchmanByUserIdAsync(model.Id));
         //}
 
         //[ValidationModelStateActionFilter]
@@ -33,33 +34,42 @@ namespace HealthService.API.Controllers
         //[AllowAnonymous]
         //public async Task<IActionResult> GetWatchmantWithPropsByUserId([FromBody]GuidFieldViewModel model)
         //{
-        //    return Ok(JsonConvert.SerializeObject(await service.GetWatchmanWithPropertiesByUserIdAsync(model.Id)));
+        //    return Ok(JsonConvert.SerializeObject(await _service.GetWatchmanWithPropertiesByUserIdAsync(model.Id)));
         //}
 
         //[ValidationModelStateActionFilter]
         //[HttpPost]
         //public async Task<IActionResult> Exist([FromBody]GuidFieldViewModel model)
         //{
-        //    var res = await service.ExistWatchmanAsync(model.Id);
+        //    var res = await _service.ExistWatchmanAsync(model.Id);
         //    if (res)
         //        return Ok();
         //    else
         //        return BadRequest();
         //}
 
-        //[ValidationModelStateActionFilter]
-        //[HttpPost]
-        //public async Task<IActionResult> Create([FromBody]GuidFieldViewModel model)
-        //{
-        //    await service.AddWatchmanToUserAsync(model.Id);
-        //    return Ok();
-        //}
+        [ValidationModelStateActionFilter]
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody]GuidFieldViewModel model)
+        {
+            await _service.CreateWatchmanAsync(new WatchmanProfileHealth() { Id = model.Id });
+            return Ok();
+        }
+
+        [ValidationModelStateActionFilter]
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Get([FromBody]GuidFieldViewModel model)
+        {
+            var watchman = await _service.GetWatchmanAsync(model.Id);
+            return Ok(watchman);
+        }
 
         //[ValidationModelStateActionFilter]
         //[HttpDelete]
         //public IActionResult Remove([FromBody]GuidFieldViewModel model)
         //{
-        //    service.RemoveWatchmanFromUser(model.Id);
+        //    _service.RemoveWatchmanFromUser(model.Id);
         //    return Ok();
         //}
 
@@ -69,7 +79,7 @@ namespace HealthService.API.Controllers
         {
             try
             {
-                await service.AddPatientToWatchmanAsync(model.WatchmanId, model.PatientId);
+                await _service.AddPatientToWatchmanAsync(model.WatchmanId, model.PatientId);
                 return Ok();
             }
             catch (Exception ex)
@@ -84,7 +94,7 @@ namespace HealthService.API.Controllers
         {
             try
             {
-                await service.RemovePatientFromWatchmanAsync(model.WatchmanId, model.PatientId);
+                await _service.RemovePatientFromWatchmanAsync(model.WatchmanId, model.PatientId);
                 return Ok();
             }
             catch (Exception ex)
@@ -99,7 +109,7 @@ namespace HealthService.API.Controllers
         {
             try
             {
-                service.RemoveAllPatientFromWatchman(model.Id);
+                _service.RemoveAllPatientFromWatchman(model.Id);
                 return Ok();
             }
             catch (Exception ex)
