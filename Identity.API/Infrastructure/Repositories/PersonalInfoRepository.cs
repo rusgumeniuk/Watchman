@@ -13,7 +13,7 @@ namespace Identity.API.Infrastructure.Repositories
 {
     public class PersonalInfoRepository : Repository<PersonalInfo, Guid>, IPersonalInformationRepository<PersonalInfo, Guid>
     {
-        public WatchmanDbContext WatchmanContext => Context as WatchmanDbContext;
+        public WatchmanDbContext WatchmanContext => _context as WatchmanDbContext;
         public PersonalInfoRepository(WatchmanDbContext context) : base(context) { }
 
         public override async Task<PersonalInfo> RetrieveWithAllPropertiesAsync(Guid id)

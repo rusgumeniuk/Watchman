@@ -15,52 +15,52 @@ namespace Watchman.API.Common.Infrastructure.Repositories
         where TEntity : class, IIdentifiedEntity<TKey>
         where TKey : IEquatable<TKey>
     {
-        protected readonly DbContext Context;
+        protected readonly DbContext _context;
 
         public Repository(DbContext context)
         {
-            this.Context = context;
+            this._context = context;
         }
 
         public async Task CreateAsync(TEntity entity)
         {
-            await Context.Set<TEntity>().AddAsync(entity);
+            await _context.Set<TEntity>().AddAsync(entity);
         }
         public async Task<TEntity> UpdateAsync(TEntity oldEntity)
         {
-            Context.Entry(oldEntity).State = EntityState.Modified;
-            Context.SaveChanges();
-            return await Context.Set<TEntity>().FindAsync(oldEntity.Id);
+            _context.Entry(oldEntity).State = EntityState.Modified;
+            _context.SaveChanges();
+            return await _context.Set<TEntity>().FindAsync(oldEntity.Id);
         }
         public void Remove(TEntity entity)
         {
-            Context.Set<TEntity>().Remove(entity);
+            _context.Set<TEntity>().Remove(entity);
         }
 
         public async Task<TEntity> RetrieveAsync(TKey id)
         {
-            return await Context.Set<TEntity>().FindAsync(id);
+            return await _context.Set<TEntity>().FindAsync(id);
         }
         public async Task<IEnumerable<TEntity>> RetrieveAllAsync()
         {
-            return await Context.Set<TEntity>().ToListAsync();
+            return await _context.Set<TEntity>().ToListAsync();
         }
         public async Task<IEnumerable<TEntity>> RetrieveAllAsync(Expression<Func<TEntity, bool>> expression)
         {
-            return await Context.Set<TEntity>().Where(expression).ToListAsync();
+            return await _context.Set<TEntity>().Where(expression).ToListAsync();
         }
 
         public async Task SaveChangesAsync()
         {
-            await Context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
         public void Dispose()
         {
-            Context.Dispose();
+            _context.Dispose();
         }
         public async Task DisposeAsync()
         {
-            await Context.DisposeAsync();
+            await _context.DisposeAsync();
         }
 
         public abstract Task<TEntity> RetrieveWithAllPropertiesAsync(TKey id);

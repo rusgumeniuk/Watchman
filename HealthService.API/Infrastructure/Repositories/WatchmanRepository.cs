@@ -16,7 +16,7 @@ namespace HealthService.API.Models.Infrastructure.Repositories
 {
     public class WatchmanRepository : Repository<WatchmanProfileHealth, Guid>, IWatchmanRepository<WatchmanProfileHealth, Guid>
     {
-        public HealthDbContext HealthContext => Context as HealthDbContext;
+        public HealthDbContext HealthContext => _context as HealthDbContext;
         public WatchmanRepository(HealthDbContext context) : base(context) { }
 
         public async Task<IEnumerable<Patient<Guid>>> GetPatientsAsync(WatchmanProfileHealth watchman)

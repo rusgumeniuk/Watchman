@@ -1,4 +1,4 @@
-﻿@model Watchman.Web.Models.PatientInfo
+﻿@model Watchman.Web.ViewModels.PatientProfileViewModel
 
 @{
     ViewData["Title"] = "PatientProfile";
@@ -12,14 +12,40 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
+            @Html.DisplayNameFor(model => model.Patient.Id)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id)
+            @Html.DisplayFor(model => model.Patient.Id)
         </dd>
     </dl>
 </div>
+
+
 <div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    <a asp-action="Index">Back to List</a>
+    @if (Model.ControlRequests.Any())
+    {
+        <label>Here is requests from user which wanna monitor your health:</label>
+        foreach (var request in Model.ControlRequests)
+        {
+            <div>
+                <span> @request.PersonalInformation.FirstName </span>
+                <span>@request.PersonalInformation.SecondName</span>
+            </div>
+            <div>
+                <label>Email</label>
+                <label>@request.PersonalInformation.Email</label>
+            </div>
+            <div>
+                <form asp-controller="Home" asp-action="AcceptRequest" method="post">
+                    <button type="submit" class="btn btn-outline-success" name="requestId" value="@request.RequestId">Accept</button>
+                </form>
+                <form asp-controller="Home" asp-action="RefuseRequest" method="post">
+                    <button type="submit" class="btn btn-outline-danger" name="requestId" value="@request.RequestId">Refuse</button>
+                </form>
+                <form asp-controller="Home" asp-action="BlockRequestFromWatchman" method="post">
+                    <button type="submit" class="btn btn-outline-dark" name="email" value="@request.PersonalInformation.Email">Block</button>
+                </form>
+            </div>
+        }
+    }
 </div>

@@ -17,7 +17,7 @@ namespace HealthService.API.Models.Infrastructure.Repositories
 {
     public class PatientRepository : Repository<PatientProfile, Guid>, IPatientRepository<PatientProfile, Guid>
     {
-        public HealthDbContext HealthContext => Context as HealthDbContext;
+        public HealthDbContext HealthContext => _context as HealthDbContext;
         public PatientRepository(HealthDbContext context) : base(context) { }
 
         public async Task<HealthMeasurement<Guid, Guid>> GetLastHealthMeasurementAsync(Guid patientId)

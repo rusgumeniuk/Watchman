@@ -13,7 +13,7 @@ namespace Identity.API.Infrastructure.Repositories
 {
     public class UserRepository : Repository<IdentityUser, Guid>, IUserRepository<IdentityUser>
     {
-        public WatchmanDbContext WatchmanContext => Context as WatchmanDbContext;
+        public WatchmanDbContext WatchmanContext => _context as WatchmanDbContext;
         public UserRepository(WatchmanDbContext context) : base(context) { }
 
         public async override Task<IdentityUser> RetrieveWithAllPropertiesAsync(Guid id)

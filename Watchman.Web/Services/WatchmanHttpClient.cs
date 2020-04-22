@@ -9,13 +9,13 @@ namespace Watchman.Web.Services
 {
     public class WatchmanHttpClient : IHttpClient
     {
-        private readonly string baseUrl = "https://localhost:44383/";
-        private readonly HttpClient client;
+        private readonly string _baseUrl = "https://localhost:44383/";
+        private readonly HttpClient _client;
 
-        public WatchmanHttpClient(HttpClient httpClient, string baseURL = null)
+        public WatchmanHttpClient(HttpClient httpClient, string baseUrl = null)
         {
-            this.client = httpClient;
-            this.baseUrl = baseURL ?? baseUrl;
+            this._client = httpClient;
+            this._baseUrl = baseUrl ?? _baseUrl;
         }
 
         public async Task<T> GetResponseResultOrDefault<T>(HttpResponseMessage responseMessage)
@@ -36,9 +36,9 @@ namespace Watchman.Web.Services
 
         public async Task<HttpResponseMessage> SendRequest(HttpMethod httpMethod, string url, object contentToSerialize, string newUrl = null, string token = null)
         {
-            var uri = newUrl ?? $"{baseUrl}/{url}";
+            var uri = newUrl ?? $"{_baseUrl}/{url}";
             var jsonObject = JsonConvert.SerializeObject(contentToSerialize);
-            var content = new StringContent(jsonObject, UTF8Encoding.UTF8, "application/json");
+            var content = new StringContent(jsonObject, Encoding.UTF8, "application/json");
 
             HttpRequestMessage message = new HttpRequestMessage(httpMethod, uri)
             {
@@ -46,7 +46,7 @@ namespace Watchman.Web.Services
             };
             if (token != null)
                 message.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            return await client.SendAsync(message);
+            return await _client.SendAsync(message);
         }
     }
 }
