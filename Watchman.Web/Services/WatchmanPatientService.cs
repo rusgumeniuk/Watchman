@@ -20,6 +20,7 @@ namespace Watchman.Web.Services
         private const string PatientUrl = "https://localhost:44383/patient";
         private const string WatchmanUrl = "https://localhost:44383/watchman";
         private const string UserUrl = "https://localhost:44383/user";
+
         private readonly IHttpClient _client;
 
         public WatchmanPatientService(IHttpClient httpClient)
@@ -63,9 +64,26 @@ namespace Watchman.Web.Services
             throw new NotImplementedException();
         }
 
-        public Task AddPatientToWatchmanAsync(Guid watchmanId, Guid patientId, string token = null)
+        public async Task AddPatientToWatchmanAsync(Guid watchmanId, Guid patientId, string token = null)
         {
-            return null;
+            var uri = WatchmanUrl + "/Add";
+            var obj = new { WatchmanId = watchmanId, PatientId = patientId };
+
+            await _client.SendRequest(HttpMethod.Post, null, obj, uri, token);
+        }
+
+        public async Task<bool> IsControlPatient(Guid watchmanId, Guid patientId, string token = null)
+        {
+            var uri = WatchmanUrl + "/IsControlPatient";
+            var obj = new { WatchmanId = watchmanId, PatientId = patientId };
+
+            var response = await _client.SendRequest(HttpMethod.Post, null, obj, uri, token);
+            var result = await _client.GetResponseResult(response);
+
+            var res = !response.IsSuccessStatusCode || String.IsNullOrWhiteSpace(result)
+                ? throw new ArgumentException() : JsonConvert.DeserializeObject<bool>(result);
+
+            return res;
         }
 
         public Task AddWatchmanToUserAsync(Guid userId, Guid watchmanId)
@@ -157,10 +175,18 @@ namespace Watchman.Web.Services
             var response = await _client.SendRequest(HttpMethod.Get, null, obj, uri, token);
             var result = await _client.GetResponseResult(response);
 
-            var res = !response.IsSuccessStatusCode || String.IsNullOrWhiteSpace(result)
-                ? null : JsonConvert.DeserializeObject<WatchmanInfo>(result);
+            var dto = !response.IsSuccessStatusCode || String.IsNullOrWhiteSpace(result)
+                ? null : JsonConvert.DeserializeObject<WatchmanDTO>(result);
 
-            return res;
+            if (dto == null) return null;
+
+            var watchman = new WatchmanInfo { Id = dto.Id };
+            foreach (var pair in dto.WatchmanPatients)
+            {
+                watchman.WatchmanPatients.Add(new WatchmanPatientImpl() { PatientId = pair.PatientId, WatchmanId = pair.WatchmanId });
+            }
+
+            return watchman;
         }
 
         public Task<WatchmanProfile> GetWatchmanByUserIdAsync(Guid userId)
