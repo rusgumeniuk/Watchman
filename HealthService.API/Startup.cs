@@ -13,7 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using System;
-
+using HealthService.API.Infrastructure.Repositories;
 using Watchman.API.Common.Attributes;
 using Watchman.API.Common.Extensions;
 using Watchman.API.Common.Services.JWT;
@@ -50,9 +50,11 @@ namespace HealthService.API
             services.AddTransient<IAnalysisResult, AnalysisResult>();
             services.AddTransient<IAnalysisStrategy, MinMaxValueAnalyseStrategy>();
             services.AddTransient<IHealthAnalyzer, HealthAnalyzer>();
+            services.AddTransient<IControlRequestRepository, ControlRequestRepository>();
             services.AddTransient<IWatchmanRepository<WatchmanProfileHealth, Guid>, WatchmanRepository>();
             services.AddTransient<IPatientRepository<PatientProfile, Guid>, PatientRepository>();
             services.AddTransient<IWatchmanPatientUnitOfWork, WatchmanPatientUnitOfWork>();
+            services.AddTransient<IControlRequestService, ControlRequestService>();
             services.AddTransient<IWatchmanPatientService<Guid>, WatchmanPatientService>();
         }
 
