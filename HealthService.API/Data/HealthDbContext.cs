@@ -18,6 +18,7 @@ namespace HealthService.API.Data
         public DbSet<HeartAndPressureHealthState> HealthStates { get; set; }
         public DbSet<Sign<Guid>> Signs { get; set; }
         public DbSet<PatientSign> PatientIgnorableSigns { get; set; }
+        public DbSet<ControlRequest> ControlRequests { get; set; }
 
         public HealthDbContext(DbContextOptions<HealthDbContext> options)
             : base(options)
