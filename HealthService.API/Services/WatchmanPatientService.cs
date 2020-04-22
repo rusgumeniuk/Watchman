@@ -84,6 +84,13 @@ namespace HealthService.API.Services
                 await _db.SaveAsync();
             }
         }
+
+        public async Task<bool> IsControlPatient(Guid watchmanId, Guid patientId, string token = null)
+        {
+            var watchman = await _db.WatchmanRepository.RetrieveWithAllPropertiesAsync(watchmanId);
+            return watchman.WatchmanPatients.FirstOrDefault(pair => pair.PatientId.Equals(patientId)) != null;
+        }
+
         public async Task RemovePatientFromWatchmanAsync(Guid watchmanId, Guid patientId, string token = null)
         {
             var watchman = await _db.WatchmanRepository.RetrieveAsync(watchmanId);
@@ -134,7 +141,7 @@ namespace HealthService.API.Services
         }
         public async Task<WatchmanProfile<Guid>> GetWatchmanAsync(Guid id, string token = null)
         {
-            return await _db.WatchmanRepository.RetrieveAsync(id);
+            return await _db.WatchmanRepository.RetrieveWithAllPropertiesAsync(id);
         }
     }
 }

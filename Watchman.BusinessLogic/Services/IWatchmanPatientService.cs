@@ -20,6 +20,7 @@ namespace Watchman.BusinessLogic.Services
         Task AddIgnorableSignToPatientAsync(TKey patientId, Sign<TKey> sign, string token = null);
 
         Task AddPatientToWatchmanAsync(TKey watchmanId, TKey patientId, string token = null);
+        Task<bool> IsControlPatient(TKey watchmanId, TKey patientId, string token = null);
 
         Task RemovePatientFromWatchmanAsync(TKey watchmanId, TKey patientId, string token = null);
 
