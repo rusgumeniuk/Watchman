@@ -8,12 +8,14 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Watchman.API.Common.Attributes;
+using Watchman.API.Common.ViewModels;
 using Watchman.BusinessLogic.Services;
 
 namespace Identity.API.Controllers
 {
     //[Route("api/[controller]")]
     //[ApiController]
+    [Authorize]
     public class UserController : Controller
     {
         private readonly IUserManager<IdentityUser, Guid> _userManager;
@@ -37,7 +39,7 @@ namespace Identity.API.Controllers
 
         [ValidationModelStateActionFilter]
         [HttpPost]
-        [Authorize]
+        
         public async Task<IActionResult> AddPatientToUser([FromBody]UserIdSecondIdViewModel model)
         {
             if(model?.UserId != Guid.Empty && model?.SecondId != Guid.Empty)
@@ -51,7 +53,6 @@ namespace Identity.API.Controllers
 
         [ValidationModelStateActionFilter]
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> AddWatchmanToUser([FromBody]UserIdSecondIdViewModel model)
         {
             if (model?.UserId != Guid.Empty && model?.SecondId != Guid.Empty)
@@ -61,6 +62,13 @@ namespace Identity.API.Controllers
                 return Ok(user.WatcmanId);
             }
             return BadRequest(model);
+        }
+
+        [ValidationModelStateActionFilter]
+        [HttpPost]
+        public async Task<IActionResult> GetByWatchmanId([FromBody] GuidFieldViewModel model)
+        {
+            return Ok(await _userManager.FindByWatchman(model.Id));
         }
     }
 }
