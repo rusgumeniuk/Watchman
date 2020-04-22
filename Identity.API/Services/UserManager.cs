@@ -43,6 +43,11 @@ namespace Identity.API.Services
             }
         }
 
+        public async Task<IdentityUser> FindByWatchman(Guid watchmanId, string token = null)
+        {
+            return await _userRepository.GetByWatchmanId(watchmanId);
+        }
+
         public async Task<IdentityUser> FindByEmailAsync(string email, string token = null)
         {
             var personalnfo = await _personalInfoRepository.GetByEmailAsync(email);
