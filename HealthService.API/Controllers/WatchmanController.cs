@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using System;
 using System.Threading.Tasks;
-
+using Newtonsoft.Json;
 using Watchman.API.Common.Attributes;
 using Watchman.API.Common.ViewModels;
 using Watchman.BusinessLogic.Services;
@@ -21,21 +21,7 @@ namespace HealthService.API.Controllers
         {
             this._service = watchmanPatientService;
         }
-
-        //[HttpGet]
-        //[AllowAnonymous]
-        //public async Task<IActionResult> GetWatchmanByUserId([FromBody]GuidFieldViewModel model)
-        //{
-        //    return Ok(await _service.GetWatchmanByUserIdAsync(model.Id));
-        //}
-
-        //[ValidationModelStateActionFilter]
-        //[HttpGet]
-        //[AllowAnonymous]
-        //public async Task<IActionResult> GetWatchmantWithPropsByUserId([FromBody]GuidFieldViewModel model)
-        //{
-        //    return Ok(JsonConvert.SerializeObject(await _service.GetWatchmanWithPropertiesByUserIdAsync(model.Id)));
-        //}
+        
 
         //[ValidationModelStateActionFilter]
         //[HttpPost]
@@ -62,7 +48,8 @@ namespace HealthService.API.Controllers
         public async Task<IActionResult> Get([FromBody]GuidFieldViewModel model)
         {
             var watchman = await _service.GetWatchmanAsync(model.Id);
-            return Ok(watchman);
+            var result = JsonConvert.SerializeObject(watchman);
+            return Ok(result);
         }
 
         //[ValidationModelStateActionFilter]
@@ -72,6 +59,13 @@ namespace HealthService.API.Controllers
         //    _service.RemoveWatchmanFromUser(model.Id);
         //    return Ok();
         //}
+
+        [ValidationModelStateActionFilter]
+        [HttpPost]
+        public async Task<IActionResult> IsControlPatient([FromBody] WatchmanIdPatientIdViewModel model)
+        {
+            return Ok(await _service.IsControlPatient(model.WatchmanId, model.PatientId));
+        }
 
         [ValidationModelStateActionFilter]
         [HttpPost]
