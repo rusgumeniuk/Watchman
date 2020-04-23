@@ -28,6 +28,8 @@ namespace Watchman.BusinessLogic.Services
         Task CreateWatchmanAsync(WatchmanProfile<TKey> watchman, string token = null);
 
         Task<Patient<TKey>> GetPatientAsync(TKey id, string token = null);
+        Task<Patient<TKey>> GetPatientWithAllPropertiesAsync(TKey id, string token = null);
+
         Task<WatchmanProfile<TKey>> GetWatchmanAsync(TKey id, string token = null);
 
         void RemoveAllWatchmenFromPatient(TKey patientId, string token = null);

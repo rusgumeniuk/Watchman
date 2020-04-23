@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -54,12 +53,12 @@ namespace Watchman.Web.Services
             await _client.SendRequest(HttpMethod.Post, null, obj, uri, token);
         }
 
-        async Task IUserWatchmanPatientService<Guid>.RemovePatientFromUser(Guid userId)
+        Task IUserWatchmanPatientService<Guid>.RemovePatientFromUser(Guid userId)
         {
             throw new NotImplementedException();
         }
 
-        async Task IUserWatchmanPatientService<Guid>.RemoveWatchmanFromUser(Guid userId)
+        Task IUserWatchmanPatientService<Guid>.RemoveWatchmanFromUser(Guid userId)
         {
             throw new NotImplementedException();
         }
@@ -86,22 +85,7 @@ namespace Watchman.Web.Services
             return res;
         }
 
-        public Task AddWatchmanToUserAsync(Guid userId, Guid watchmanId)
-        {
-            throw new NotImplementedException();
-        }
-
         public Task<IAnalysisResult> AnalyzeLastMeasurementAsync(Guid patientId, string token = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Guid> CreateIfNotExistPatientAsync(Guid userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Guid> CreateIfNotExistWatchmanAsync(Guid userId)
         {
             throw new NotImplementedException();
         }
@@ -109,16 +93,15 @@ namespace Watchman.Web.Services
         public async Task CreatePatientAsync(Patient<Guid> patient, string token = null)
         {
             var uri = PatientUrl + "/Create";
-            var obj = new { Id = patient.Id };
+            var obj = new { patient.Id };
 
             await _client.SendRequest(HttpMethod.Post, null, obj, uri, token);
-
         }
 
         public async Task CreateWatchmanAsync(WatchmanProfile<Guid> watchman, string token = null)
         {
             var uri = WatchmanUrl + "/Create";
-            var obj = new { Id = watchman.Id };
+            var obj = new { watchman.Id };
 
             await _client.SendRequest(HttpMethod.Post, null, obj, uri, token);
         }
@@ -157,15 +140,25 @@ namespace Watchman.Web.Services
             return res;
         }
 
+        public async Task<Patient<Guid>> GetPatientWithAllPropertiesAsync(Guid id, string token = null)
+        {
+            var uri = PatientUrl + "/GetWithAllProperties";
+            var obj = new { Id = id };
+
+            var response = await _client.SendRequest(HttpMethod.Get, null, obj, uri, token);
+            var result = await _client.GetResponseResult(response);
+
+            var res = !response.IsSuccessStatusCode || String.IsNullOrWhiteSpace(result)
+                ? null : JsonConvert.DeserializeObject<PatientInfo>(result);
+
+            return res;
+        }
+
         public Task<Patient<Guid>> GetPatientByUserIdAsync(Guid usedId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Patient<Guid>> GetPatientWithPropertiesByUserIdAsync(Guid usedId)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<WatchmanProfile<Guid>> GetWatchmanAsync(Guid id, string token = null)
         {
@@ -176,7 +169,7 @@ namespace Watchman.Web.Services
             var result = await _client.GetResponseResult(response);
 
             var dto = !response.IsSuccessStatusCode || String.IsNullOrWhiteSpace(result)
-                ? null : JsonConvert.DeserializeObject<WatchmanDTO>(result);
+                ? null : JsonConvert.DeserializeObject<WatchmanDto>(result);
 
             if (dto == null) return null;
 
@@ -194,23 +187,6 @@ namespace Watchman.Web.Services
             throw new NotImplementedException();
         }
 
-        public async Task<WatchmanProfile> GetWatchmanWithPropertiesByUserIdAsync(Guid userId)
-        {
-            var uri = $"{WatchmanUrl}/GetWatchmantWithPropsByUserId";
-            var obj = new { Id = userId };
-            var response = await _client.SendRequest(HttpMethod.Get, null, obj, uri);
-            var dto = await _client.GetResponseResultOrDefault<WatchmanDTO>(response);
-            if (dto == null)
-                return null;
-            var watchman = new WatchmanInfo()
-            {
-                Id = dto.Id,
-                WatchmanPatients = dto.WatchmanPatients.ToList<WatchmanPatient<Guid, Guid>>()
-            };
-
-            return watchman;
-        }
-
         public void RemoveAllPatientFromWatchman(Guid watchmanId, string token = null)
         {
             throw new NotImplementedException();
@@ -221,27 +197,14 @@ namespace Watchman.Web.Services
             throw new NotImplementedException();
         }
 
-        public void RemovePatientFromUser(Guid userId)
-        {
-            throw new NotImplementedException();
-        }
-
         public Task RemovePatientFromWatchmanAsync(Guid watchmanId, Guid patientId, string token = null)
         {
             throw new NotImplementedException();
         }
-
-        public void RemoveWatchmanFromUser(Guid userId)
-        {
-            throw new NotImplementedException();
-        }
-
-
-
     }
 }
 
-class WatchmanDTO
+class WatchmanDto
 {
     public Guid Id { get; set; }
     public ICollection<WatchmanPatientImpl> WatchmanPatients { get; set; }

@@ -108,7 +108,7 @@ namespace Watchman.Web.Controllers
             var token = this.GetAccessTokenFromCookies();
             var id = Guid.Parse(stringId);
 
-            var patient = await _watchmanPatientService.GetPatientAsync(id, token);
+            var patient = await _watchmanPatientService.GetPatientWithAllPropertiesAsync(id, token);
             var pendingRequests = await _controlRequestService.GetPendingRequests(id, token);
             IList<PersonalInfoRequestIdPair> pairs = new List<PersonalInfoRequestIdPair>();
             foreach (var request in pendingRequests ?? new List<ControlRequest>())

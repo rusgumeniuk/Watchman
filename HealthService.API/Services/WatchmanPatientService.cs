@@ -25,12 +25,14 @@ namespace HealthService.API.Services
 
         public async Task AddIgnorableSignToPatientAsync(Guid patientId, Sign<Guid> sign, string token = null)
         {
-            var patient = _db.PatientRepository.RetrieveAsync(patientId);
+            var patient = await _db.PatientRepository.RetrieveAsync(patientId);
             if (patient != null)
             {
                 await _db.PatientRepository.AddIgnorableSignAsync(patientId, sign);
                 await _db.SaveAsync();
             }
+            else
+                throw new ArgumentException($"Didn't find patient with id {patientId}");
         }
 
         public async Task<IAnalysisResult> AnalyzeLastMeasurementAsync(Guid patientId, string token = null)
@@ -42,7 +44,8 @@ namespace HealthService.API.Services
                 _analyzer.AnalyzeLast(patientWithProps);
                 return _analyzer.AnalysisResult as IAnalysisResult;
             }
-            return null;
+            else
+                throw new ArgumentException($"Didn't find patient with id {patientId}");
         }
 
         public async Task<HealthMeasurement<Guid, Guid>> GetLastHealthMeasurementAsync(Guid patientId, string token = null)
@@ -52,7 +55,8 @@ namespace HealthService.API.Services
             {
                 return await _db.PatientRepository.GetLastHealthMeasurementAsync(patientId);
             }
-            return null;
+            else
+                throw new ArgumentException($"Didn't find patient with id {patientId}");
         }
         public async Task<IEnumerable<HealthMeasurement<Guid, Guid>>> GetLastHealthMeasurementsAsync(Guid patientId, int count, string token = null)
         {
@@ -61,34 +65,44 @@ namespace HealthService.API.Services
             {
                 return await _db.PatientRepository.GetLastHealthMeasurementsAsync(patientId, count);
             }
-            return null;
+            else
+                throw new ArgumentException($"Didn't find patient with id {patientId}");
         }
         public async Task AddHealthMeasurementAsync(Guid patientId, HealthMeasurement<Guid, Guid> healthMeasurement, string token = null)
         {
-            var patient = _db.PatientRepository.RetrieveAsync(patientId);
+            var patient = await _db.PatientRepository.RetrieveAsync(patientId);
             if (patient != null && healthMeasurement != null)
             {
                 await _db.PatientRepository.AddHealthMeasurementAsync(patientId, healthMeasurement);
                 await _db.SaveAsync();
             }
+            else if (patient == null)
+                throw new ArgumentException($"Didn't find patient with id {patientId}");
+            else
+                throw new ArgumentException("Health measurement can't be null");
         }
 
         public async Task AddPatientToWatchmanAsync(Guid watchmanId, Guid patientId, string token = null)
         {
-            var watchman = _db.WatchmanRepository.RetrieveAsync(watchmanId);
-            var patient = _db.PatientRepository.RetrieveAsync(patientId);
+            var watchman = await _db.WatchmanRepository.RetrieveAsync(watchmanId);
+            var patient = await _db.PatientRepository.RetrieveAsync(patientId);
 
             if (watchman != null && patient != null)
             {
                 await _db.AddWatchmanToPatientAsync(watchmanId, patientId);
                 await _db.SaveAsync();
             }
+            else if (patient == null)
+                throw new ArgumentException($"Didn't find patient with id {patientId}");
+            else
+                throw new ArgumentException($"Didn't find watchman with id {watchmanId}");
         }
-
         public async Task<bool> IsControlPatient(Guid watchmanId, Guid patientId, string token = null)
         {
             var watchman = await _db.WatchmanRepository.RetrieveWithAllPropertiesAsync(watchmanId);
-            return watchman.WatchmanPatients.FirstOrDefault(pair => pair.PatientId.Equals(patientId)) != null;
+            return watchman != null ?
+                watchman.WatchmanPatients.FirstOrDefault(pair => pair.PatientId.Equals(patientId)) != null :
+                throw new ArgumentException($"Didn't find watchman with id {watchmanId}");
         }
 
         public async Task RemovePatientFromWatchmanAsync(Guid watchmanId, Guid patientId, string token = null)
@@ -102,26 +116,33 @@ namespace HealthService.API.Services
                     _db.RemoveWatchmanFromPatient(watchmanId, patientId);
                     await _db.SaveAsync();
                 }
+                else
+                    throw new ArgumentException($"Watchman with id {watchmanId} don't monitor health of patient {patientId}");
             }
+            else throw new ArgumentException($"Didn't find watchman with id {watchmanId}");
         }
 
-        public void RemoveAllWatchmenFromPatient(Guid patientId, string token = null)
+        public async void RemoveAllWatchmenFromPatient(Guid patientId, string token = null)
         {
-            var patient = _db.PatientRepository.RetrieveAsync(patientId);
+            var patient = await _db.PatientRepository.RetrieveAsync(patientId);
             if (patient != null)
             {
                 _db.RemoveAllWatchmen(patientId);
-                _db.SaveAsync();
+                await _db.SaveAsync();
             }
+            else
+                throw new ArgumentException($"Didn't find patient with id {patientId}");
         }
-        public void RemoveAllPatientFromWatchman(Guid watchmanId, string token = null)
+        public async void RemoveAllPatientFromWatchman(Guid watchmanId, string token = null)
         {
-            var watchman = _db.WatchmanRepository.RetrieveAsync(watchmanId);
+            var watchman = await _db.WatchmanRepository.RetrieveAsync(watchmanId);
             if (watchman != null)
             {
                 _db.RemoveAllPatients(watchmanId);
-                _db.SaveAsync();
+                await _db.SaveAsync();
             }
+            else
+                throw new ArgumentException($"Didn't find watchman with id {watchmanId}");
         }
 
         public async Task CreatePatientAsync(Patient<Guid> patient, string token = null)
@@ -139,6 +160,12 @@ namespace HealthService.API.Services
         {
             return await _db.PatientRepository.RetrieveAsync(id);
         }
+
+        public async Task<Patient<Guid>> GetPatientWithAllPropertiesAsync(Guid id, string token = null)
+        {
+            return await _db.PatientRepository.RetrieveWithAllPropertiesAsync(id);
+        }
+
         public async Task<WatchmanProfile<Guid>> GetWatchmanAsync(Guid id, string token = null)
         {
             return await _db.WatchmanRepository.RetrieveWithAllPropertiesAsync(id);
