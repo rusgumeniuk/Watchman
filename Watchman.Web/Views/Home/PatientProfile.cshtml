@@ -1,120 +1,78 @@
-﻿@model Watchman.Web.ViewModels.PatientProfileViewModel
+﻿@using Watchman.Web.ViewModels
+@model Watchman.Web.ViewModels.PatientProfileViewModel
 
 @{
     ViewData["Title"] = "PatientProfile";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>PatientInfoProfile</h1>
-
-<div>
-    <h4>PatientInfo</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Patient.Id)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Patient.Id)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class="col-sm-2">
+@await Html.PartialAsync("_PatientPartial", new PatientPartialViewModel()
+{
+    HealthMeasurements = Model.Patient.HealthMeasurements,
+    IgnorableSigns = Model.Patient.IgnorableSignPair,
+    PatientId = Model.Patient.Id
+})
+<p>--------------------------------</p>
+<div class="container">
+    <div class="row">
+        <div class="col-3">
             @Html.DisplayNameFor(model => model.Patient.CurrentActivityState)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Patient.CurrentActivityState)
-        </dd>
-    </dl>
-
-    <h2>Health measurements:</h2>
-    <div class="row">
-        @foreach (var measurement in Model.Patient.HealthMeasurements)
-        {
-            <div class="row">
-                <div class="col-sm-2">
-                    @Html.DisplayNameFor(model => measurement.MeasurementTime)
-                </div>
-                <div class="col-sm-10">
-                    @Html.DisplayFor(model => measurement.MeasurementTime)
-                </div>
-                @foreach (var sign in measurement.Signs)
-                {
-                    <dl class="row">
-                        <dt class="col-sm-2">
-                            Sign type
-                        </dt>
-                        <dd class="col-sm-10">
-                            @sign.GetType().Name
-                        </dd>
-                        <dt class="col-sm-2">
-                            @Html.DisplayNameFor(model => sign.Value)
-                        </dt>
-                        <dd class="col-sm-10">
-                            @Html.DisplayFor(model => sign.Value)
-                        </dd>
-                    </dl>
-                }
-            </div>
-        }
+        </div>
+        <div class="col-8">
+            @Html.DisplayFor(model => model.Patient.CurrentActivityState.GetType().Name)
+        </div>
     </div>
 
-    <h2>Ignorable sign</h2>
-    <div class="row">
-        @foreach (var pair in Model.Patient.IgnorableSignPair)
-        {
-            <div class="row">
-                <div class="col-sm-2">
-                    @Html.DisplayNameFor(model => pair.SignType)
+    
+    @if (Model.Patient.WatchmanPatients.Any())
+    {
+        <h2>Your watchmen:</h2>
+        <div class="row">
+            @foreach (var pair in Model.Patient.WatchmanPatients)
+            {
+                <div class="row">
+                    <div class="col-sm-2">
+                        @Html.DisplayNameFor(model => pair.WatchmanId)
+                    </div>
+                    <div class="col-sm-10">
+                        @Html.DisplayFor(model => pair.WatchmanId)
+                    </div>
                 </div>
-                <div class="col-sm-10">
-                    @Html.DisplayFor(model => pair.SignType)
-                </div>
-            </div>
-        }
-    </div>
-    <h2>Your watchmen:</h2>
-    <div class="row">
-        @foreach (var pair in Model.Patient.WatchmanPatients)
-        {
-            <div class="row">
-                <div class="col-sm-2">
-                    @Html.DisplayNameFor(model => pair.WatchmanId)
-                </div>
-                <div class="col-sm-10">
-                    @Html.DisplayFor(model => pair.WatchmanId)
-                </div>
-            </div>
-        }
-    </div>
+            }
+        </div>
+    }
 </div>
 
 
-<div>
+<div class="container">
     @if (Model.ControlRequests.Any())
     {
         <label>Here is requests from user which wanna monitor your health:</label>
-        foreach (var request in Model.ControlRequests)
-        {
-            <div>
-                <span> @request.PersonalInformation.FirstName </span>
-                <span>@request.PersonalInformation.SecondName</span>
-            </div>
-            <div>
-                <label>Email</label>
-                <label>@request.PersonalInformation.Email</label>
-            </div>
-            <div>
-                <form asp-controller="Home" asp-action="AcceptRequest" method="post">
-                    <button type="submit" class="btn btn-outline-success" name="requestId" value="@request.RequestId">Accept</button>
-                </form>
-                <form asp-controller="Home" asp-action="RefuseRequest" method="post">
-                    <button type="submit" class="btn btn-outline-danger" name="requestId" value="@request.RequestId">Refuse</button>
-                </form>
-                <form asp-controller="Home" asp-action="BlockRequestFromWatchman" method="post">
-                    <button type="submit" class="btn btn-outline-dark" name="email" value="@request.PersonalInformation.Email">Block</button>
-                </form>
-            </div>
-        }
+        <div class="row">
+            @foreach (var request in Model.ControlRequests)
+            {
+                <div class="container">
+                    <div class="row">
+                        <span> @request.PersonalInformation.FirstName </span>
+                        <span>@request.PersonalInformation.SecondName</span>
+                    </div>
+                    <div class="row">
+                        <label>Email</label>
+                        <label>@request.PersonalInformation.Email</label>
+                    </div>
+                    <div class="row">
+                        <form class="col-3" asp-controller="Home" asp-action="AcceptRequest" method="post">
+                            <button type="submit" class="btn btn-outline-success" name="requestId" value="@request.RequestId">Accept</button>
+                        </form>
+                        <form class="col-3" asp-controller="Home" asp-action="RefuseRequest" method="post">
+                            <button type="submit" class="btn btn-outline-danger" name="requestId" value="@request.RequestId">Refuse</button>
+                        </form>
+                        <form class="col-3" asp-controller="Home" asp-action="BlockRequestFromWatchman" method="post">
+                            <button type="submit" class="btn btn-outline-dark" name="email" value="@request.PersonalInformation.Email">Block</button>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
     }
 </div>

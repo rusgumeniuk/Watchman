@@ -1,4 +1,4 @@
-﻿@model Watchman.Web.Models.WatchmanInfo
+﻿@model Watchman.Web.ViewModels.WatchmanViewModel
 
 @{
     ViewData["Title"] = "WatchmanProfile";
@@ -11,35 +11,45 @@
     <h4>WatchmanProfile</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
+        <dt class="col-sm-6">
+            Watchman id
         </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Id)
+        <dd class="col-sm-6">
+            @Html.DisplayFor(model => model.WatchmanId)
         </dd>
     </dl>
-    <div>
-        @if (Model.WatchmanPatients != null && Model.WatchmanPatients.Any())
+    <div class="row">
+        <form asp-controller="Home" asp-action="SendRequestToPatient" method="post">
+            <label>Input patient email</label>
+            <input type="email" name="patientEmail" placeholder="Email" />
+            <button type="submit">Send request</button>
+        </form>
+    </div>
+    <hr/>
+    <div class="container">
+        @if (Model.Patients?.Any() ?? false)
         {
-            @foreach (var pair in Model.WatchmanPatients)
+            <div class="row thead-light">
+                <div class="col-6">Patient id</div>
+                <div class="col-3">Activity state</div>
+                <div class="col-3"></div>
+            </div>
+            @foreach (var patient in Model.Patients)
             {
-                <h4>@pair.PatientId</h4>
-                <form asp-action="PatientProfile" asp-controller="Home">
-                    <button name="patientId" value="@pair.PatientId">Look at</button>
-                </form>
-                
+                <div class="row">
+                    <div class="col-6">@patient.Id</div>
+                    <div class="col-3">@patient.CurrentActivityState.GetType().Name</div>
+                    <div class="col-3">
+                        <form asp-action="PatientProfileForWatchman" asp-controller="Home">
+                            <button name="patientId" value="@patient.Id">Details</button>
+                        </form>
+                    </div>
+                </div>
             }
         }
         else
         {
-            <p>Sorry, but you don't have patients to monitor</p>
+            <p>You don't have patients to monitor</p>
         }
-
     </div>
-
-    <form asp-controller="Home" asp-action="SendRequestToPatient" method="post">
-        <label>Input patient email</label>
-        <input type="email" name="patientEmail" placeholder="Email" />
-        <button type="submit">Send request</button>
-    </form>
 </div>
