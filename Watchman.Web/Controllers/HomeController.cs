@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -72,8 +73,18 @@ namespace Watchman.Web.Controllers
             var id = Guid.Parse(stringId);
 
             var watchman = await _watchmanPatientService.GetWatchmanAsync(id, token);
+            var model = new WatchmanViewModel() { WatchmanId = watchman.Id };
+            if (!watchman.WatchmanPatients.Any())
+                return View(model);
 
-            return View(watchman as WatchmanInfo);
+            IList<Patient<Guid>> patients = new List<Patient<Guid>>();
+            foreach (var pair in watchman.WatchmanPatients)
+            {
+                patients.Add(await _watchmanPatientService.GetPatientAsync(pair.PatientId, token));
+            }
+
+            model.Patients = patients;
+            return View(model);
         }
 
 
@@ -119,6 +130,37 @@ namespace Watchman.Web.Controllers
             }
 
             PatientProfileViewModel model = new PatientProfileViewModel(patient, pairs);
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveIgnorableSign(string patientId, string signType)
+        {
+            throw new NotImplementedException();
+            //return RedirectToAction("PatientProfile");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PatientProfileForWatchman(string patientId)
+        {
+            PatientProfileForWatchmanViewModel model = new PatientProfileForWatchmanViewModel();
+
+            if (String.IsNullOrWhiteSpace(patientId))
+            {
+                ModelState.AddModelError("", "Patient id can't be empty");
+                return RedirectToAction("WatchmanProfile");
+            }
+
+            var token = this.GetAccessTokenFromCookies();
+            var id = Guid.Parse(patientId);
+
+            var patient = await _watchmanPatientService.GetPatientWithAllPropertiesAsync(id, token);
+            model.PatientId = patient.Id;
+            model.HealthMeasurements = patient.HealthMeasurements;
+            model.IgnorableSigns = patient.IgnorableSignPair;
+            var userOfPatient = await _userManager.FindByPatient(patient.Id, token);
+            model.PatientPersonalInfo =
+                await _personalService.GetPersonalInformation(userOfPatient.PersonalInformationId, token);
             return View(model);
         }
 
