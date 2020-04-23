@@ -9,21 +9,25 @@ namespace Watchman.BusinessLogic.Models.Converters
 {
     public class PatientActivityConverter : JsonConverter
     {
-        private static readonly JsonSerializerSettings _settings = new JsonSerializerSettings()
+        private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings()
         { ContractResolver = new PatientActivityResolver() };
 
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             JObject jo = JObject.Load(reader);
-            switch ((float)jo.GetValue("changeFactor"))
+            if (!jo.TryGetValue("changeFactor", out var val))
+            {
+                val = jo.GetValue("ChangeFactor");
+            }
+            switch ((float)val)
             {
                 case 1.2f:
-                    return JsonConvert.DeserializeObject<SleepActivityState>(jo.ToString(), _settings);
+                    return JsonConvert.DeserializeObject<SleepActivityState>(jo.ToString(), Settings);
                 case 1f:
-                    return JsonConvert.DeserializeObject<CasualActivityState>(jo.ToString(), _settings);
+                    return JsonConvert.DeserializeObject<CasualActivityState>(jo.ToString(), Settings);
                 case 0.75f:
-                    return JsonConvert.DeserializeObject<SportActivityState>(jo.ToString(), _settings);
+                    return JsonConvert.DeserializeObject<SportActivityState>(jo.ToString(), Settings);
                 default:
                     throw new Exception();
             }
