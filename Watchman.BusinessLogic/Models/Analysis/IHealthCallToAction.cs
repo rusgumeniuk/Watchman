@@ -9,7 +9,7 @@ namespace Watchman.BusinessLogic.Models.Analysis
         where TSignKey : IEquatable<TSignKey>
     {
         ActionRequirement ActionRequirement { get; }
-        Sign<TSignKey> Sign { get; set; }
+        Sign<TSignKey, ushort> Sign { get; set; }
         string Comment { get; set; }
     }
 

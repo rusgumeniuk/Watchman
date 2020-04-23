@@ -10,13 +10,13 @@ using Watchman.BusinessLogic.Models.Users;
 
 namespace HealthService.API.Data
 {
-    public class HealthDbContext : DbContext
+    public sealed class HealthDbContext : DbContext
     {
         public DbSet<PatientProfile> Patients { get; set; }
         public DbSet<WatchmanProfileHealth> Watchmen { get; set; }
         public DbSet<WatchmanPatientConnection> WatchmanPatients { get; set; }
         public DbSet<HeartAndPressureHealthState> HealthStates { get; set; }
-        public DbSet<Sign<Guid>> Signs { get; set; }
+        public DbSet<Sign<Guid, ushort>> Signs { get; set; }
         public DbSet<PatientSign> PatientIgnorableSigns { get; set; }
         public DbSet<ControlRequest> ControlRequests { get; set; }
 
@@ -30,11 +30,8 @@ namespace HealthService.API.Data
         {
             modelBuilder.Entity<CasualActivityState>();
             modelBuilder.Entity<DIA>();
-            modelBuilder.Entity<SYS>();
-            modelBuilder.Entity<HeartRate>();
             modelBuilder.Entity<HeartAndPressureHealthState>()
                 .HasMany(hm => hm.Signs);
-            modelBuilder.Entity<Sign<Guid>>().ToTable("Sign");
 
             #region Many to many
 
