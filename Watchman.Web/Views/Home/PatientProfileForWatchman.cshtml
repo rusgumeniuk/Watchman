@@ -1,0 +1,43 @@
+﻿@using Watchman.Web.ViewModels
+@model Watchman.Web.ViewModels.PatientProfileForWatchmanViewModel
+
+@{
+    ViewData["Title"] = "PatientProfileForWatchman";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+    <h2>Patient personal information</h2>
+    <div class="row">
+        <div class="col-4">Name</div>
+        <div class="col-4">
+            <span>
+                @Model.PatientPersonalInfo.FirstName
+            </span>
+            <span>
+                @Model.PatientPersonalInfo.SecondName
+            </span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4">Birth day</div>
+        <div class="col-4">@Model.PatientPersonalInfo.BirthDay</div>
+    </div>
+    <div class="row">
+        <div class="col-4">Email</div>
+        <div class="col-4">@Model.PatientPersonalInfo.Email</div>
+    </div>
+    <div class="row">
+        <div class="col-4">Phone</div>
+        <div class="col-4">@Model.PatientPersonalInfo.Phone</div>
+    </div>
+</div>
+<hr/>
+
+@await Html.PartialAsync("_PatientPartial", new PatientPartialViewModel()
+{
+    HealthMeasurements = Model.HealthMeasurements,
+    IgnorableSigns = Model.IgnorableSigns,
+    PatientId = Model.PatientId
+})
+
+
