@@ -11,13 +11,82 @@
     <h4>PatientInfo</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Patient.Id)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Patient.Id)
         </dd>
     </dl>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Patient.CurrentActivityState)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Patient.CurrentActivityState)
+        </dd>
+    </dl>
+
+    <h2>Health measurements:</h2>
+    <div class="row">
+        @foreach (var measurement in Model.Patient.HealthMeasurements)
+        {
+            <div class="row">
+                <div class="col-sm-2">
+                    @Html.DisplayNameFor(model => measurement.MeasurementTime)
+                </div>
+                <div class="col-sm-10">
+                    @Html.DisplayFor(model => measurement.MeasurementTime)
+                </div>
+                @foreach (var sign in measurement.Signs)
+                {
+                    <dl class="row">
+                        <dt class="col-sm-2">
+                            Sign type
+                        </dt>
+                        <dd class="col-sm-10">
+                            @sign.GetType().Name
+                        </dd>
+                        <dt class="col-sm-2">
+                            @Html.DisplayNameFor(model => sign.Value)
+                        </dt>
+                        <dd class="col-sm-10">
+                            @Html.DisplayFor(model => sign.Value)
+                        </dd>
+                    </dl>
+                }
+            </div>
+        }
+    </div>
+
+    <h2>Ignorable sign</h2>
+    <div class="row">
+        @foreach (var pair in Model.Patient.IgnorableSignPair)
+        {
+            <div class="row">
+                <div class="col-sm-2">
+                    @Html.DisplayNameFor(model => pair.SignType)
+                </div>
+                <div class="col-sm-10">
+                    @Html.DisplayFor(model => pair.SignType)
+                </div>
+            </div>
+        }
+    </div>
+    <h2>Your watchmen:</h2>
+    <div class="row">
+        @foreach (var pair in Model.Patient.WatchmanPatients)
+        {
+            <div class="row">
+                <div class="col-sm-2">
+                    @Html.DisplayNameFor(model => pair.WatchmanId)
+                </div>
+                <div class="col-sm-10">
+                    @Html.DisplayFor(model => pair.WatchmanId)
+                </div>
+            </div>
+        }
+    </div>
 </div>
 
 
