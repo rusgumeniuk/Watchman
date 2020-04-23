@@ -4,8 +4,9 @@ using HealthService.API.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using Newtonsoft.Json;
+
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using Watchman.API.Common.Attributes;
@@ -55,25 +56,23 @@ namespace HealthService.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody]GuidFieldViewModel model)
         {
-            try
-            {
-                await _service.CreatePatientAsync(new PatientProfile() { Id = model.Id });
-
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _service.CreatePatientAsync(new PatientProfile() { Id = model.Id });
+            return Ok();
         }
 
         [ValidationModelStateActionFilter]
-        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Get([FromBody]GuidFieldViewModel model)
         {
-            var patient = await _service.GetPatientAsync(model.Id);
-            return Ok(patient);
+            return Ok(await _service.GetPatientAsync(model.Id));
+        }
+
+        [ValidationModelStateActionFilter]
+        [HttpGet]
+        public async Task<IActionResult> GetWithAllProperties([FromBody]GuidFieldViewModel model)
+        {
+            var res = JsonConvert.SerializeObject(await _service.GetPatientWithAllPropertiesAsync(model.Id));
+            return Ok(res);
         }
 
 
@@ -89,26 +88,18 @@ namespace HealthService.API.Controllers
         [HttpDelete]
         public IActionResult RemoveWatchmen([FromBody] GuidFieldViewModel model)
         {
-            try
-            {
-                _service.RemoveAllWatchmenFromPatient(model.Id);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
+            _service.RemoveAllWatchmenFromPatient(model.Id);
+            return Ok();
         }
 
         [ValidationModelStateActionFilter]
         [HttpPost]
         public async Task<IActionResult> AddMeasurement([FromBody]HealthMeasurementViewModel model)
         {
-            var res = ParseSignPairArray(model.Signs);
             var hm = new HeartAndPressureHealthState()
             {
                 MeasurementTime = model.DateTime,
-                Signs = res
+                Signs = model.Signs
             };
             await _service.AddHealthMeasurementAsync(model.PatientId, hm);
             return Ok();
@@ -119,10 +110,7 @@ namespace HealthService.API.Controllers
         public async Task<IActionResult> GetMeasurement([FromBody]GuidFieldViewModel model)
         {
             var res = await _service.GetLastHealthMeasurementAsync(model.Id);
-            if (res != null)
-                return Ok(res);
-            else
-                return BadRequest(res);
+            return Ok(res);
         }
 
         [ValidationModelStateActionFilter]
@@ -130,56 +118,26 @@ namespace HealthService.API.Controllers
         public async Task<IActionResult> GetMeasurements([FromBody]GuidFieldViewModel model)
         {
             var res = await _service.GetLastHealthMeasurementsAsync(model.Id, 5);
-            if (res != null)
-                return Ok(res);
-            else
-                return BadRequest(res);
+            return Ok(res);
         }
 
         [ValidationModelStateActionFilter]
         [HttpPost]
         public async Task<IActionResult> AddIgnorableSign([FromBody]PatientIdIgnorableSignViewModel model)
         {
-            var sign = ParseSign(model.SignType);
-            if (sign != null)
-            {
-                await _service.AddIgnorableSignToPatientAsync(model.PatientId, sign);
-                return Ok();
-            }
-
-            return BadRequest();
+            await _service.AddIgnorableSignToPatientAsync(model.PatientId, ParseSign(model.SignType));
+            return Ok();
         }
 
+        [ValidationModelStateActionFilter]
         [HttpPost]
         public async Task<IActionResult> AnalyzeLast([FromBody]GuidFieldViewModel model)
         {
-            try
-            {
-                var result = await _service.AnalyzeLastMeasurementAsync(model.Id);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
+            var result = await _service.AnalyzeLastMeasurementAsync(model.Id);
+            return Ok(result);
         }
 
-
-        private ICollection<Sign<Guid>> ParseSignPairArray(IEnumerable<SignPair> array)
-        {
-            ICollection<Sign<Guid>> list = new List<Sign<Guid>>();
-
-            foreach (var pair in array)
-            {
-                Sign<Guid> sign = ParseSign(pair.Type);
-                if (sign != null)
-                {
-                    sign.Value = (ushort)pair.Value;
-                    list.Add(sign);
-                }
-            }
-            return list;
-        }
+        [NonAction]
         private Sign<Guid> ParseSign(string type)
         {
             switch (type.ToUpper())
@@ -198,7 +156,7 @@ namespace HealthService.API.Controllers
                         return new HeartRate();
                     }
                 default:
-                    return null;
+                    throw new ArgumentException();
             }
         }
     }

@@ -12,11 +12,11 @@ using Watchman.API.Common.Infrastructure.Repositories;
 using Watchman.BusinessLogic.Models.Data;
 using Watchman.BusinessLogic.Models.Users;
 
-namespace HealthService.API.Models.Infrastructure.Repositories
+namespace HealthService.API.Infrastructure.Repositories
 {
     public class WatchmanRepository : Repository<WatchmanProfileHealth, Guid>, IWatchmanRepository<WatchmanProfileHealth, Guid>
     {
-        public HealthDbContext HealthContext => _context as HealthDbContext;
+        private HealthDbContext HealthContext => _context as HealthDbContext;
         public WatchmanRepository(HealthDbContext context) : base(context) { }
 
         public async Task<IEnumerable<Patient<Guid>>> GetPatientsAsync(WatchmanProfileHealth watchman)
@@ -28,12 +28,12 @@ namespace HealthService.API.Models.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async override Task<WatchmanProfileHealth> RetrieveWithAllPropertiesAsync(Guid id)
+        public override async Task<WatchmanProfileHealth> RetrieveWithAllPropertiesAsync(Guid id)
         {
             return await HealthContext
                 .Watchmen
                 .Include(watch => watch.WatchmanPatients)
-                .FirstAsync(watchm => watchm.Id.Equals(id));
+                .FirstAsync(watchman => watchman.Id.Equals(id));
         }
     }
 }

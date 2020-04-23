@@ -13,11 +13,11 @@ using Watchman.BusinessLogic.Models.Data;
 using Watchman.BusinessLogic.Models.Signs;
 using Watchman.BusinessLogic.Models.Users;
 
-namespace HealthService.API.Models.Infrastructure.Repositories
+namespace HealthService.API.Infrastructure.Repositories
 {
     public class PatientRepository : Repository<PatientProfile, Guid>, IPatientRepository<PatientProfile, Guid>
     {
-        public HealthDbContext HealthContext => _context as HealthDbContext;
+        private HealthDbContext HealthContext => _context as HealthDbContext;
         public PatientRepository(HealthDbContext context) : base(context) { }
 
         public async Task<HealthMeasurement<Guid, Guid>> GetLastHealthMeasurementAsync(Guid patientId)
@@ -57,13 +57,13 @@ namespace HealthService.API.Models.Infrastructure.Repositories
         }
 
 
-        public async override Task<PatientProfile> RetrieveWithAllPropertiesAsync(Guid id)
+        public override async Task<PatientProfile> RetrieveWithAllPropertiesAsync(Guid id)
         {
             return await HealthContext
                 .Patients
                 .Include(pat => pat.IgnorableSignPair)
                 .Include(pat => pat.HealthMeasurements)
-                    .ThenInclude(hm => hm.Signs)
+                .ThenInclude(hm => hm.Signs)
                 .Include(pat => pat.WatchmanPatients)
                 .FirstAsync(pat => pat.Id.Equals(id));
         }
@@ -77,17 +77,18 @@ namespace HealthService.API.Models.Infrastructure.Repositories
                 .FirstAsync(pat => pat.Id.Equals(patientId));
             patient
                 .IgnorableSignPair
-                .Add(new PatientSign<Guid, ushort>() { PatientId = patientId, SignType = sign.GetType().ToString() });
+                .Add(new PatientSign<Guid, ushort>() { PatientId = patientId, SignType = sign.GetType().Name });
         }
 
         private int GetIndexOfItemWithNewDate(IEnumerable<HealthMeasurement<Guid, Guid>> list)
         {
-            if (list.Count() < 1)
+            var healthMeasurements = list as HealthMeasurement<Guid, Guid>[] ?? list.ToArray();
+            if (!healthMeasurements.Any())
                 return -1;
             int index = 0;
-            for (int i = 0; i < list.Count() - 1; ++i)
+            for (int i = 0; i < healthMeasurements.Count() - 1; ++i)
             {
-                if (list.ElementAt(i).MeasurementTime <= list.ElementAt(i + 1).MeasurementTime)
+                if (healthMeasurements.ElementAt(i).MeasurementTime <= healthMeasurements.ElementAt(i + 1).MeasurementTime)
                     index = i + 1;
             }
             return index;
