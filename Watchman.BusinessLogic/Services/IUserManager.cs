@@ -14,6 +14,8 @@ namespace Watchman.BusinessLogic.Services
         Task<TUser> FindByIdAsync(TKey key, string token = null);
 
         Task CreateUserWithPersonalInformationAsync(PersonalInformation<TKey> personalInformation, string clearPassword);
-        Task<TUser> FindByWatchman(Guid watchmanId, string token = null);
+
+        Task<TUser> FindByWatchman(TKey watchmanId, string token = null);
+        Task<TUser> FindByPatient(TKey patientId, string token = null);
     }
 }

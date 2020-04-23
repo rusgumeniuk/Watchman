@@ -70,5 +70,12 @@ namespace Identity.API.Controllers
         {
             return Ok(await _userManager.FindByWatchman(model.Id));
         }
+
+        [ValidationModelStateActionFilter]
+        [HttpPost]
+        public async Task<IActionResult> GetByPatientId([FromBody] GuidFieldViewModel model)
+        {
+            return Ok(await _userManager.FindByPatient(model.Id));
+        }
     }
 }

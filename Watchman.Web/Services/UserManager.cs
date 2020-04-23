@@ -71,5 +71,16 @@ namespace Watchman.Web.Services
                 ? null
                 : JsonConvert.DeserializeObject<WatchmanUser>(result);
         }
+
+        public async Task<WatchmanUser> FindByPatient(Guid patientId, string token = null)
+        {
+            var uri = $"{UserUrl}/GetByPatientId";
+            var obj = new { Id = patientId };
+            var response = await _client.SendRequest(HttpMethod.Post, null, obj, uri, token);
+            var result = await _client.GetResponseResult(response);
+            return !response.IsSuccessStatusCode || String.IsNullOrWhiteSpace(result)
+                ? null
+                : JsonConvert.DeserializeObject<WatchmanUser>(result);
+        }
     }
 }

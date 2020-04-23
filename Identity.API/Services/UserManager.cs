@@ -14,12 +14,12 @@ namespace Identity.API.Services
     {
         private readonly IPersonalInformationRepository<PersonalInfo, Guid> _personalInfoRepository;
         private readonly IUserRepository<IdentityUser> _userRepository;
-        private readonly ICustomPasswordHasher Hasher;
+        private readonly ICustomPasswordHasher _hasher;
 
         public UserManager(IUserRepository<IdentityUser> userRepository, ICustomPasswordHasher hasher, IPersonalInformationRepository<PersonalInfo, Guid> personalInformationRepository)
         {
             this._userRepository = userRepository;
-            this.Hasher = hasher;
+            this._hasher = hasher;
             this._personalInfoRepository = personalInformationRepository;
         }
 
@@ -28,7 +28,7 @@ namespace Identity.API.Services
             if (_personalInfoRepository.GetByEmailAsync(personalInformation.Email).Result == null)
             {
                 personalInformation.Id = personalInformation.Id == Guid.Empty ? Guid.NewGuid() : personalInformation.Id;
-                personalInformation.HashedPassword = Hasher.Hash(clearPassword);
+                personalInformation.HashedPassword = _hasher.Hash(clearPassword);
 
                 var user = new IdentityUser
                 {
@@ -46,6 +46,11 @@ namespace Identity.API.Services
         public async Task<IdentityUser> FindByWatchman(Guid watchmanId, string token = null)
         {
             return await _userRepository.GetByWatchmanId(watchmanId);
+        }
+
+        public async Task<IdentityUser> FindByPatient(Guid patientId, string token = null)
+        {
+            return await _userRepository.GetByPatientId(patientId);
         }
 
         public async Task<IdentityUser> FindByEmailAsync(string email, string token = null)
