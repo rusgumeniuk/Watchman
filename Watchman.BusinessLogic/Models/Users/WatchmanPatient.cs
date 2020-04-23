@@ -5,11 +5,10 @@ using System.Runtime.Serialization;
 
 namespace Watchman.BusinessLogic.Models.Users
 {
-    public abstract class WatchmanPatient<TWatchman, TPatient>
+    public class WatchmanPatient<TWatchman, TPatient>
         where TWatchman : IEquatable<TWatchman>
         where TPatient : IEquatable<TPatient>
     {
-
         public virtual TWatchman WatchmanId { get; set; }
         [IgnoreDataMember]
         [JsonIgnore]
