@@ -119,7 +119,7 @@ namespace Watchman.Web.Controllers
             var token = this.GetAccessTokenFromCookies();
             var id = Guid.Parse(stringId);
 
-            var patient = await _watchmanPatientService.GetPatientWithAllPropertiesAsync(id, token);
+            var patient = await _watchmanPatientService.GetPatientAsync(id, token);
             var pendingRequests = await _controlRequestService.GetPendingRequests(id, token);
             IList<PersonalInfoRequestIdPair> pairs = new List<PersonalInfoRequestIdPair>();
             foreach (var request in pendingRequests ?? new List<ControlRequest>())
@@ -129,7 +129,12 @@ namespace Watchman.Web.Controllers
                 pairs.Add(new PersonalInfoRequestIdPair(info, request.Id));
             }
 
-            PatientProfileViewModel model = new PatientProfileViewModel(patient, pairs);
+            PatientProfileViewModel model = new PatientProfileViewModel(patient, pairs)
+            {
+                AnalysisResults = await _watchmanPatientService.GetAnalyzesMeasurementsAsync(id, null, token),
+                IgnorableSigns = await _watchmanPatientService.GetIgnorableSignsAsync(id, token),
+                Watchmen = await _watchmanPatientService.GetPatientWatchmenAsync(patient.Id, token)
+            };
             return View(model);
         }
 
@@ -189,8 +194,8 @@ namespace Watchman.Web.Controllers
 
             var patient = await _watchmanPatientService.GetPatientWithAllPropertiesAsync(id, token);
             model.PatientId = patient.Id;
-            model.HealthMeasurements = patient.HealthMeasurements;
-            model.IgnorableSigns = patient.IgnorableSignPair;
+            model.AnalysisResults = await _watchmanPatientService.GetAnalyzesMeasurementsAsync(patient.Id, null, token);
+            model.IgnorableSigns = await _watchmanPatientService.GetIgnorableSignsAsync(patient.Id, token);
             var userOfPatient = await _userManager.FindByPatient(patient.Id, token);
             model.PatientPersonalInfo =
                 await _personalService.GetPersonalInformation(userOfPatient.PersonalInformationId, token);

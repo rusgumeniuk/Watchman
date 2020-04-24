@@ -17,13 +17,13 @@
                 <div class="row">
                     <div class="col-6">@sign.SignType</div>
                     <div class="col-3">
-                        @Html.ActionLink("Remove", "RemoveIgnorableSign", "Home", new {patientId = @Model.PatientId, signType = @sign.SignType, returnUrl = @Context.Request.Path})
+                        @Html.ActionLink("Remove", "RemoveIgnorableSign", "Home", new { patientId = @Model.PatientId, signType = @sign.SignType, returnUrl = @Context.Request.Path })
                     </div>
                 </div>
-                <hr/>
+                <hr />
             }
         </div>
-        <br/>
+        <br />
         <div class="container">
             <form class="row" asp-controller="Home" asp-action="AddIgnorableSign" method="get">
                 <div class="col-2">
@@ -43,31 +43,139 @@
 
     <h2>Health measurements:</h2>
     <div class="row">
-        @foreach (var measurement in Model.HealthMeasurements)
+        @foreach (var result in Model.AnalysisResults)
         {
             <div class="container">
                 <div class="row">
-                    <div class="col-2">
-                        @Html.DisplayNameFor(model => measurement.MeasurementTime)
+                    <div class="col-4">
+                        @Html.DisplayNameFor(model => result.HealthState.MeasurementTime)
                     </div>
                     <div class="col-8">
-                        @Html.DisplayFor(model => measurement.MeasurementTime)
+                        @Html.DisplayFor(model => result.HealthState.MeasurementTime)
                     </div>
                 </div>
-                @foreach (var sign in measurement.Signs)
-                {
-                    <div class="row">
-                        <div class="col-2">
-                            @sign.GetType().Name
-                        </div>
-                        
-                        <div class="col-5">
-                            @sign.Value
-                        </div>
+                <div class="row">
+                    <div class="col-4">
+                        <h3>Signs</h3>
+                        @foreach (var sign in result.HealthState.Signs)
+                        {
+                            <div class="row">
+                                <div class="col-6">
+                                    @sign.GetType().Name
+                                </div>
+
+                                <div class="col-6">
+                                    @sign.Value
+                                </div>
+                            </div>
+                        }
                     </div>
-                }
+                    <div class="col-8">
+                        @if (result.Threats.Any())
+                        {
+                            <h3>Threats:</h3>
+                            @foreach (var threat in result.Threats)
+                            {
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-2">
+                                            Action:
+                                        </div>
+                                        <div class="col-8">
+                                            @threat.ActionRequirement.ToString()
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-2">
+                                            Sign
+                                        </div>
+                                        <div class="col-8">
+                                            @threat.Sign.Type
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-2">
+                                            Comment
+                                        </div>
+                                        <div class="col-10">
+                                            @threat.Comment
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                            }
+                        }
+                        @if (result.Advices.Any())
+                        {
+                            <h3>Advices:</h3>
+                            @foreach (var advice in result.Advices)
+                            {
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-2">
+                                            Action:
+                                        </div>
+                                        <div class="col-8">
+                                            @advice.ActionRequirement.ToString()
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-2">
+                                            Sign
+                                        </div>
+                                        <div class="col-8">
+                                            @advice.Sign.Type
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-2">
+                                            Comment
+                                        </div>
+                                        <div class="col-10">
+                                            @advice.Comment
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            <hr />
+                        }
+                        @if (result.Notices.Any())
+                        {
+                            <h3>Notice:</h3>
+                            @foreach (var notice in result.Notices)
+                            {
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-2">
+                                            Action:
+                                        </div>
+                                        <div class="col-8">
+                                            @notice.ActionRequirement.ToString()
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-2">
+                                            Sign
+                                        </div>
+                                        <div class="col-8">
+                                            @notice.Sign.Type
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-2">
+                                            Comment
+                                        </div>
+                                        <div class="col-10">
+                                            @notice.Comment
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                            }
+                        }
+                    </div>
+                </div>
             </div>
-            <hr/>
         }
     </div>
 </div>

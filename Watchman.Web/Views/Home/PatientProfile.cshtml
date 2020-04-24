@@ -8,8 +8,8 @@
 
 @await Html.PartialAsync("_PatientPartial", new PatientPartialViewModel()
 {
-    HealthMeasurements = Model.Patient.HealthMeasurements,
-    IgnorableSigns = Model.Patient.IgnorableSignPair,
+    AnalysisResults = Model.AnalysisResults,
+    IgnorableSigns = Model.IgnorableSigns,
     PatientId = Model.Patient.Id
 })
 <p>--------------------------------</p>
@@ -24,18 +24,26 @@
     </div>
 
     
-    @if (Model.Patient.WatchmanPatients.Any())
+    @if (Model.Watchmen.Any())
     {
         <h2>Your watchmen:</h2>
         <div class="row">
-            @foreach (var pair in Model.Patient.WatchmanPatients)
+            @foreach (var watchman in Model.Watchmen)
             {
-                <div class="row">
-                    <div class="col-sm-2">
-                        @Html.DisplayNameFor(model => pair.WatchmanId)
-                    </div>
-                    <div class="col-sm-10">
-                        @Html.DisplayFor(model => pair.WatchmanId)
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            @Html.DisplayNameFor(model => watchman.Id)
+                        </div>
+                        <div class="col-sm-6">
+                            @Html.DisplayFor(model => watchman.Id)
+                        </div>
+                        <form class="col-2" asp-controller="Home" asp-action="RemoveWatchman" method="post">
+                            <button type="submit" class="btn btn-outline-danger" value="@watchman.Id" name="watchmanId">Remove</button>
+                        </form>
+                        <form class="col-2" asp-controller="Home" asp-action="BlockWatchman" method="post">
+                            <button type="submit" class="btn btn-outline-dark" value="@watchman.Id" name="watchmanId">Block</button>
+                        </form>
                     </div>
                 </div>
             }
