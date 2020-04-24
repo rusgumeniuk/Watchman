@@ -40,7 +40,7 @@
                     <div class="col-6">@patient.Id</div>
                     <div class="col-3">@patient.CurrentActivityState.GetType().Name</div>
                     <div class="col-3">
-                        <form asp-action="PatientProfileForWatchman" asp-controller="Home">
+                        <form asp-action="PatientProfileForWatchman" asp-controller="Home" method="get">
                             <button name="patientId" value="@patient.Id">Details</button>
                         </form>
                     </div>

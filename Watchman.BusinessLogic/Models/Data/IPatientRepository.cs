@@ -17,6 +17,7 @@ namespace Watchman.BusinessLogic.Models.Data
         Task<IEnumerable<HealthMeasurement<TKey, TKey>>> GetLastHealthMeasurementsAsync(TKey patientId, int count);
         Task AddHealthMeasurementAsync(TKey patientId, HealthMeasurement<TKey, TKey> healthMeasurement);
 
-        Task AddIgnorableSignAsync(TKey patientId, Sign<TKey> sign);
+        Task AddIgnorableSignAsync(TKey patientId, string signTyp);
+        Task RemoveIgnorableSignAsync(TKey patientId, string signType);
     }
 }

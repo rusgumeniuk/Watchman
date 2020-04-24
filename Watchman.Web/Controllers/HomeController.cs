@@ -133,14 +133,47 @@ namespace Watchman.Web.Controllers
             return View(model);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> RemoveIgnorableSign(string patientId, string signType)
+        [HttpGet]
+        public async Task<IActionResult> AddIgnorableSign(string patientId, string signType, string returnUrl)
         {
-            throw new NotImplementedException();
-            //return RedirectToAction("PatientProfile");
+            if (String.IsNullOrWhiteSpace(patientId))
+            {
+                ModelState.AddModelError("PatientId", $"Wrong patient id {patientId}");
+            }
+            else if (String.IsNullOrWhiteSpace(signType))
+            {
+                ModelState.AddModelError("Sign", $"Wrong sign {signType}");
+            }
+            else
+            {
+                await _watchmanPatientService.AddIgnorableSignToPatientAsync(Guid.Parse(patientId), signType,
+                    this.GetAccessTokenFromCookies());
+            }
+            string action = returnUrl.Substring(returnUrl.IndexOf('P')).Replace('/', ' ');
+            return RedirectToAction(action, new { patientId = patientId });
         }
 
-        [HttpPost]
+        [HttpGet]
+        public async Task<IActionResult> RemoveIgnorableSign(string patientId, string signType, string returnUrl)
+        {
+            if (String.IsNullOrWhiteSpace(patientId))
+            {
+                ModelState.AddModelError("PatientId", $"Wrong patient id {patientId}");
+            }
+            else if (String.IsNullOrWhiteSpace(signType))
+            {
+                ModelState.AddModelError("Sign", $"Wrong sign {signType}");
+            }
+            else
+            {
+                await _watchmanPatientService.RemoveIgnorableSignAsync(Guid.Parse(patientId), signType,
+                    this.GetAccessTokenFromCookies());
+            }
+            string action = returnUrl.Substring(returnUrl.IndexOf('P')).Replace('/', ' ');
+            return RedirectToAction(action, new { patientId = patientId });
+        }
+
+        [HttpGet]
         public async Task<IActionResult> PatientProfileForWatchman(string patientId)
         {
             PatientProfileForWatchmanViewModel model = new PatientProfileForWatchmanViewModel();

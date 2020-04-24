@@ -23,12 +23,24 @@ namespace HealthService.API.Services
             this._analyzer = analyzer;
         }
 
-        public async Task AddIgnorableSignToPatientAsync(Guid patientId, Sign<Guid> sign, string token = null)
+        public async Task AddIgnorableSignToPatientAsync(Guid patientId, string signType, string token = null)
         {
             var patient = await _db.PatientRepository.RetrieveAsync(patientId);
             if (patient != null)
             {
-                await _db.PatientRepository.AddIgnorableSignAsync(patientId, sign);
+                await _db.PatientRepository.AddIgnorableSignAsync(patientId, signType);
+                await _db.SaveAsync();
+            }
+            else
+                throw new ArgumentException($"Didn't find patient with id {patientId}");
+        }
+
+        public async Task RemoveIgnorableSignAsync(Guid patientId, string signType, string token = null)
+        {
+            var patient = await _db.PatientRepository.RetrieveAsync(patientId);
+            if (patient != null)
+            {
+                await _db.PatientRepository.RemoveIgnorableSignAsync(patientId, signType);
                 await _db.SaveAsync();
             }
             else

@@ -32,9 +32,20 @@ namespace Watchman.Web.Services
             throw new NotImplementedException();
         }
 
-        public Task AddIgnorableSignToPatientAsync(Guid patientId, Sign<Guid> sign, string token = null)
+        public async Task AddIgnorableSignToPatientAsync(Guid patientId, string signType, string token = null)
         {
-            throw new NotImplementedException();
+            var uri = PatientUrl + "/AddIgnorableSign";
+            var obj = new { PatientId = patientId, SignType = signType };
+
+            var res = await _client.SendRequest(HttpMethod.Post, null, obj, uri, token);
+        }
+
+        public async Task RemoveIgnorableSignAsync(Guid patientId, string signType, string token = null)
+        {
+            var uri = PatientUrl + "/RemoveIgnorableSign";
+            var obj = new { PatientId = patientId, SignType = signType };
+
+            var res = await _client.SendRequest(HttpMethod.Post, null, obj, uri, token);
         }
 
         public async Task AddPatientToUserAsync(Guid userId, Guid patientId, string token = null)

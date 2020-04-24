@@ -125,7 +125,15 @@ namespace HealthService.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddIgnorableSign([FromBody]PatientIdIgnorableSignViewModel model)
         {
-            await _service.AddIgnorableSignToPatientAsync(model.PatientId, ParseSign(model.SignType));
+            await _service.AddIgnorableSignToPatientAsync(model.PatientId, model.SignType);
+            return Ok();
+        }
+
+        [ValidationModelStateActionFilter]
+        [HttpPost]
+        public async Task<IActionResult> RemoveIgnorableSign([FromBody]PatientIdIgnorableSignViewModel model)
+        {
+            await _service.RemoveIgnorableSignAsync(model.PatientId, model.SignType);
             return Ok();
         }
 

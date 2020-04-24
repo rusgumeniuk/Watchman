@@ -69,15 +69,31 @@ namespace HealthService.API.Infrastructure.Repositories
         }
 
 
-        public async Task AddIgnorableSignAsync(Guid patientId, Sign<Guid> sign)
+        public async Task AddIgnorableSignAsync(Guid patientId, string signType)
         {
-            var patient = await HealthContext
-                .Patients
-                .Include(pat => pat.IgnorableSignPair)
-                .FirstAsync(pat => pat.Id.Equals(patientId));
-            patient
-                .IgnorableSignPair
-                .Add(new PatientSign<Guid, ushort>() { PatientId = patientId, SignType = sign.GetType().Name });
+            if (await GetPatientSignOrDefault(patientId, signType) == null)
+            {
+                await HealthContext.PatientIgnorableSigns.AddAsync(
+                    new PatientSign()
+                    {
+                        PatientId = patientId,
+                        SignType = signType
+                    });
+            }
+        }
+
+        public async Task RemoveIgnorableSignAsync(Guid patientId, string signType)
+        {
+            var pair = await GetPatientSignOrDefault(patientId, signType);
+            HealthContext.PatientIgnorableSigns.Remove(pair);
+        }
+
+        private async Task<PatientSign> GetPatientSignOrDefault(Guid patientId, string signType)
+        {
+            return await HealthContext
+                .PatientIgnorableSigns
+                .FirstOrDefaultAsync(pr => pr.PatientId.Equals(patientId) &&
+                                  (pr.SignType.Equals(signType) || pr.SignType.Contains(signType)));
         }
 
         private int GetIndexOfItemWithNewDate(IEnumerable<HealthMeasurement<Guid, Guid>> list)
