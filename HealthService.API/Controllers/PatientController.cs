@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 using System;
+using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 using Watchman.API.Common.Attributes;
@@ -139,33 +141,40 @@ namespace HealthService.API.Controllers
 
         [ValidationModelStateActionFilter]
         [HttpPost]
-        public async Task<IActionResult> AnalyzeLast([FromBody]GuidFieldViewModel model)
+        public async Task<IActionResult> AnalyzeLastMeasurement([FromBody]GuidFieldViewModel model)
         {
-            var result = await _service.AnalyzeLastMeasurementAsync(model.Id);
+            var result = await _service.GetAnalysisOfLastMeasurementAsync(model.Id);
             return Ok(result);
         }
 
-        [NonAction]
-        private Sign<Guid> ParseSign(string type)
+        [ValidationModelStateActionFilter]
+        [HttpPost]
+        public async Task<IActionResult> AnalyzeMeasurement([FromBody]PatientIdMeasurementIdViewModel model)
         {
-            switch (type.ToUpper())
-            {
-                case "DIA":
-                    {
-                        return new DIA();
-                    }
-                case "SYS":
-                    {
-                        return new SYS();
-                    }
-                case "HR":
-                case "HEARTRATE":
-                    {
-                        return new HeartRate();
-                    }
-                default:
-                    throw new ArgumentException();
-            }
+            var result = await _service.GetAnalysisOfMeasurementAsync(model.MeasurementId, model.PatientId);
+            return Ok(result);
+        }
+        [ValidationModelStateActionFilter]
+        [HttpPost]
+        public async Task<IActionResult> AnalyzeMeasurements([FromBody]PatientIdMeasurementsViewModel model)
+        {
+            var result = await _service.GetAnalyzesMeasurementsAsync(model.PatientId, model.Measurements);
+            return Ok(JsonConvert.SerializeObject(result));
+        }
+
+        [ValidationModelStateActionFilter]
+        [HttpGet]
+        public async Task<IActionResult> GetIgnorableSigns([FromBody] GuidFieldViewModel model)
+        {
+            var result = await _service.GetIgnorableSignsAsync(model.Id);
+            return Ok(JsonConvert.SerializeObject(result));
+        }
+
+        [ValidationModelStateActionFilter]
+        [HttpGet]
+        public async Task<IActionResult> GetPatientWatchmen([FromBody] GuidFieldViewModel model)
+        {
+            return Ok(JsonConvert.SerializeObject(await _service.GetPatientWatchmenAsync(model.Id)));
         }
     }
 }
