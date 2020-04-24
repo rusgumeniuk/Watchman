@@ -1,14 +1,16 @@
 ﻿using HealthService.API.Data;
-using HealthService.API.Models.Infrastructure.Repositories;
 using HealthService.API.Models.Users;
 
 using Microsoft.EntityFrameworkCore;
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 using Watchman.BusinessLogic.Models.Data;
+using Watchman.BusinessLogic.Models.Signs;
+using Watchman.BusinessLogic.Models.Users;
 
 namespace HealthService.API.Infrastructure.Repositories
 {
@@ -60,6 +62,36 @@ namespace HealthService.API.Infrastructure.Repositories
                 .Include(wm => wm.WatchmanPatients)
                 .First(wm => wm.Id.Equals(watchmanId));
             watchman.WatchmanPatients.Clear();
+        }
+
+        public async Task<HealthMeasurement<Guid, Guid>> RetrieveHealthMeasurementAsync(Guid id)
+        {
+            return await _context
+                .HealthStates
+                .Include(measurement => measurement.Signs)
+                .FirstAsync(measurement => measurement.Id.Equals(id));
+        }
+
+        public async Task<IEnumerable<HealthMeasurement<Guid, Guid>>> RetrieveHealthMeasurementsAsync(IEnumerable<Guid> enumerable)
+        {
+            return await _context
+                .HealthStates
+                .Include(measurement => measurement.Signs)
+                .Where(measurement => enumerable.Contains(measurement.Id))
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<HealthMeasurement<Guid, Guid>>> RetrieveHealthMeasurementsAsync(Guid patientId)
+        {
+            return await _patientRepository.GetLastHealthMeasurementsAsync(patientId);
+        }
+
+        public async Task<IEnumerable<PatientSign<Guid>>> RetrieveIgnorableSigns(Guid patientId)
+        {
+            return await _context
+                .PatientIgnorableSigns
+                .Where(pair => pair.PatientId.Equals(patientId))
+                .ToListAsync();
         }
 
         public void Dispose()
