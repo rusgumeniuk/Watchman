@@ -11,12 +11,15 @@ namespace Watchman.BusinessLogic.Services
     public interface IWatchmanPatientService<TKey>
         where TKey : IEquatable<TKey>
     {
-        Task<IAnalysisResult> AnalyzeLastMeasurementAsync(TKey patientId, string token = null);
+        Task<IAnalysisResult> GetAnalysisOfLastMeasurementAsync(TKey patientId, string token = null);
+        Task<IAnalysisResult> GetAnalysisOfMeasurementAsync(TKey measurementId, TKey patientId, string token = null);
+        Task<IEnumerable<IAnalysisResult>> GetAnalyzesMeasurementsAsync(TKey patientId, IEnumerable<Guid> list = null, string token = null);
 
         Task<HealthMeasurement<TKey, TKey>> GetLastHealthMeasurementAsync(TKey patientId, string token = null);
         Task<IEnumerable<HealthMeasurement<TKey, TKey>>> GetLastHealthMeasurementsAsync(TKey patientId, int count, string token = null);
         Task AddHealthMeasurementAsync(TKey patientId, HealthMeasurement<TKey, TKey> healthMeasurement, string token = null);
 
+        Task<IEnumerable<PatientSign<Guid>>> GetIgnorableSignsAsync(TKey patientId, string token = null);
         Task AddIgnorableSignToPatientAsync(TKey patientId, string signType, string token = null);
         Task RemoveIgnorableSignAsync(TKey patientId, string signType, string token = null);
 
@@ -35,5 +38,7 @@ namespace Watchman.BusinessLogic.Services
 
         void RemoveAllWatchmenFromPatient(TKey patientId, string token = null);
         void RemoveAllPatientFromWatchman(TKey watchmanId, string token = null);
+
+        Task<IEnumerable<WatchmanProfile<TKey>>> GetPatientWatchmenAsync(TKey patientId, string token = null);
     }
 }

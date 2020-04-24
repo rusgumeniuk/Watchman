@@ -11,6 +11,7 @@ using Watchman.BusinessLogic.Models.Signs;
 using Watchman.BusinessLogic.Models.Users;
 using Watchman.BusinessLogic.Services;
 using Watchman.Web.Models;
+using Watchman.Web.ViewModels;
 
 namespace Watchman.Web.Services
 {
@@ -30,6 +31,20 @@ namespace Watchman.Web.Services
         public Task AddHealthMeasurementAsync(Guid patientId, HealthMeasurement<Guid, Guid> healthMeasurement, string token = null)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<PatientSign<Guid>>> GetIgnorableSignsAsync(Guid patientId, string token = null)
+        {
+            var uri = PatientUrl + "/GetIgnorableSigns";
+            var obj = new { Id = patientId };
+
+            var response = await _client.SendRequest(HttpMethod.Get, null, obj, uri, token);
+            var result = await _client.GetResponseResult(response);
+
+            var res = !response.IsSuccessStatusCode || String.IsNullOrWhiteSpace(result)
+                ? null : JsonConvert.DeserializeObject<IEnumerable<PatientSign>>(result);
+
+            return res;
         }
 
         public async Task AddIgnorableSignToPatientAsync(Guid patientId, string signType, string token = null)
@@ -96,9 +111,46 @@ namespace Watchman.Web.Services
             return res;
         }
 
-        public Task<IAnalysisResult> AnalyzeLastMeasurementAsync(Guid patientId, string token = null)
+        public async Task<IAnalysisResult> GetAnalysisOfLastMeasurementAsync(Guid patientId, string token = null)
         {
-            throw new NotImplementedException();
+            var uri = PatientUrl + "/AnalyzeLastMeasurement";
+            var obj = new { Id = patientId };
+
+            var response = await _client.SendRequest(HttpMethod.Post, null, obj, uri, token);
+            var result = await _client.GetResponseResult(response);
+
+            var res = !response.IsSuccessStatusCode || String.IsNullOrWhiteSpace(result)
+                ? null : JsonConvert.DeserializeObject<AnalysisResult>(result);
+
+            return res;
+        }
+
+        public async Task<IAnalysisResult> GetAnalysisOfMeasurementAsync(Guid measurementId, Guid patientId, string token = null)
+        {
+            var uri = PatientUrl + "/AnalyzeMeasurement";
+            var obj = new { PatientId = patientId, MeasurementId = measurementId };
+
+            var response = await _client.SendRequest(HttpMethod.Post, null, obj, uri, token);
+            var result = await _client.GetResponseResult(response);
+
+            var res = !response.IsSuccessStatusCode || String.IsNullOrWhiteSpace(result)
+                ? null : JsonConvert.DeserializeObject<AnalysisResult>(result);
+
+            return res;
+        }
+
+        public async Task<IEnumerable<IAnalysisResult>> GetAnalyzesMeasurementsAsync(Guid patientId, IEnumerable<Guid> list = null, string token = null)
+        {
+            var uri = PatientUrl + "/AnalyzeMeasurements";
+            var obj = new { PatientId = patientId, Measurements = list };
+
+            var response = await _client.SendRequest(HttpMethod.Post, null, obj, uri, token);
+            var result = await _client.GetResponseResult(response);
+
+            var res = !response.IsSuccessStatusCode || String.IsNullOrWhiteSpace(result)
+                ? null : JsonConvert.DeserializeObject<IEnumerable<AnalysisResult>>(result);
+
+            return res;
         }
 
         public async Task CreatePatientAsync(Patient<Guid> patient, string token = null)
@@ -201,6 +253,20 @@ namespace Watchman.Web.Services
         public void RemoveAllPatientFromWatchman(Guid watchmanId, string token = null)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<WatchmanProfile<Guid>>> GetPatientWatchmenAsync(Guid patientId, string token = null)
+        {
+            var uri = PatientUrl + "/GetPatientWatchmen";
+            var obj = new { Id = patientId };
+
+            var response = await _client.SendRequest(HttpMethod.Get, null, obj, uri, token);
+            var result = await _client.GetResponseResult(response);
+
+            var res = !response.IsSuccessStatusCode || String.IsNullOrWhiteSpace(result)
+                ? null : JsonConvert.DeserializeObject<IEnumerable<WatchmanInfo>>(result);
+
+            return res;
         }
 
         public void RemoveAllWatchmenFromPatient(Guid patientId, string token = null)
