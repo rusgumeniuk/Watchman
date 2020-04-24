@@ -86,7 +86,7 @@ namespace HealthService.API.Infrastructure.Repositories
             return await _patientRepository.GetLastHealthMeasurementsAsync(patientId);
         }
 
-        public async Task<IEnumerable<PatientSign<Guid>>> RetrieveIgnorableSigns(Guid patientId)
+        public async Task<IEnumerable<PatientSign<Guid>>> RetrieveIgnorableSignsAsync(Guid patientId)
         {
             return await _context
                 .PatientIgnorableSigns

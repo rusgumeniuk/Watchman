@@ -26,7 +26,7 @@ namespace HealthService.API.Services
 
         public async Task<IEnumerable<PatientSign<Guid>>> GetIgnorableSignsAsync(Guid patientId, string token = null)
         {
-            return await _db.RetrieveIgnorableSigns(patientId);
+            return await _db.RetrieveIgnorableSignsAsync(patientId);
         }
 
         public async Task AddIgnorableSignToPatientAsync(Guid patientId, string signType, string token = null)
@@ -83,7 +83,7 @@ namespace HealthService.API.Services
             IEnumerable<HealthMeasurement<Guid, Guid>> measurements = (list?.Any() ?? true)
                 ? await _db.RetrieveHealthMeasurementsAsync(patientId)
                 : await _db.RetrieveHealthMeasurementsAsync(list);
-                
+
             IList<IAnalysisResult> results = new List<IAnalysisResult>();
             foreach (var measurement in measurements)
             {
