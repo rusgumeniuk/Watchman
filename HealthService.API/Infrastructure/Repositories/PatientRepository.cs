@@ -29,14 +29,14 @@ namespace HealthService.API.Infrastructure.Repositories
                 .FirstAsync(pat => pat.Id.Equals(patientId));
             return patient.HealthMeasurements.ElementAt(GetIndexOfItemWithNewDate(patient.HealthMeasurements));
         }
-        public async Task<IEnumerable<HealthMeasurement<Guid, Guid>>> GetLastHealthMeasurementsAsync(Guid patientId, int count)
+        public async Task<IEnumerable<HealthMeasurement<Guid, Guid>>> GetLastHealthMeasurementsAsync(Guid patientId, int count = 0)
         {
             var patient = await HealthContext
                 .Patients
                 .Include(pat => pat.HealthMeasurements)
                     .ThenInclude(hm => hm.Signs)
                 .FirstAsync(pat => pat.Id.Equals(patientId));
-            return patient.HealthMeasurements.TakeLast(count);
+            return count > 0 ? patient.HealthMeasurements.TakeLast(count) : patient.HealthMeasurements;
         }
         public async Task AddHealthMeasurementAsync(Guid patientId, HealthMeasurement<Guid, Guid> healthMeasurement)
         {
@@ -87,7 +87,7 @@ namespace HealthService.API.Infrastructure.Repositories
             var pair = await GetPatientSignOrDefault(patientId, signType);
             HealthContext.PatientIgnorableSigns.Remove(pair);
         }
-
+        
         private async Task<PatientSign> GetPatientSignOrDefault(Guid patientId, string signType)
         {
             return await HealthContext

@@ -1,6 +1,6 @@
 using HealthService.API.Data;
+using HealthService.API.Infrastructure.Repositories;
 using HealthService.API.Models.Analysis;
-using HealthService.API.Models.Infrastructure.Repositories;
 using HealthService.API.Models.Users;
 using HealthService.API.Services;
 
@@ -13,7 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using System;
-using HealthService.API.Infrastructure.Repositories;
+
 using Watchman.API.Common.Attributes;
 using Watchman.API.Common.Extensions;
 using Watchman.API.Common.Services.JWT;
