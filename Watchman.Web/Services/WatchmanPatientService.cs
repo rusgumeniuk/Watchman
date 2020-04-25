@@ -274,9 +274,13 @@ namespace Watchman.Web.Services
             throw new NotImplementedException();
         }
 
-        public Task RemovePatientFromWatchmanAsync(Guid watchmanId, Guid patientId, string token = null)
+        public async Task RemovePatientFromWatchmanAsync(Guid watchmanId, Guid patientId, string token = null)
         {
-            throw new NotImplementedException();
+            var uri = WatchmanUrl + "/RemovePatient";
+            var obj = new { WatchmanId = watchmanId, PatientId = patientId };
+
+            var response = await _client.SendRequest(HttpMethod.Delete, null, obj, uri, token);
+            var result = await _client.GetResponseResult(response);
         }
     }
 }
