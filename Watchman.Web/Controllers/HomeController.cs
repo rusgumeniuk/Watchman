@@ -268,7 +268,27 @@ namespace Watchman.Web.Controllers
             return RedirectToAction("PatientProfile");
         }
 
-        public IActionResult BlockRequestFromWatchman(string email)
+        public async Task<IActionResult> BlockRequestFromWatchman(string email)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IActionResult> RemoveWatchman(string watchmanId)
+        {
+            if (string.IsNullOrWhiteSpace(watchmanId) || Guid.Empty.Equals(Guid.Parse(watchmanId)))
+            {
+                ModelState.AddModelError("","Wrong watchman id");
+            }
+            else
+            {
+                string patientId = User.FindFirstValue("patientIdClaim");
+                await _watchmanPatientService.RemovePatientFromWatchmanAsync(Guid.Parse(watchmanId),
+                    Guid.Parse(patientId), this.GetAccessTokenFromCookies());
+            }
+            return RedirectToAction("PatientProfile");
+        }
+
+        public async Task<IActionResult> BlockWatchman()
         {
             throw new NotImplementedException();
         }
