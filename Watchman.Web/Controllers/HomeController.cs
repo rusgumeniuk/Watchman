@@ -77,13 +77,20 @@ namespace Watchman.Web.Controllers
             if (!watchman.WatchmanPatients.Any())
                 return View(model);
 
-            IList<Patient<Guid>> patients = new List<Patient<Guid>>();
+            IList<PatientProfileAndPersonalInfoPair> patients = new List<PatientProfileAndPersonalInfoPair>();
             foreach (var pair in watchman.WatchmanPatients)
             {
-                patients.Add(await _watchmanPatientService.GetPatientAsync(pair.PatientId, token));
+                patients.Add(new PatientProfileAndPersonalInfoPair()
+                {
+                    Patient = await _watchmanPatientService.GetPatientAsync(pair.PatientId, token),
+                    PersonalInformation = await
+                        _personalService.GetPersonalInformation(
+                            (await _userManager.FindByPatient(pair.PatientId, token)).PersonalInformationId
+                            , token)
+                });
             }
 
-            model.Patients = patients;
+            model.PatientsAndPersonalInfoPairs = patients;
             return View(model);
         }
 
@@ -129,11 +136,24 @@ namespace Watchman.Web.Controllers
                 pairs.Add(new PersonalInfoRequestIdPair(info, request.Id));
             }
 
+            var watchmen = await _watchmanPatientService.GetPatientWatchmenAsync(patient.Id, token);
+            var watchmenAndInfoPair = new List<WatchmanAndPersonalInfoPair>();
+
+            foreach (var watchman in watchmen)
+            {
+                watchmenAndInfoPair.Add(new WatchmanAndPersonalInfoPair()
+                {
+                    Watchman = watchman,
+                    PersonalInformation = await _personalService.GetPersonalInformation(
+                        (await _userManager.FindByWatchman(watchman.Id, token)).PersonalInformationId
+                        , token)
+                });
+            }
             PatientProfileViewModel model = new PatientProfileViewModel(patient, pairs)
             {
                 AnalysisResults = await _watchmanPatientService.GetAnalyzesMeasurementsAsync(id, null, token),
                 IgnorableSigns = await _watchmanPatientService.GetIgnorableSignsAsync(id, token),
-                Watchmen = await _watchmanPatientService.GetPatientWatchmenAsync(patient.Id, token)
+                Watchmen = watchmenAndInfoPair
             };
             return View(model);
         }
@@ -277,7 +297,7 @@ namespace Watchman.Web.Controllers
         {
             if (string.IsNullOrWhiteSpace(watchmanId) || Guid.Empty.Equals(Guid.Parse(watchmanId)))
             {
-                ModelState.AddModelError("","Wrong watchman id");
+                ModelState.AddModelError("", "Wrong watchman id");
             }
             else
             {

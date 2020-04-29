@@ -13,7 +13,7 @@ namespace Watchman.Web.ViewModels
         public IEnumerable<IAnalysisResult> AnalysisResults { get; set; }
 
         public IEnumerable<PersonalInfoRequestIdPair> ControlRequests { get; }
-        public IEnumerable<WatchmanProfile<Guid>> Watchmen { get; set; }
+        public IEnumerable<WatchmanAndPersonalInfoPair> Watchmen { get; set; }
 
         public PatientProfileViewModel(Patient<Guid> patient, IEnumerable<PersonalInfoRequestIdPair> pendingRequests)
         {
@@ -32,5 +32,11 @@ namespace Watchman.Web.ViewModels
             PersonalInformation = personalInformation;
             RequestId = requestId;
         }
+    }
+
+    public class WatchmanAndPersonalInfoPair
+    {
+        public WatchmanProfile<Guid> Watchman { get; set; }
+        public PersonalInfo PersonalInformation { get; set; }
     }
 }

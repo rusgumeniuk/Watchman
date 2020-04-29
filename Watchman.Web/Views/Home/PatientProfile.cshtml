@@ -32,17 +32,25 @@
             {
                 <div class="container">
                     <div class="row">
-                        <div class="col-sm-2">
-                            @Html.DisplayNameFor(model => watchman.Id)
+                        <div class="col-5">
+                            Name
                         </div>
-                        <div class="col-sm-6">
-                            @Html.DisplayFor(model => watchman.Id)
+                        <div class="col-3">
+                            Phone
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5">
+                            @watchman.PersonalInformation.FirstName @watchman.PersonalInformation.SecondName
+                        </div>
+                        <div class="col-3">
+                            @watchman.PersonalInformation.Phone
                         </div>
                         <form class="col-2" asp-controller="Home" asp-action="RemoveWatchman" method="post">
-                            <button type="submit" class="btn btn-outline-danger" value="@watchman.Id" name="watchmanId">Remove</button>
+                            <button type="submit" class="btn btn-outline-danger" value="@watchman.Watchman.Id" name="watchmanId">Remove</button>
                         </form>
                         <form class="col-2" asp-controller="Home" asp-action="BlockWatchman" method="post">
-                            <button type="submit" class="btn btn-outline-dark" value="@watchman.Id" name="watchmanId">Block</button>
+                            <button type="submit" class="btn btn-outline-dark" value="@watchman.Watchman.Id" name="watchmanId">Block</button>
                         </form>
                     </div>
                 </div>

@@ -27,21 +27,21 @@
     </div>
     <hr/>
     <div class="container">
-        @if (Model.Patients?.Any() ?? false)
+        @if (Model.PatientsAndPersonalInfoPairs?.Any() ?? false)
         {
             <div class="row thead-light">
-                <div class="col-6">Patient id</div>
+                <div class="col-6">Patient name</div>
                 <div class="col-3">Activity state</div>
                 <div class="col-3"></div>
             </div>
-            @foreach (var patient in Model.Patients)
+            @foreach (var patient in Model.PatientsAndPersonalInfoPairs)
             {
                 <div class="row">
-                    <div class="col-6">@patient.Id</div>
-                    <div class="col-3">@patient.CurrentActivityState.GetType().Name</div>
+                    <div class="col-6">@patient.PersonalInformation.FirstName @patient.PersonalInformation.SecondName</div>
+                    <div class="col-3">@patient.Patient.CurrentActivityState.GetType().Name</div>
                     <div class="col-3">
                         <form asp-action="PatientProfileForWatchman" asp-controller="Home" method="get">
-                            <button name="patientId" value="@patient.Id">Details</button>
+                            <button name="patientId" value="@patient.Patient.Id">Details</button>
                         </form>
                     </div>
                 </div>
