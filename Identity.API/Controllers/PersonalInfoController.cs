@@ -1,7 +1,10 @@
 ﻿using Identity.API.Models;
+
 using Microsoft.AspNetCore.Mvc;
+
 using System;
 using System.Threading.Tasks;
+
 using Watchman.API.Common.Attributes;
 using Watchman.API.Common.ViewModels;
 using Watchman.BusinessLogic.Services;
@@ -23,11 +26,7 @@ namespace Identity.API.Controllers
         [HttpGet]
         public async Task<IActionResult> Get([FromBody]GuidFieldViewModel model)
         {
-            var info = await _infoService.GetPersonalInformation(model.Id);
-            info.HashedPassword = null;
-            info.Roles = null;
-
-            return Ok(info);
+            return Ok(await _infoService.GetPersonalInformation(model.Id));
         }
     }
 }

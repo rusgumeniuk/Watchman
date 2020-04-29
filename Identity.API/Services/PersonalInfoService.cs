@@ -20,7 +20,9 @@ namespace Identity.API.Services
 
         public async Task<PersonalInfo> GetPersonalInformation(Guid key, string token = null)
         {
-            return await _repository.RetrieveAsync(key);
+            var info = await _repository.RetrieveAsync(key);
+            info.HashedPassword = null;
+            return info;
         }
 
         public async Task<PersonalInfo> UpdatePersonalInformation(PersonalInfo obj, Guid key = default, string token = null)
