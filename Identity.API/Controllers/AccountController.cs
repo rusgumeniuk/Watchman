@@ -133,7 +133,8 @@ namespace Identity.API.Controllers
             IList<Claim> claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Email, email),
-                new Claim(ClaimsIdentity.DefaultNameClaimType, email)
+                new Claim(ClaimsIdentity.DefaultNameClaimType, email),
+                new Claim("userIdClaim", user.Id.ToString())
             };
             if (roles.Contains(','))
             {
