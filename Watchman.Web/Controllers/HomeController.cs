@@ -24,6 +24,7 @@ namespace Watchman.Web.Controllers
         private readonly IWatchmanPatientService<Guid> _watchmanPatientService;
         private readonly IUserWatchmanPatientService<Guid> _userHealthService;
         private readonly IControlRequestService _controlRequestService;
+
         public HomeController(
             IUserManager<WatchmanUser, Guid> userManager,
             IWatchmanPatientService<Guid> watchmanPatientService,
@@ -57,7 +58,22 @@ namespace Watchman.Web.Controllers
             await _userHealthService.AddWatchmanToUserAsync(user.Id, newWatchman.Id, token);
             return RedirectToAction("WatchmanProfile");
         }
+        [HttpPost]
+        public async Task<IActionResult> CreatePatientProfile()
+        {
+            var token = this.GetAccessTokenFromCookies();
+            var email = this.GetUserEmailFromHttpContext();
 
+            var user = _userManager.FindByEmailAsync(email, token).Result;
+            PatientInfo newPatientInfo = new PatientInfo()
+            {
+                Id = Guid.NewGuid(),
+                CurrentActivityState = new SleepActivityState()
+            };
+            await _watchmanPatientService.CreatePatientAsync(newPatientInfo, token);
+            await _userHealthService.AddPatientToUserAsync(user.Id, newPatientInfo.Id, token);
+            return RedirectToAction("PatientProfile");
+        }
 
         [HttpGet]
         public async Task<IActionResult> WatchmanProfile()
@@ -93,25 +109,6 @@ namespace Watchman.Web.Controllers
             model.PatientsAndPersonalInfoPairs = patients;
             return View(model);
         }
-
-
-        [HttpPost]
-        public async Task<IActionResult> CreatePatientProfile()
-        {
-            var token = this.GetAccessTokenFromCookies();
-            var email = this.GetUserEmailFromHttpContext();
-
-            var user = _userManager.FindByEmailAsync(email, token).Result;
-            PatientInfo newPatientInfo = new PatientInfo()
-            {
-                Id = Guid.NewGuid(),
-                CurrentActivityState = new SleepActivityState()
-            };
-            await _watchmanPatientService.CreatePatientAsync(newPatientInfo, token);
-            await _userHealthService.AddPatientToUserAsync(user.Id, newPatientInfo.Id, token);
-            return RedirectToAction("PatientProfile");
-        }
-
 
         [HttpGet]
         public async Task<IActionResult> PatientProfile(string patientId = null)
@@ -157,47 +154,6 @@ namespace Watchman.Web.Controllers
             };
             return View(model);
         }
-
-        [HttpGet]
-        public async Task<IActionResult> AddIgnorableSign(string patientId, string signType, string returnUrl)
-        {
-            if (String.IsNullOrWhiteSpace(patientId))
-            {
-                ModelState.AddModelError("PatientId", $"Wrong patient id {patientId}");
-            }
-            else if (String.IsNullOrWhiteSpace(signType))
-            {
-                ModelState.AddModelError("Sign", $"Wrong sign {signType}");
-            }
-            else
-            {
-                await _watchmanPatientService.AddIgnorableSignToPatientAsync(Guid.Parse(patientId), signType,
-                    this.GetAccessTokenFromCookies());
-            }
-            string action = returnUrl.Substring(returnUrl.IndexOf('P')).Replace('/', ' ');
-            return RedirectToAction(action, new { patientId = patientId });
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> RemoveIgnorableSign(string patientId, string signType, string returnUrl)
-        {
-            if (String.IsNullOrWhiteSpace(patientId))
-            {
-                ModelState.AddModelError("PatientId", $"Wrong patient id {patientId}");
-            }
-            else if (String.IsNullOrWhiteSpace(signType))
-            {
-                ModelState.AddModelError("Sign", $"Wrong sign {signType}");
-            }
-            else
-            {
-                await _watchmanPatientService.RemoveIgnorableSignAsync(Guid.Parse(patientId), signType,
-                    this.GetAccessTokenFromCookies());
-            }
-            string action = returnUrl.Substring(returnUrl.IndexOf('P')).Replace('/', ' ');
-            return RedirectToAction(action, new { patientId = patientId });
-        }
-
         [HttpGet]
         public async Task<IActionResult> PatientProfileForWatchman(string patientId)
         {
@@ -220,6 +176,45 @@ namespace Watchman.Web.Controllers
             model.PatientPersonalInfo =
                 await _personalService.GetPersonalInformation(userOfPatient.PersonalInformationId, token);
             return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AddIgnorableSign(string patientId, string signType, string returnUrl)
+        {
+            if (String.IsNullOrWhiteSpace(patientId))
+            {
+                ModelState.AddModelError("PatientId", $"Wrong patient id {patientId}");
+            }
+            else if (String.IsNullOrWhiteSpace(signType))
+            {
+                ModelState.AddModelError("Sign", $"Wrong sign {signType}");
+            }
+            else
+            {
+                await _watchmanPatientService.AddIgnorableSignToPatientAsync(Guid.Parse(patientId), signType,
+                    this.GetAccessTokenFromCookies());
+            }
+            string action = returnUrl.Substring(returnUrl.IndexOf('P')).Replace('/', ' ');
+            return RedirectToAction(action, new { patientId = patientId });
+        }
+        [HttpGet]
+        public async Task<IActionResult> RemoveIgnorableSign(string patientId, string signType, string returnUrl)
+        {
+            if (String.IsNullOrWhiteSpace(patientId))
+            {
+                ModelState.AddModelError("PatientId", $"Wrong patient id {patientId}");
+            }
+            else if (String.IsNullOrWhiteSpace(signType))
+            {
+                ModelState.AddModelError("Sign", $"Wrong sign {signType}");
+            }
+            else
+            {
+                await _watchmanPatientService.RemoveIgnorableSignAsync(Guid.Parse(patientId), signType,
+                    this.GetAccessTokenFromCookies());
+            }
+            string action = returnUrl.Substring(returnUrl.IndexOf('P')).Replace('/', ' ');
+            return RedirectToAction(action, new { patientId = patientId });
         }
 
         [HttpPost]
@@ -273,7 +268,6 @@ namespace Watchman.Web.Controllers
             }
             return RedirectToAction("PatientProfile");
         }
-
         public async Task<IActionResult> RefuseRequest(string requestId)
         {
             if (String.IsNullOrWhiteSpace(requestId) || !Guid.TryParse(requestId, out var result))
@@ -292,40 +286,73 @@ namespace Watchman.Web.Controllers
         {
             throw new NotImplementedException();
         }
+        public async Task<IActionResult> BlockWatchman()
+        {
+            throw new NotImplementedException();
+        }
 
         public async Task<IActionResult> RemoveWatchman(string watchmanId)
         {
-            if (string.IsNullOrWhiteSpace(watchmanId) || Guid.Empty.Equals(Guid.Parse(watchmanId)))
+            if (string.IsNullOrWhiteSpace(watchmanId) || !Guid.TryParse(watchmanId, out var id))
             {
                 ModelState.AddModelError("", "Wrong watchman id");
             }
             else
             {
                 string patientId = User.FindFirstValue("patientIdClaim");
-                await _watchmanPatientService.RemovePatientFromWatchmanAsync(Guid.Parse(watchmanId),
-                    Guid.Parse(patientId), this.GetAccessTokenFromCookies());
+                await _watchmanPatientService.RemovePatientFromWatchmanAsync(id, Guid.Parse(patientId), this.GetAccessTokenFromCookies());
+            }
+            return RedirectToAction("PatientProfile");
+        }
+        public async Task<IActionResult> RemovePatient(string patientId)
+        {
+            if (!Guid.TryParse(patientId, out var id))
+            {
+                ModelState.AddModelError("", "Wrong patient id");
+            }
+            else
+            {
+                string watchmanId = User.FindFirstValue("watchmanIdClaim");
+                await _watchmanPatientService.RemovePatientFromWatchmanAsync(Guid.Parse(watchmanId), id, this.GetAccessTokenFromCookies());
             }
             return RedirectToAction("PatientProfile");
         }
 
-        public async Task<IActionResult> BlockWatchman()
+        [HttpPost]
+        public async Task<IActionResult> DeleteWatchmanProfile()
         {
-            throw new NotImplementedException();
+            var userStringId = User.FindFirstValue("userIdClaim");
+            var watchmanStringId = User.FindFirstValue("watchmanIdClaim");
+            if (String.IsNullOrWhiteSpace(userStringId) ||
+                !Guid.TryParse(userStringId, out var userId) ||
+                !Guid.TryParse(watchmanStringId, out var watchmanId))
+            {
+                return RedirectToAction("RefreshToken", "Account", new { returnUrl = Request.Path.Value });
+            }
+            else
+            {
+                await _userHealthService.RemoveWatchmanFromUser(userId, this.GetAccessTokenFromCookies());
+                await _watchmanPatientService.DeleteWatchmanProfile(watchmanId, this.GetAccessTokenFromCookies());
+                return RedirectToAction("RefreshToken", "Account", new { returnUrl = @"\Account\Account" });
+            }
         }
-
-        public IActionResult DeleteWatchmanProfile()
+        [HttpPost]
+        public async Task<IActionResult> DeletePatientProfile()
         {
-            throw new NotImplementedException();
-        }
-
-        public IActionResult DeletePatientProfile()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IActionResult RemovePatient()
-        {
-            throw new NotImplementedException();
+            var userStringId = User.FindFirstValue("userIdClaim");
+            var patientStringId = User.FindFirstValue("patientIdClaim");
+            if (String.IsNullOrWhiteSpace(userStringId) ||
+                !Guid.TryParse(userStringId, out var userId) ||
+                !Guid.TryParse(patientStringId, out var patientId))
+            {
+                return RedirectToAction("RefreshToken", "Account", new { returnUrl = Request.Path.Value });
+            }
+            else
+            {
+                await _userHealthService.RemovePatientFromUser(userId, this.GetAccessTokenFromCookies());
+                await _watchmanPatientService.DeletePatientProfile(patientId, this.GetAccessTokenFromCookies());
+                return RedirectToAction("RefreshToken", "Account", new { returnUrl = @"\Account\Account" });
+            }
         }
     }
 }
