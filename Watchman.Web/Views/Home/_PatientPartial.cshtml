@@ -2,14 +2,6 @@
 
 <div class="container w-100">
     <div class="row">
-        <div class="col-2">
-            Patient id
-        </div>
-        <div class="col-6">
-            @Html.DisplayFor(model => model.PatientId)
-        </div>
-    </div>
-    <div class="row">
         <div class="container">
             <h2>Ignorable signs:</h2>
             @foreach (var sign in Model.IgnorableSigns)
@@ -40,15 +32,18 @@
             </form>
         </div>
     </div>
-
-    <h2>Health measurements:</h2>
+</div>
+<div class="container w-100">
+    <div class="row">
+        <h2>Health measurements:</h2>
+    </div>
     <div class="row">
         @foreach (var result in Model.AnalysisResults)
         {
-            <div class="container">
+            <div class="container measurement">
                 <div class="row">
                     <div class="col-4">
-                        @Html.DisplayNameFor(model => result.HealthState.MeasurementTime)
+                        <h3>@Html.DisplayNameFor(model => result.HealthState.MeasurementTime)</h3>
                     </div>
                     <div class="col-8">
                         @Html.DisplayFor(model => result.HealthState.MeasurementTime)
@@ -102,7 +97,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <hr />
+                                <hr/>
                             }
                         }
                         @if (result.Advices.Any())
@@ -137,7 +132,7 @@
                                     </div>
                                 </div>
                             }
-                            <hr />
+                            <hr/>
                         }
                         @if (result.Notices.Any())
                         {
@@ -170,7 +165,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <hr />
+                                <hr/>
                             }
                         }
                     </div>

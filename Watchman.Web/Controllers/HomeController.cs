@@ -312,5 +312,20 @@ namespace Watchman.Web.Controllers
         {
             throw new NotImplementedException();
         }
+
+        public IActionResult DeleteWatchmanProfile()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IActionResult DeletePatientProfile()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IActionResult RemovePatient()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

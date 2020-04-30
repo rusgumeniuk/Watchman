@@ -6,24 +6,25 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            Current activity state
+        </div>
+        <div class="col-8">
+            @Html.DisplayFor(model => model.Patient.CurrentActivityState.GetType().Name)
+        </div>
+    </div>
+</div>
+
 @await Html.PartialAsync("_PatientPartial", new PatientPartialViewModel()
 {
     AnalysisResults = Model.AnalysisResults,
     IgnorableSigns = Model.IgnorableSigns,
     PatientId = Model.Patient.Id
 })
-<p>--------------------------------</p>
-<div class="container">
-    <div class="row">
-        <div class="col-3">
-            @Html.DisplayNameFor(model => model.Patient.CurrentActivityState)
-        </div>
-        <div class="col-8">
-            @Html.DisplayFor(model => model.Patient.CurrentActivityState.GetType().Name)
-        </div>
-    </div>
 
-    
+<div class="container">
     @if (Model.Watchmen.Any())
     {
         <h2>Your watchmen:</h2>
