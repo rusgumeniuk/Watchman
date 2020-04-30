@@ -14,8 +14,8 @@ namespace Watchman.BusinessLogic.Services
         Task AddPatientToUserAsync(TKey userId, TKey patientId, string token = null);
         Task AddWatchmanToUserAsync(TKey userId, TKey watchmanId, string token = null);
 
-        Task RemovePatientFromUser(TKey userId);
-        Task RemoveWatchmanFromUser(TKey userId);
+        Task RemovePatientFromUser(TKey userId, string token = null);
+        Task RemoveWatchmanFromUser(TKey userId, string token = null);
 
         Task<Patient<TKey>> GetPatientByUserIdAsync(TKey usedId);
         Task<WatchmanProfile> GetWatchmanByUserIdAsync(TKey userId);        

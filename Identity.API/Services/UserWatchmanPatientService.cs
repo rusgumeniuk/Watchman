@@ -56,7 +56,7 @@ namespace Identity.API.Services
         }
 
 
-        public async Task RemovePatientFromUser(Guid userId)
+        public async Task RemovePatientFromUser(Guid userId, string token = null)
         {
             var user = await _userRepository.RetrieveAsync(userId);
             user.PatientId = Guid.Empty;
@@ -64,7 +64,7 @@ namespace Identity.API.Services
             await _userRepository.SaveChangesAsync();
         }
 
-        public async Task RemoveWatchmanFromUser(Guid userId)
+        public async Task RemoveWatchmanFromUser(Guid userId, string token = null)
         {
             var user = await _userRepository.RetrieveAsync(userId);
             user.WatcmanId = Guid.Empty;

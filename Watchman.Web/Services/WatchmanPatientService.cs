@@ -79,14 +79,20 @@ namespace Watchman.Web.Services
             await _client.SendRequest(HttpMethod.Post, null, obj, uri, token);
         }
 
-        Task IUserWatchmanPatientService<Guid>.RemovePatientFromUser(Guid userId)
+        public async Task RemovePatientFromUser(Guid userId, string token = null)
         {
-            throw new NotImplementedException();
+            var uri = UserUrl + "/DeletePatient";
+            var obj = new { Id = userId };
+
+            await _client.SendRequest(HttpMethod.Delete, null, obj, uri, token);
         }
 
-        Task IUserWatchmanPatientService<Guid>.RemoveWatchmanFromUser(Guid userId)
+        public async Task RemoveWatchmanFromUser(Guid userId, string token = null)
         {
-            throw new NotImplementedException();
+            var uri = UserUrl + "/DeleteWatchman";
+            var obj = new { Id = userId };
+
+            await _client.SendRequest(HttpMethod.Delete, null, obj, uri, token);
         }
 
         public async Task AddPatientToWatchmanAsync(Guid watchmanId, Guid patientId, string token = null)
@@ -267,6 +273,22 @@ namespace Watchman.Web.Services
                 ? null : JsonConvert.DeserializeObject<IEnumerable<WatchmanInfo>>(result);
 
             return res;
+        }
+
+        public async Task DeletePatientProfile(Guid patientId, string token = null)
+        {
+            var uri = PatientUrl + "/DeletePatientProfile";
+            var obj = new { Id = patientId };
+
+            await _client.SendRequest(HttpMethod.Delete, null, obj, uri, token);
+        }
+
+        public async Task DeleteWatchmanProfile(Guid watchmanId, string token = null)
+        {
+            var uri = WatchmanUrl + "/DeleteWatchmanProfile";
+            var obj = new { Id = watchmanId };
+
+            await _client.SendRequest(HttpMethod.Delete, null, obj, uri, token);
         }
 
         public void RemoveAllWatchmenFromPatient(Guid patientId, string token = null)
