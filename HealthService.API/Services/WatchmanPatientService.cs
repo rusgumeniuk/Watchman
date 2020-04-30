@@ -202,6 +202,21 @@ namespace HealthService.API.Services
                 throw new ArgumentException($"Didn't find patient with id {patientId}");
         }
 
+        public async Task DeletePatientProfile(Guid patientId, string token = null)
+        {
+            var patient = await _db.PatientRepository.RetrieveAsync(patientId);
+            _db.PatientRepository.Remove(patient);
+            await _db.PatientRepository.SaveChangesAsync();
+        }
+
+        public async Task DeleteWatchmanProfile(Guid watchmanId, string token = null)
+        {
+            var watchman = await _db.WatchmanRepository.RetrieveAsync(watchmanId);
+            _db.WatchmanRepository.Remove(watchman);
+            //TODO: remove all data 
+            await _db.WatchmanRepository.SaveChangesAsync();
+        }
+
 
         public async Task CreatePatientAsync(Patient<Guid> patient, string token = null)
         {

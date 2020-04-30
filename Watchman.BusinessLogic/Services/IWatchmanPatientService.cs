@@ -40,5 +40,8 @@ namespace Watchman.BusinessLogic.Services
         void RemoveAllPatientFromWatchman(TKey watchmanId, string token = null);
 
         Task<IEnumerable<WatchmanProfile<TKey>>> GetPatientWatchmenAsync(TKey patientId, string token = null);
+
+        Task DeletePatientProfile(TKey patientId, string token = null);
+        Task DeleteWatchmanProfile(TKey watchmanId, string token = null);
     }
 }

@@ -176,5 +176,13 @@ namespace HealthService.API.Controllers
         {
             return Ok(JsonConvert.SerializeObject(await _service.GetPatientWatchmenAsync(model.Id)));
         }
+
+        [ValidationModelStateActionFilter]
+        [HttpDelete]
+        public async Task<IActionResult> DeletePatientProfile([FromBody] GuidFieldViewModel model)
+        {
+            await _service.DeletePatientProfile(model.Id);
+            return NoContent();
+        }
     }
 }

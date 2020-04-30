@@ -111,5 +111,13 @@ namespace HealthService.API.Controllers
                 return BadRequest(ex);
             }
         }
+
+        [ValidationModelStateActionFilter]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteWatchmanProfile([FromBody] GuidFieldViewModel model)
+        {
+            await _service.DeleteWatchmanProfile(model.Id);
+            return NoContent();
+        }
     }
 }
