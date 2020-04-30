@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 using System;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Watchman.API.Common.Attributes;
@@ -76,6 +77,22 @@ namespace Identity.API.Controllers
         public async Task<IActionResult> GetByPatientId([FromBody] GuidFieldViewModel model)
         {
             return Ok(await _userManager.FindByPatient(model.Id));
+        }
+
+        [ValidationModelStateActionFilter]
+        [HttpDelete]
+        public async Task<IActionResult> DeletePatient([FromBody] GuidFieldViewModel model)
+        {
+            await _userHealthService.RemovePatientFromUser(model.Id);
+            return Ok();
+        }
+
+        [ValidationModelStateActionFilter]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteWatchman([FromBody] GuidFieldViewModel model)
+        {
+            await _userHealthService.RemoveWatchmanFromUser(model.Id);
+            return Ok();
         }
     }
 }
