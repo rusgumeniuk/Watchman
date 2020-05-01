@@ -103,5 +103,41 @@ namespace HealthService.API.Infrastructure.Repositories
         {
             await _context.SaveChangesAsync();
         }
+
+        public async Task RemoveWatchmanData(Guid watchmanId)
+        {
+            var requests = await _context
+                .ControlRequests
+                .Where(request => request.WatchmanId.Equals(watchmanId))
+                .ToListAsync();
+            _context.ControlRequests.RemoveRange(requests);
+
+            var watchmanPatientPairs = await _context
+                .WatchmanPatients
+                .Where(pair => pair.WatchmanId.Equals(watchmanId))
+                .ToListAsync();
+            _context.WatchmanPatients.RemoveRange(watchmanPatientPairs);
+        }
+
+        public async Task RemovePatientData(Guid patientId)
+        {
+            var requests = await _context
+                .ControlRequests
+                .Where(request => request.PatientId.Equals(patientId))
+                .ToListAsync();
+            _context.ControlRequests.RemoveRange(requests);
+
+            var watchmanPatientPairs = await _context
+                .WatchmanPatients
+                .Where(pair => pair.PatientId.Equals(patientId))
+                .ToListAsync();
+            _context.WatchmanPatients.RemoveRange(watchmanPatientPairs);
+
+            var healthMeasurements = await _context
+                .PatientIgnorableSigns
+                .Where(pair => pair.PatientId.Equals(patientId))
+                .ToListAsync();
+            _context.PatientIgnorableSigns.RemoveRange(healthMeasurements);
+        }
     }
 }

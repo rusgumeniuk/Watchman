@@ -1,7 +1,9 @@
-﻿using System;
+﻿using HealthService.API.Models.Users;
+
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using HealthService.API.Models.Users;
+
 using Watchman.BusinessLogic.Models.Data;
 using Watchman.BusinessLogic.Models.Signs;
 using Watchman.BusinessLogic.Models.Users;
@@ -25,5 +27,8 @@ namespace HealthService.API.Infrastructure.Repositories
         Task<IEnumerable<PatientSign<Guid>>> RetrieveIgnorableSignsAsync(Guid patientId);
 
         Task SaveAsync();
+
+        Task RemoveWatchmanData(Guid watchmanId);
+        Task RemovePatientData(Guid patientId);
     }
 }
