@@ -206,6 +206,7 @@ namespace HealthService.API.Services
         {
             var patient = await _db.PatientRepository.RetrieveAsync(patientId);
             _db.PatientRepository.Remove(patient);
+            await _db.RemovePatientData(patientId);
             await _db.PatientRepository.SaveChangesAsync();
         }
 
@@ -213,7 +214,7 @@ namespace HealthService.API.Services
         {
             var watchman = await _db.WatchmanRepository.RetrieveAsync(watchmanId);
             _db.WatchmanRepository.Remove(watchman);
-            //TODO: remove all data 
+            await _db.RemoveWatchmanData(watchmanId);
             await _db.WatchmanRepository.SaveChangesAsync();
         }
 
