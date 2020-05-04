@@ -10,7 +10,7 @@ namespace Watchman.BusinessLogic.Models.Converters
     class HealthStateConverter : JsonConverter
     {
         private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings()
-        { ContractResolver = new SignResolver() };
+        { ContractResolver = new HealthStateResolver() };
 
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
