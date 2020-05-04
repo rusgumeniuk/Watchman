@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 
 using Watchman.BusinessLogic.Models.PatientStates.ActivityStates;
+using Watchman.BusinessLogic.Models.PatientStates.HealthStates;
 using Watchman.BusinessLogic.Models.Signs;
 using Watchman.BusinessLogic.Models.Users;
 
@@ -29,6 +30,7 @@ namespace HealthService.API.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<CasualActivityState>();
+            modelBuilder.Entity<NormalHealthState>();
             modelBuilder.Entity<DIA>();
             modelBuilder.Entity<HeartAndPressureHealthState>()
                 .HasMany(hm => hm.Signs);

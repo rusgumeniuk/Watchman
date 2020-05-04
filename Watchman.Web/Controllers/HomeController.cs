@@ -8,6 +8,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 
 using Watchman.BusinessLogic.Models.PatientStates.ActivityStates;
+using Watchman.BusinessLogic.Models.PatientStates.HealthStates;
 using Watchman.BusinessLogic.Models.Users;
 using Watchman.BusinessLogic.Services;
 using Watchman.Web.Extensions;
@@ -68,7 +69,8 @@ namespace Watchman.Web.Controllers
             PatientInfo newPatientInfo = new PatientInfo()
             {
                 Id = Guid.NewGuid(),
-                CurrentActivityState = new SleepActivityState()
+                CurrentActivityState = new SleepActivityState(),
+                CurrentHealthState = new NormalHealthState()
             };
             await _watchmanPatientService.CreatePatientAsync(newPatientInfo, token);
             await _userHealthService.AddPatientToUserAsync(user.Id, newPatientInfo.Id, token);
