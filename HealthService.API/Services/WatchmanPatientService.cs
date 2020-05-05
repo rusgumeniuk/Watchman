@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Watchman.BusinessLogic.Models.Analysis;
+using Watchman.BusinessLogic.Models.PatientStates.HealthStates;
 using Watchman.BusinessLogic.Models.Signs;
 using Watchman.BusinessLogic.Models.Users;
 using Watchman.BusinessLogic.Services;
@@ -119,7 +120,19 @@ namespace HealthService.API.Services
             var patient = await _db.PatientRepository.RetrieveAsync(patientId);
             if (patient != null && healthMeasurement != null)
             {
+                var lastMeasurementDatetime = await _db.PatientRepository.GetTimeOfLastPatientHealthMeasurementAsync(patientId);
                 await _db.PatientRepository.AddHealthMeasurementAsync(patientId, healthMeasurement);
+                if (lastMeasurementDatetime.Equals(DateTime.MinValue) || healthMeasurement.MeasurementTime > lastMeasurementDatetime)
+                {
+                    patient.IgnorableSignPair = new List<PatientSign<Guid, ushort>>(await _db.RetrieveIgnorableSignsAsync(patientId));
+                    _analyzer.Analyze(healthMeasurement, patient);
+                    var analysisResult = _analyzer.AnalysisResult;
+
+                    if (analysisResult.Threats.Any() && patient.CurrentHealthState.GetType() != typeof(ThreateningHealthState))
+                        patient.CurrentHealthState = ThreateningHealthState.GetInstance();
+                    else if (patient.CurrentHealthState.GetType() != typeof(NormalHealthState))
+                        patient.CurrentHealthState = NormalHealthState.GetInstance();
+                }
                 await _db.SaveAsync();
             }
             else if (patient == null)
