@@ -7,7 +7,7 @@ using Watchman.BusinessLogic.Models.Converters;
 namespace Watchman.BusinessLogic.Models.PatientStates.HealthStates
 {
     [JsonConverter(typeof(HealthStateConverter))]
-    public abstract class PatientHealthState<TKey> : IIdentifiedEntity<TKey>
+    public class PatientHealthState<TKey> : IIdentifiedEntity<TKey>
         where TKey : IEquatable<TKey>
     {
         public TKey Id { get; set; }
