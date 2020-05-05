@@ -17,31 +17,31 @@ namespace Watchman.API.Common.Infrastructure.Repositories
     {
         protected readonly DbContext _context;
 
-        public Repository(DbContext context)
+        protected Repository(DbContext context)
         {
             this._context = context;
         }
 
-        public async Task CreateAsync(TEntity entity)
+        public virtual async Task CreateAsync(TEntity entity)
         {
             await _context.Set<TEntity>().AddAsync(entity);
         }
-        public async Task<TEntity> UpdateAsync(TEntity oldEntity)
+        public virtual async Task<TEntity> UpdateAsync(TEntity oldEntity)
         {
             _context.Entry(oldEntity).State = EntityState.Modified;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return await _context.Set<TEntity>().FindAsync(oldEntity.Id);
         }
-        public void Remove(TEntity entity)
+        public virtual void Remove(TEntity entity)
         {
             _context.Set<TEntity>().Remove(entity);
         }
 
-        public async Task<TEntity> RetrieveAsync(TKey id)
+        public virtual async Task<TEntity> RetrieveAsync(TKey id)
         {
             return await _context.Set<TEntity>().FindAsync(id);
         }
-        public async Task<IEnumerable<TEntity>> RetrieveAllAsync()
+        public virtual async Task<IEnumerable<TEntity>> RetrieveAllAsync()
         {
             return await _context.Set<TEntity>().ToListAsync();
         }
