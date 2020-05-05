@@ -67,6 +67,21 @@ namespace HealthService.API.Infrastructure.Repositories
                 .Include(pat => pat.WatchmanPatients)
                 .FirstAsync(pat => pat.Id.Equals(id));
         }
+        public async Task<DateTime> GetTimeOfLastPatientHealthMeasurementAsync(Guid patientId)
+        {
+            try
+            {
+                var patient = await HealthContext
+                    .Patients
+                    .Include(pat => pat.HealthMeasurements)
+                    .FirstAsync(pat => pat.Id.Equals(patientId));
+                return patient.HealthMeasurements.Max(measurement => measurement.MeasurementTime);
+            }
+            catch (InvalidOperationException)
+            {
+                return DateTime.MinValue;
+            }
+        }
 
 
         public async Task AddIgnorableSignAsync(Guid patientId, string signType)
@@ -108,6 +123,15 @@ namespace HealthService.API.Infrastructure.Repositories
                     index = i + 1;
             }
             return index;
+        }
+
+        public override async Task<PatientProfile> RetrieveAsync(Guid id)
+        {
+            return await HealthContext
+                .Patients
+                .Include(patient => patient.CurrentHealthState)
+                .Include(patient => patient.CurrentActivityState)
+                .FirstAsync(patient => patient.Id.Equals(id));
         }
     }
 }
