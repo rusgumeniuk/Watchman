@@ -67,7 +67,7 @@ namespace HealthService.API.Infrastructure.Repositories
         public async Task<HealthMeasurement<Guid, Guid>> RetrieveHealthMeasurementAsync(Guid id)
         {
             return await _context
-                .HealthStates
+                .Measurements
                 .Include(measurement => measurement.Signs)
                 .FirstAsync(measurement => measurement.Id.Equals(id));
         }
@@ -75,7 +75,7 @@ namespace HealthService.API.Infrastructure.Repositories
         public async Task<IEnumerable<HealthMeasurement<Guid, Guid>>> RetrieveHealthMeasurementsAsync(IEnumerable<Guid> enumerable)
         {
             return await _context
-                .HealthStates
+                .Measurements
                 .Include(measurement => measurement.Signs)
                 .Where(measurement => enumerable.Contains(measurement.Id))
                 .ToListAsync();
@@ -85,6 +85,8 @@ namespace HealthService.API.Infrastructure.Repositories
         {
             return await _patientRepository.GetLastHealthMeasurementsAsync(patientId);
         }
+
+        
 
         public async Task<IEnumerable<PatientSign<Guid>>> RetrieveIgnorableSignsAsync(Guid patientId)
         {

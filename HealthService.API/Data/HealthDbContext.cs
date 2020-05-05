@@ -7,6 +7,8 @@ using System;
 using Watchman.BusinessLogic.Models.PatientStates.ActivityStates;
 using Watchman.BusinessLogic.Models.PatientStates.HealthStates;
 using Watchman.BusinessLogic.Models.Signs;
+
+
 using Watchman.BusinessLogic.Models.Users;
 
 namespace HealthService.API.Data
@@ -16,9 +18,12 @@ namespace HealthService.API.Data
         public DbSet<PatientProfile> Patients { get; set; }
         public DbSet<WatchmanProfileHealth> Watchmen { get; set; }
         public DbSet<WatchmanPatientConnection> WatchmanPatients { get; set; }
-        public DbSet<HeartAndPressureHealthState> HealthStates { get; set; }
+        public DbSet<HeartAndPressureHealthState> Measurements { get; set; }
         public DbSet<Sign<Guid, ushort>> Signs { get; set; }
         public DbSet<PatientSign> PatientIgnorableSigns { get; set; }
+        public DbSet<PatientHealthState<Guid>> HealthStates { get; set; }
+        public DbSet<PatientActivityState<Guid>> ActivityStates { get; set; }
+
         public DbSet<ControlRequest> ControlRequests { get; set; }
 
         public HealthDbContext(DbContextOptions<HealthDbContext> options)
@@ -29,9 +34,6 @@ namespace HealthService.API.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<CasualActivityState>();
-            modelBuilder.Entity<NormalHealthState>();
-            modelBuilder.Entity<DIA>();
             modelBuilder.Entity<HeartAndPressureHealthState>()
                 .HasMany(hm => hm.Signs);
 
