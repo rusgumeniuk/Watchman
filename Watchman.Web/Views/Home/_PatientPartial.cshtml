@@ -68,7 +68,7 @@
                     <div class="col-8">
                         @if (result.Threats.Any())
                         {
-                            <h3>Threats:</h3>
+                            <h3 class="text-danger">Threats:</h3>
                             @foreach (var threat in result.Threats)
                             {
                                 <div class="container">
@@ -102,7 +102,7 @@
                         }
                         @if (result.Advices.Any())
                         {
-                            <h3>Advices:</h3>
+                            <h3 class="text-warning">Advices:</h3>
                             @foreach (var advice in result.Advices)
                             {
                                 <div class="container">
@@ -136,7 +136,7 @@
                         }
                         @if (result.Notices.Any())
                         {
-                            <h3>Notice:</h3>
+                            <h3 class="text-info">Notice:</h3>
                             @foreach (var notice in result.Notices)
                             {
                                 <div class="container">
