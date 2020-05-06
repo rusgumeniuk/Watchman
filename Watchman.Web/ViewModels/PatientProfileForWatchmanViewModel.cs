@@ -10,6 +10,7 @@ namespace Watchman.Web.ViewModels
     public class PatientProfileForWatchmanViewModel
     {
         public Guid PatientId { get; set; }
+        public Patient<Guid> Patient { get; set; }
         public IEnumerable<PatientSign<Guid, ushort>> IgnorableSigns { get; set; }
         public IEnumerable<IAnalysisResult> AnalysisResults { get; set; }
         public PersonalInfo PatientPersonalInfo { get; set; }

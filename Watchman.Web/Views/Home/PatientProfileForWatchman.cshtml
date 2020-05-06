@@ -31,13 +31,14 @@
         <div class="col-4">@Model.PatientPersonalInfo.Phone</div>
     </div>
 </div>
-<hr/>
+<hr />
 
 @await Html.PartialAsync("_PatientPartial", new PatientPartialViewModel()
 {
     AnalysisResults = Model.AnalysisResults,
     IgnorableSigns = Model.IgnorableSigns,
-    PatientId = Model.PatientId
+    PatientId = Model.PatientId,
+    Patient = Model.Patient
 })
 
 

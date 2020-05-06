@@ -172,11 +172,13 @@ namespace Watchman.Web.Controllers
 
             var patient = await _watchmanPatientService.GetPatientWithAllPropertiesAsync(id, token);
             model.PatientId = patient.Id;
+            model.Patient = patient;
             model.AnalysisResults = await _watchmanPatientService.GetAnalyzesMeasurementsAsync(patient.Id, null, token);
             model.IgnorableSigns = await _watchmanPatientService.GetIgnorableSignsAsync(patient.Id, token);
             var userOfPatient = await _userManager.FindByPatient(patient.Id, token);
             model.PatientPersonalInfo =
                 await _personalService.GetPersonalInformation(userOfPatient.PersonalInformationId, token);
+
             return View(model);
         }
 
