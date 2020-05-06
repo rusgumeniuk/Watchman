@@ -61,6 +61,8 @@ namespace HealthService.API.Infrastructure.Repositories
         {
             return await HealthContext
                 .Patients
+                .Include(pat => pat.CurrentActivityState)
+                .Include(pat => pat.CurrentHealthState)
                 .Include(pat => pat.IgnorableSignPair)
                 .Include(pat => pat.HealthMeasurements)
                 .ThenInclude(hm => hm.Signs)
