@@ -1,8 +1,10 @@
-﻿using HealthService.API.Attributes;
-
+﻿
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+
+using Watchman.API.Common.Attributes;
+using Watchman.BusinessLogic.Models.Signs;
 
 namespace HealthService.API.ViewModels
 {
@@ -12,15 +14,8 @@ namespace HealthService.API.ViewModels
         public Guid PatientId { get; set; }
 
         [Required]
-        public IEnumerable<SignPair> Signs { get; set; }
+        public ICollection<Sign<Guid, ushort>> Signs { get; set; }
 
         public DateTime DateTime { get; set; } = DateTime.Now;
-    }
-    public class SignPair
-    {
-        [Required]
-        public string Type { get; set; }
-        [Required]
-        public int Value { get; set; }
     }
 }

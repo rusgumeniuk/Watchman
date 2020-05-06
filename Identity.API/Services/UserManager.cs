@@ -1,5 +1,6 @@
 ﻿using Identity.API.Models;
 using Identity.API.Services.PasswordHashing;
+
 using System;
 using System.Threading.Tasks;
 
@@ -9,40 +10,57 @@ using Watchman.BusinessLogic.Services;
 
 namespace Identity.API.Services
 {
-    public class UserManager : IUserManager<WatchmanUser, Guid>
+    public class UserManager : IUserManager<IdentityUser, Guid>
     {
-        private readonly IUserRepository<WatchmanUser> UserRepository;
-        private readonly ICustomPasswordHasher Hasher;
+        private readonly IPersonalInformationRepository<PersonalInfo, Guid> _personalInfoRepository;
+        private readonly IUserRepository<IdentityUser> _userRepository;
+        private readonly ICustomPasswordHasher _hasher;
 
-        public UserManager(IUserRepository<WatchmanUser> userRepository, ICustomPasswordHasher hasher)
+        public UserManager(IUserRepository<IdentityUser> userRepository, ICustomPasswordHasher hasher, IPersonalInformationRepository<PersonalInfo, Guid> personalInformationRepository)
         {
-            this.UserRepository = userRepository;
-            this.Hasher = hasher;
+            this._userRepository = userRepository;
+            this._hasher = hasher;
+            this._personalInfoRepository = personalInformationRepository;
         }
 
-        public async Task RegisterAsync(PersonalInformation personalInformation, string clearPassword)
+        public async Task CreateUserWithPersonalInformationAsync(PersonalInformation<Guid> personalInformation, string clearPassword)
         {
-            await RegisterAsync(new WatchmanUser() { PersonalInformation = personalInformation as PersonalInformation }, clearPassword);
-        }
-        public async Task RegisterAsync(IUser user, string clearPassword)
-        {
-            if (UserRepository.GetByEmailAsync(user.PersonalInformation.Email).Result == null)
+            if (_personalInfoRepository.GetByEmailAsync(personalInformation.Email).Result == null)
             {
-                user.PersonalInformation.HashedPassword = Hasher.Hash(clearPassword);
-                await UserRepository.CreateAsync(user as WatchmanUser);
-                await UserRepository.SaveChangesAsync();
+                personalInformation.Id = personalInformation.Id == Guid.Empty ? Guid.NewGuid() : personalInformation.Id;
+                personalInformation.HashedPassword = _hasher.Hash(clearPassword);
+
+                var user = new IdentityUser
+                {
+                    PersonalInformationId = personalInformation.Id
+                };
+
+                await _userRepository.CreateAsync(user);
+                await _userRepository.SaveChangesAsync();
+
+                await _personalInfoRepository.CreateAsync(personalInformation as PersonalInfo);
+                await _personalInfoRepository.SaveChangesAsync();
             }
-            else
-                throw new ArgumentException($"User with email '{user.PersonalInformation.Email}' already exist");
         }
 
-        public async Task<WatchmanUser> FindByEmailAsync(string email, string token = null)
+        public async Task<IdentityUser> FindByWatchman(Guid watchmanId, string token = null)
         {
-            return await UserRepository.GetByEmailAsync(email);
+            return await _userRepository.GetByWatchmanId(watchmanId);
         }
-        public async Task<WatchmanUser> FindByIdAsync(Guid key, string token = null)
+
+        public async Task<IdentityUser> FindByPatient(Guid patientId, string token = null)
         {
-            return await UserRepository.RetrieveAsync(key);
+            return await _userRepository.GetByPatientId(patientId);
+        }
+
+        public async Task<IdentityUser> FindByEmailAsync(string email, string token = null)
+        {
+            var personalnfo = await _personalInfoRepository.GetByEmailAsync(email);
+            return personalnfo != null ? await _userRepository.GetByPersonalInformationId(personalnfo.Id) : null;
+        }
+        public async Task<IdentityUser> FindByIdAsync(Guid key, string token = null)
+        {
+            return await _userRepository.RetrieveAsync(key);
         }
     }
 }

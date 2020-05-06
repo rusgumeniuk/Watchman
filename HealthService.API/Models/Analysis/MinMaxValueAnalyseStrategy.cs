@@ -22,93 +22,93 @@ namespace HealthService.API.Models.Analysis
 
                 var valueWithActivityRate = sign.Value * patient?.CurrentActivityState?.ChangeFactor ?? 1;
 
-                //TODO: create property\entity\repository which will store min max values (or create min max in signs again?)
-                switch (sign.GetType().Name)
+                //TODO: create property\entity\ repository which will store min max values (or create min max in signs again?)
+                switch (sign.Type)
                 {
                     case "SYS":
                         {
                             if (valueWithActivityRate < 95)
-                                result.Notices.Add(new HealthNotice() { Sign = sign as Sign, Comment = "U have some small sys" });
+                                result.Notices.Add(new HealthNotice() { Sign = sign, Comment = "U have some small sys" });
                             else if (valueWithActivityRate > 180)
-                                result.Threats.Add(new HealthThreat() { Sign = sign as Sign, Comment = $"Call to your doctor, because u may get hypertensive crisis" });
+                                result.Threats.Add(new HealthThreat() { Sign = sign, Comment = $"Call to your doctor, because u may get hypertensive crisis" });
                             else if (valueWithActivityRate > 130)
-                                result.Threats.Add(new HealthThreat() { Sign = sign as Sign, Comment = $"U have high blood pressure" });
+                                result.Threats.Add(new HealthThreat() { Sign = sign, Comment = $"U have high blood pressure" });
                             break;
                         }
                     case "DIA":
                         {
                             if (valueWithActivityRate < 40)
-                                result.Notices.Add(new HealthNotice() { Sign = sign as Sign, Comment = "U have some small sys" });
+                                result.Notices.Add(new HealthNotice() { Sign = sign, Comment = "U have some small sys" });
                             else if (valueWithActivityRate > 120)
-                                result.Threats.Add(new HealthThreat() { Sign = sign as Sign, Comment = $"Call to your doctor, because u may get hypertensive crisis" });
+                                result.Threats.Add(new HealthThreat() { Sign = sign, Comment = $"Call to your doctor, because u may get hypertensive crisis" });
                             else if (valueWithActivityRate > 80)
-                                result.Threats.Add(new HealthThreat() { Sign = sign as Sign, Comment = $"U have high blood pressure" });
+                                result.Threats.Add(new HealthThreat() { Sign = sign, Comment = $"U have high blood pressure" });
                             break;
                         }
                     case "HeartRate":
                         {
                             if (valueWithActivityRate < 60)
-                                result.Threats.Add(new HealthThreat() { Sign = sign as Sign, Comment = "U have some small heart rate" });
+                                result.Threats.Add(new HealthThreat() { Sign = sign, Comment = "U have some small heart rate" });
                             else if (valueWithActivityRate > 150)
-                                result.Threats.Add(new HealthThreat() { Sign = sign as Sign, Comment = $"Call to your emergency, because u may get heart issue" });
+                                result.Threats.Add(new HealthThreat() { Sign = sign, Comment = $"Call to your emergency, because u may get heart issue" });
                             else if (valueWithActivityRate > 100)
-                                result.Threats.Add(new HealthThreat() { Sign = sign as Sign, Comment = $"U have high heart rate" });
+                                result.Threats.Add(new HealthThreat() { Sign = sign, Comment = $"U have high heart rate" });
                             break;
                         }
 
                     default:
-                        break;
+                        throw new ArgumentException($"Unknown sign type: {sign.Type}");
                 }
             }
             return result;
         }
         public IAnalysisResult<Guid, Guid, Guid> AnalyzeLast<TPatientKey>(Patient<TPatientKey> patient) where TPatientKey : IEquatable<TPatientKey>
         {
-            var last = patient.HealthMeasurements.ElementAt(GetIndexOfItemWithNewDate((patient as PatientProfile).HealthMeasurements));
+            var last = patient.HealthMeasurements.ElementAt(GetIndexOfItemWithNewDate((patient as PatientProfile)?.HealthMeasurements));
             AnalysisResult result = new AnalysisResult() { HealthState = last as HeartAndPressureHealthState };
             foreach (var sign in last.Signs)
             {
-                if (IsIgnorableSign(patient, sign as Sign))
+                if (IsIgnorableSign(patient, sign as Sign<Guid, ushort>))
                     continue;
 
-                var valueWithActivityRate = sign.Value * (patient?.CurrentActivityState?.ChangeFactor ?? 1);
+                var valueWithActivityRate = sign.Value * (patient.CurrentActivityState?.ChangeFactor ?? 1);
 
-                //TODO: create property\entity\repository which will store min max values (or create min max in signs again?)
-                switch (sign.GetType().Name)
+                //TODO: create property\entity\ repository which will store min max values (or create min max in signs again?)
+                switch (sign.Type)
                 {
                     case "SYS":
                         {
                             if (valueWithActivityRate < 95)
-                                result.Notices.Add(new HealthNotice() { Sign = sign as Sign, Comment = "U have some small sys" });
+                                result.Notices.Add(new HealthNotice() { Sign = sign as Sign<Guid, ushort>, Comment = "U have some small sys" });
                             else if (valueWithActivityRate > 180)
-                                result.Threats.Add(new HealthThreat() { Sign = sign as Sign, Comment = $"Call to your doctor, because u may get hypertensive crisis" });
+                                result.Threats.Add(new HealthThreat() { Sign = sign as Sign<Guid, ushort>, Comment = $"Call to your doctor, because u may get hypertensive crisis" });
                             else if (valueWithActivityRate > 130)
-                                result.Threats.Add(new HealthThreat() { Sign = sign as Sign, Comment = $"U have high blood pressure" });
+                                result.Threats.Add(new HealthThreat() { Sign = sign as Sign<Guid, ushort>, Comment = $"U have high blood pressure" });
                             break;
                         }
                     case "DIA":
                         {
                             if (valueWithActivityRate < 40)
-                                result.Notices.Add(new HealthNotice() { Sign = sign as Sign, Comment = "U have some small sys" });
+                                result.Notices.Add(new HealthNotice() { Sign = sign as Sign<Guid, ushort>, Comment = "U have some small sys" });
                             else if (valueWithActivityRate > 120)
-                                result.Threats.Add(new HealthThreat() { Sign = sign as Sign, Comment = $"Call to your doctor, because u may get hypertensive crisis" });
+                                result.Threats.Add(new HealthThreat() { Sign = sign as Sign<Guid, ushort>, Comment = $"Call to your doctor, because u may get hypertensive crisis" });
                             else if (valueWithActivityRate > 80)
-                                result.Threats.Add(new HealthThreat() { Sign = sign as Sign, Comment = $"U have high blood pressure" });
+                                result.Threats.Add(new HealthThreat() { Sign = sign as Sign<Guid, ushort>, Comment = $"U have high blood pressure" });
                             break;
                         }
                     case "HeartRate":
                         {
                             if (valueWithActivityRate < 60)
-                                result.Threats.Add(new HealthThreat() { Sign = sign as Sign, Comment = "U have some small heart rate" });
+                                result.Threats.Add(new HealthThreat() { Sign = sign as Sign<Guid, ushort>, Comment = "U have some small heart rate" });
                             else if (valueWithActivityRate > 150)
-                                result.Threats.Add(new HealthThreat() { Sign = sign as Sign, Comment = $"Call to your emergency, because u may get heart issue" });
+                                result.Threats.Add(new HealthThreat() { Sign = sign as Sign<Guid, ushort>, Comment = $"Call to your emergency, because u may get heart issue" });
                             else if (valueWithActivityRate > 100)
-                                result.Threats.Add(new HealthThreat() { Sign = sign as Sign, Comment = $"U have high heart rate" });
+                                result.Threats.Add(new HealthThreat() { Sign = sign as Sign<Guid, ushort>, Comment = $"U have high heart rate" });
                             break;
                         }
 
                     default:
-                        break;
+                        throw new ArgumentException($"Unknown sign type: {sign.Type}");
                 }
             }
             return result;
@@ -116,19 +116,20 @@ namespace HealthService.API.Models.Analysis
 
         private int GetIndexOfItemWithNewDate(IEnumerable<HealthMeasurement<Guid, Guid>> list)
         {
-            if (list.Count() < 1)
+            var healthMeasurements = list as HealthMeasurement<Guid, Guid>[] ?? list.ToArray();
+            if (!healthMeasurements.Any())
                 return -1;
             int index = 0;
-            for (int i = 0; i < list.Count() - 1; ++i)
+            for (int i = 0; i < healthMeasurements.Count() - 1; ++i)
             {
-                if (list.ElementAt(i).MeasurementTime <= list.ElementAt(i + 1).MeasurementTime)
+                if (healthMeasurements.ElementAt(i).MeasurementTime <= healthMeasurements.ElementAt(i + 1).MeasurementTime)
                     index = i + 1;
             }
             return index;
         }
-        private bool IsIgnorableSign<TPatientKey>(Patient<TPatientKey> patient, Sign<Guid> sign) where TPatientKey : IEquatable<TPatientKey>
+        private bool IsIgnorableSign<TPatientKey>(Patient<TPatientKey> patient, Sign<Guid, ushort> sign) where TPatientKey : IEquatable<TPatientKey>
         {
-            return patient.IgnorableSignPair.FirstOrDefault(pair => pair.PatientId.Equals(patient.Id) && pair.SignType.Equals(sign.GetType().ToString())) != null;
+            return patient.IgnorableSignPair.FirstOrDefault(pair => pair.PatientId.Equals(patient.Id) && pair.SignType.Equals(sign.Type)) != null;
         }
     }
 }

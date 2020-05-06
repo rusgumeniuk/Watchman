@@ -11,6 +11,6 @@ namespace Watchman.BusinessLogic.Services
         where TKey : IEquatable<TKey>
     {
         Task<bool> ValidateCredentialsAsync(string email, string password);
-        bool ValidateCredentials(TUser user, string password);
+        Task<bool> ValidateCredentials(TUser user, string password);
     }
 }

@@ -11,37 +11,37 @@ namespace Watchman.BusinessLogic.Services
     public interface IWatchmanPatientService<TKey>
         where TKey : IEquatable<TKey>
     {
-        Task<IAnalysisResult> AnalyzeLastMeasurementAsync(TKey patientId);
+        Task<IAnalysisResult> GetAnalysisOfLastMeasurementAsync(TKey patientId, string token = null);
+        Task<IAnalysisResult> GetAnalysisOfMeasurementAsync(TKey measurementId, TKey patientId, string token = null);
+        Task<IEnumerable<IAnalysisResult>> GetAnalyzesMeasurementsAsync(TKey patientId, IEnumerable<Guid> list = null, string token = null);
 
-        Task<HealthMeasurement<TKey, TKey>> GetLastHealthMeasurementAsync(TKey patientId);
-        Task<IEnumerable<HealthMeasurement<TKey, TKey>>> GetLastHealthMeasurementsAsync(TKey patientId, int count);
-        Task AddHealthMeasurementAsync(TKey patientId, HealthMeasurement<TKey, TKey> healthMeasurement);
+        Task<HealthMeasurement<TKey, TKey>> GetLastHealthMeasurementAsync(TKey patientId, string token = null);
+        Task<IEnumerable<HealthMeasurement<TKey, TKey>>> GetLastHealthMeasurementsAsync(TKey patientId, int count, string token = null);
+        Task AddHealthMeasurementAsync(TKey patientId, HealthMeasurement<TKey, TKey> healthMeasurement, string token = null);
 
-        Task AddIgnorableSignToPatientAsync(TKey patientId, Sign<TKey> sign);
+        Task<IEnumerable<PatientSign<Guid>>> GetIgnorableSignsAsync(TKey patientId, string token = null);
+        Task AddIgnorableSignToPatientAsync(TKey patientId, string signType, string token = null);
+        Task RemoveIgnorableSignAsync(TKey patientId, string signType, string token = null);
 
-        Task AddPatientToWatchmanAsync(TKey watchmanId, TKey patientId);
+        Task AddPatientToWatchmanAsync(TKey watchmanId, TKey patientId, string token = null);
+        Task<bool> IsControlPatient(TKey watchmanId, TKey patientId, string token = null);
 
-        Task RemovePatientFromWatchmanAsync(TKey watchmanId, TKey patientId);
+        Task RemovePatientFromWatchmanAsync(TKey watchmanId, TKey patientId, string token = null);
 
-        Task<bool> ExistPatientAsync(TKey userId);
-        Task<bool> ExistWatchmanAsync(TKey userId);
+        Task CreatePatientAsync(Patient<TKey> patient, string token = null);
+        Task CreateWatchmanAsync(WatchmanProfile<TKey> watchman, string token = null);
 
-        Task AddPatientToUserAsync(TKey userId, Patient<TKey> patient = null);
-        Task AddWatchmanToUserAsync(TKey userId, WatchmanProfile watchman = null);
+        Task<Patient<TKey>> GetPatientAsync(TKey id, string token = null);
+        Task<Patient<TKey>> GetPatientWithAllPropertiesAsync(TKey id, string token = null);
 
-        Task CreateIfNotExistPatientAsync(TKey userId);
-        Task CreateIfNotExistWatchmanAsync(TKey userId);
+        Task<WatchmanProfile<TKey>> GetWatchmanAsync(TKey id, string token = null);
 
-        void RemovePatientFromUser(TKey userId);
-        void RemoveWatchmanFromUser(TKey userId);
+        void RemoveAllWatchmenFromPatient(TKey patientId, string token = null);
+        void RemoveAllPatientFromWatchman(TKey watchmanId, string token = null);
 
-        void RemoveAllWatchmenFromPatient(TKey patientId);
-        void RemoveAllPatientFromWatchman(TKey watchmanId);
+        Task<IEnumerable<WatchmanProfile<TKey>>> GetPatientWatchmenAsync(TKey patientId, string token = null);
 
-        Task<Patient<TKey>> GetPatientByUserIdAsync(TKey usedId);
-        Task<WatchmanProfile> GetWatchmanByUserIdAsync(TKey userId);
-
-        Task<Patient<TKey>> GetPatientWithPropertiesByUserIdAsync(TKey usedId);
-        Task<WatchmanProfile> GetWatchmanWithPropertiesByUserIdAsync(TKey userId);
+        Task DeletePatientProfile(TKey patientId, string token = null);
+        Task DeleteWatchmanProfile(TKey watchmanId, string token = null);
     }
 }

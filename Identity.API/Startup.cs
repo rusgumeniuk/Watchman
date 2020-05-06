@@ -1,5 +1,4 @@
 using Identity.API.Data;
-using Identity.API.Extensions;
 using Identity.API.Infrastructure.Repositories;
 using Identity.API.Models;
 using Identity.API.Services;
@@ -15,7 +14,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using System;
-
+using Watchman.API.Common.Attributes;
+using Watchman.API.Common.Extensions;
+using Watchman.API.Common.Services.JWT;
 using Watchman.BusinessLogic.Models.Data;
 using Watchman.BusinessLogic.Services;
 
@@ -42,13 +43,18 @@ namespace Identity.API
             services.ConfigureCors();
 
 
-            string connection = Configuration.GetConnectionString("DefaultConnection");
+            string connection = Configuration.GetConnectionString("UserDb");
             services.AddDbContext<WatchmanDbContext>(options => options.UseSqlServer(connection));
 
-            services.AddTransient<IUserRepository<WatchmanUser>, UserRepository>();
+            services.AddScoped<ValidationModelStateActionFilterAttribute>();
+
+            services.AddTransient<IPersonalInformationRepository<PersonalInfo, Guid>, PersonalInfoRepository>();
+            services.AddTransient<IUserRepository<IdentityUser>, UserRepository>();
             services.AddTransient<ICustomPasswordHasher, PasswordHasher>();
-            services.AddTransient<IUserManager<WatchmanUser, Guid>, UserManager>();
-            services.AddTransient<ILoginService<WatchmanUser, Guid>, LoginService>();
+            services.AddTransient<IUserManager<IdentityUser, Guid>, UserManager>();
+            services.AddTransient<IPersonalInformationService<PersonalInfo, Guid>, PersonalInfoService>();
+            services.AddTransient<ILoginService<IdentityUser, Guid>, LoginService>();
+            services.AddTransient<IUserWatchmanPatientService<Guid>, UserWatchmanPatientService>();
             services.AddTransient<IRoleService<Guid>, RoleService>();
             services.AddTransient<IJwtValidator, JwtValidator>();
             services.AddTransient<IJwtGenerator, JwtGenerator>();
@@ -60,6 +66,8 @@ namespace Identity.API
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.ConfigureCustomExceptionMiddleware();
+
             app.UseAuthentication();
 
             app.UseRouting();

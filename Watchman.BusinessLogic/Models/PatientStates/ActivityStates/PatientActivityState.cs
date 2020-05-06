@@ -1,8 +1,13 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+
+using System;
+
+using Watchman.BusinessLogic.Models.Converters;
 
 namespace Watchman.BusinessLogic.Models.PatientStates.ActivityStates
 {
-    public abstract class PatientActivityState<TKey> : IIdentifiedEntity<TKey>
+    [JsonConverter(typeof(PatientActivityConverter))]
+    public class PatientActivityState<TKey> : IIdentifiedEntity<TKey>
         where TKey : IEquatable<TKey>
     {
         public TKey Id { get; set; }

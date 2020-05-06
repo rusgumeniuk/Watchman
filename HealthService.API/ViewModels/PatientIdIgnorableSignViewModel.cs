@@ -1,7 +1,8 @@
-﻿using HealthService.API.Attributes;
-
+﻿
 using System;
 using System.ComponentModel.DataAnnotations;
+
+using Watchman.API.Common.Attributes;
 
 namespace HealthService.API.ViewModels
 {

@@ -1,11 +1,9 @@
-﻿using HealthService.API.Extensions;
-using HealthService.API.Services;
-
+﻿
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
-using System.IdentityModel.Tokens.Jwt;
+using Watchman.API.Common.Extensions;
 
 namespace HealthService.API.Controllers
 {

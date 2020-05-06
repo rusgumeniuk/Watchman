@@ -1,0 +1,85 @@
+﻿@using Watchman.Web.ViewModels
+@model Watchman.Web.ViewModels.PatientProfileViewModel
+
+@{
+    ViewData["Title"] = "PatientProfile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@await Html.PartialAsync("_PatientPartial", new PatientPartialViewModel()
+{
+    AnalysisResults = Model.AnalysisResults,
+    IgnorableSigns = Model.IgnorableSigns,
+    PatientId = Model.Patient.Id,
+    Patient = Model.Patient
+})
+
+<div class="container">
+    @if (Model.Watchmen.Any())
+    {
+        <h2>Your watchmen:</h2>
+        <div class="row">
+            @foreach (var watchman in Model.Watchmen)
+            {
+                <div class="container">
+                    <div class="row">
+                        <div class="col-5">
+                            Name
+                        </div>
+                        <div class="col-3">
+                            Phone
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5">
+                            @watchman.PersonalInformation.FirstName @watchman.PersonalInformation.SecondName
+                        </div>
+                        <div class="col-3">
+                            @watchman.PersonalInformation.Phone
+                        </div>
+                        <form class="col-2" asp-controller="Home" asp-action="RemoveWatchman" method="post">
+                            <button type="submit" class="btn btn-outline-danger" value="@watchman.Watchman.Id" name="watchmanId">Remove</button>
+                        </form>
+                        <form class="col-2" asp-controller="Home" asp-action="BlockWatchman" method="post">
+                            <button type="submit" class="btn btn-outline-dark" value="@watchman.Watchman.Id" name="watchmanId">Block</button>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+
+<div class="container">
+    @if (Model.ControlRequests.Any())
+    {
+        <label>Here is requests from user which wanna monitor your health:</label>
+        <div class="row">
+            @foreach (var request in Model.ControlRequests)
+            {
+                <div class="container">
+                    <div class="row">
+                        <span> @request.PersonalInformation.FirstName </span>
+                        <span>@request.PersonalInformation.SecondName</span>
+                    </div>
+                    <div class="row">
+                        <label>Email</label>
+                        <label>@request.PersonalInformation.Email</label>
+                    </div>
+                    <div class="row">
+                        <form class="col-3" asp-controller="Home" asp-action="AcceptRequest" method="post">
+                            <button type="submit" class="btn btn-outline-success" name="requestId" value="@request.RequestId">Accept</button>
+                        </form>
+                        <form class="col-3" asp-controller="Home" asp-action="RefuseRequest" method="post">
+                            <button type="submit" class="btn btn-outline-danger" name="requestId" value="@request.RequestId">Refuse</button>
+                        </form>
+                        <form class="col-3" asp-controller="Home" asp-action="BlockRequestFromWatchman" method="post">
+                            <button type="submit" class="btn btn-outline-dark" name="email" value="@request.PersonalInformation.Email">Block</button>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

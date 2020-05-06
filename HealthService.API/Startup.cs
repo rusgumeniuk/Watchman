@@ -1,8 +1,6 @@
-using HealthService.API.Attributes;
 using HealthService.API.Data;
-using HealthService.API.Extensions;
+using HealthService.API.Infrastructure.Repositories;
 using HealthService.API.Models.Analysis;
-using HealthService.API.Models.Infrastructure.Repositories;
 using HealthService.API.Models.Users;
 using HealthService.API.Services;
 
@@ -16,6 +14,9 @@ using Microsoft.Extensions.Hosting;
 
 using System;
 
+using Watchman.API.Common.Attributes;
+using Watchman.API.Common.Extensions;
+using Watchman.API.Common.Services.JWT;
 using Watchman.BusinessLogic.Models.Analysis;
 using Watchman.BusinessLogic.Models.Data;
 using Watchman.BusinessLogic.Services;
@@ -40,20 +41,20 @@ namespace HealthService.API
             services.AddMvc();
             services.ConfigureCors();
 
-            string healthConnection = Configuration.GetConnectionString("UserDbConnection");
+            string healthConnection = Configuration.GetConnectionString("HealthDbConnection");
             services.AddDbContext<HealthDbContext>(options => options.UseSqlServer(healthConnection));
 
-            string usersConnection = Configuration.GetConnectionString("UserDbConnection");
-            services.AddDbContext<IdentityDbContext>(options => options.UseSqlServer(usersConnection));
 
             services.AddScoped<ValidationModelStateActionFilterAttribute>();
 
             services.AddTransient<IAnalysisResult, AnalysisResult>();
             services.AddTransient<IAnalysisStrategy, MinMaxValueAnalyseStrategy>();
             services.AddTransient<IHealthAnalyzer, HealthAnalyzer>();
+            services.AddTransient<IControlRequestRepository, ControlRequestRepository>();
             services.AddTransient<IWatchmanRepository<WatchmanProfileHealth, Guid>, WatchmanRepository>();
             services.AddTransient<IPatientRepository<PatientProfile, Guid>, PatientRepository>();
             services.AddTransient<IWatchmanPatientUnitOfWork, WatchmanPatientUnitOfWork>();
+            services.AddTransient<IControlRequestService, ControlRequestService>();
             services.AddTransient<IWatchmanPatientService<Guid>, WatchmanPatientService>();
         }
 

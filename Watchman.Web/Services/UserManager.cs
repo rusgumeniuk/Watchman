@@ -1,5 +1,6 @@
 ﻿
 using Newtonsoft.Json;
+
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -12,24 +13,24 @@ namespace Watchman.Web.Services
 {
     public class UserManager : IUserManager<WatchmanUser, Guid>
     {
-        private const string accountUrl = "https://localhost:44383/account";
+        private const string AccountUrl = "https://localhost:44383/account";
+        private const string UserUrl = "https://localhost:44383/user";
 
-        private readonly IHttpClient client;
+        private readonly IHttpClient _client;
         public UserManager(IHttpClient httpClient)
         {
-            this.client = httpClient;
+            this._client = httpClient;
         }
 
         public async Task<WatchmanUser> FindByEmailAsync(string email, string token = null)
         {
-            var uri = $"{accountUrl}/GetUserByEmail";
+            var uri = $"{AccountUrl}/GetUserByEmail";
             var obj = new { Email = email };
-            var response = await client.SendRequest(HttpMethod.Post, null, obj, uri, token);
-            var result = await client.GetResponseResult(response);
+            var response = await _client.SendRequest(HttpMethod.Post, null, obj, uri, token);
+            var result = await _client.GetResponseResult(response);
             if (response.IsSuccessStatusCode)
             {
-                var dto = JsonConvert.DeserializeObject<UserDTO>(result);
-                return new WatchmanUser() { Id = dto.Id, PersonalInformation = dto.PersonalInformation };
+                return JsonConvert.DeserializeObject<WatchmanUser>(result);
             }
             return null;
         }
@@ -39,7 +40,7 @@ namespace Watchman.Web.Services
             throw new NotImplementedException();
         }
 
-        public async Task RegisterAsync(PersonalInformation personalInformation, string clearPassword)
+        public async Task CreateUserWithPersonalInformationAsync(PersonalInformation<Guid> personalInformation, string clearPassword)
         {
             var obj = new
             {
@@ -51,24 +52,35 @@ namespace Watchman.Web.Services
                 SecondName = personalInformation.SecondName,
                 LastName = personalInformation.LastName
             };
-            var url = $"{accountUrl}/register";
-            var response = await client.SendRequest(HttpMethod.Post, null, obj, url);
+            var url = $"{AccountUrl}/register";
+            var response = await _client.SendRequest(HttpMethod.Post, null, obj, url);
             if (!response.IsSuccessStatusCode)
             {
-                var result = await client.GetResponseResult(response);
+                var result = await _client.GetResponseResult(response);
                 throw new ArgumentException(result);
             }
         }
 
-        public Task RegisterAsync(IUser user, string clearPassword)
+        public async Task<WatchmanUser> FindByWatchman(Guid watchmanId, string token = null)
         {
-            throw new NotImplementedException();
+            var uri = $"{UserUrl}/GetByWatchmanId";
+            var obj = new { Id = watchmanId };
+            var response = await _client.SendRequest(HttpMethod.Post, null, obj, uri, token);
+            var result = await _client.GetResponseResult(response);
+            return !response.IsSuccessStatusCode || String.IsNullOrWhiteSpace(result)
+                ? null
+                : JsonConvert.DeserializeObject<WatchmanUser>(result);
+        }
+
+        public async Task<WatchmanUser> FindByPatient(Guid patientId, string token = null)
+        {
+            var uri = $"{UserUrl}/GetByPatientId";
+            var obj = new { Id = patientId };
+            var response = await _client.SendRequest(HttpMethod.Post, null, obj, uri, token);
+            var result = await _client.GetResponseResult(response);
+            return !response.IsSuccessStatusCode || String.IsNullOrWhiteSpace(result)
+                ? null
+                : JsonConvert.DeserializeObject<WatchmanUser>(result);
         }
     }
-}
-
-class UserDTO
-{
-    public Guid Id { get; set; }
-    public PersonalInfo PersonalInformation { get; set; }
 }

@@ -36,9 +36,12 @@ namespace Watchman.Web
             services.AddTransient<HttpClient>();
             services.AddTransient<PersonalInformation<Guid>, PersonalInfo>();
             services.AddTransient<IHttpClient, WatchmanHttpClient>();
-            services.AddTransient<IWatchmanPatientService<Guid>, WatchmanPatientService>();
+            services.AddTransient<IUserWatchmanPatientService<Guid>, WatchmanPatientService>();//TODO: create other service
+            services.AddTransient<IWatchmanPatientService<Guid>, WatchmanPatientService>();//
             services.AddTransient<IJwtValidator, JwtValidator>();
             services.AddTransient<IUserManager<WatchmanUser, Guid>, UserManager>();
+            services.AddTransient<IPersonalInformationService<PersonalInfo, Guid>, PersonalInfoService>();
+            services.AddTransient<IControlRequestService, ControlRequestService>();
             services.AddTransient<ITokenService, TokenService>();
         }
 

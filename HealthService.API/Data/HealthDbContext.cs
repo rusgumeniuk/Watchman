@@ -5,20 +5,26 @@ using Microsoft.EntityFrameworkCore;
 using System;
 
 using Watchman.BusinessLogic.Models.PatientStates.ActivityStates;
+using Watchman.BusinessLogic.Models.PatientStates.HealthStates;
 using Watchman.BusinessLogic.Models.Signs;
+
+
 using Watchman.BusinessLogic.Models.Users;
 
 namespace HealthService.API.Data
 {
-    public class HealthDbContext : DbContext
+    public sealed class HealthDbContext : DbContext
     {
-        public DbSet<User> Users { get; set; }
         public DbSet<PatientProfile> Patients { get; set; }
         public DbSet<WatchmanProfileHealth> Watchmen { get; set; }
         public DbSet<WatchmanPatientConnection> WatchmanPatients { get; set; }
-        public DbSet<HeartAndPressureHealthState> HealthStates { get; set; }
-        public DbSet<Sign<Guid>> Signs { get; set; }
+        public DbSet<HeartAndPressureHealthState> Measurements { get; set; }
+        public DbSet<Sign<Guid, ushort>> Signs { get; set; }
         public DbSet<PatientSign> PatientIgnorableSigns { get; set; }
+        public DbSet<PatientHealthState<Guid>> HealthStates { get; set; }
+        public DbSet<PatientActivityState<Guid>> ActivityStates { get; set; }
+
+        public DbSet<ControlRequest> ControlRequests { get; set; }
 
         public HealthDbContext(DbContextOptions<HealthDbContext> options)
             : base(options)
@@ -28,14 +34,9 @@ namespace HealthService.API.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<CasualActivityState>();
-            modelBuilder.Entity<DIA>();
-            modelBuilder.Entity<SYS>();
-            modelBuilder.Entity<HeartRate>();
-            modelBuilder.Entity<PersonalInfo>();
             modelBuilder.Entity<HeartAndPressureHealthState>()
                 .HasMany(hm => hm.Signs);
-            modelBuilder.Entity<Sign<Guid>>().ToTable("Sign");
+
             #region Many to many
 
             #region WatchmanPatient
