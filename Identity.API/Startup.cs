@@ -1,7 +1,9 @@
 using Identity.API.Data;
+using Identity.API.Infrastructure.Repositories;
 using Identity.API.Models;
-using Identity.API.Models.Extensions;
 using Identity.API.Services;
+using Identity.API.Services.JWT;
+using Identity.API.Services.PasswordHashing;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -10,10 +12,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
+
 using System;
-using System.Text;
-using Watchman.BusinessLogic.Models.Users;
+using Watchman.API.Common.Attributes;
+using Watchman.API.Common.Extensions;
+using Watchman.API.Common.Services.JWT;
+using Watchman.BusinessLogic.Models.Data;
+using Watchman.BusinessLogic.Services;
 
 namespace Identity.API
 {
@@ -31,30 +36,26 @@ namespace Identity.API
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = Configuration["Jwt:Issuer"],
-                        ValidAudience = Configuration["Jwt:Issuer"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
-                    };
+                    options.TokenValidationParameters = new JwtValidator(Configuration).GetValidationParameters();
                 });
 
             services.AddMvc();
             services.ConfigureCors();
 
 
-            string connection = Configuration.GetConnectionString("DefaultConnection");
+            string connection = Configuration.GetConnectionString("UserDb");
             services.AddDbContext<WatchmanDbContext>(options => options.UseSqlServer(connection));
 
-            services.AddTransient<IPersonalInformation<Guid>, PersonalInformation>();
-            services.AddTransient<IUser<PersonalInformation>, WatchmanUser>();
-            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddScoped<ValidationModelStateActionFilterAttribute>();
+
+            services.AddTransient<IPersonalInformationRepository<PersonalInfo, Guid>, PersonalInfoRepository>();
+            services.AddTransient<IUserRepository<IdentityUser>, UserRepository>();
             services.AddTransient<ICustomPasswordHasher, PasswordHasher>();
-            services.AddTransient<ILoginService<WatchmanUser, Guid>, LoginService>();
+            services.AddTransient<IUserManager<IdentityUser, Guid>, UserManager>();
+            services.AddTransient<IPersonalInformationService<PersonalInfo, Guid>, PersonalInfoService>();
+            services.AddTransient<ILoginService<IdentityUser, Guid>, LoginService>();
+            services.AddTransient<IUserWatchmanPatientService<Guid>, UserWatchmanPatientService>();
+            services.AddTransient<IRoleService<Guid>, RoleService>();
             services.AddTransient<IJwtValidator, JwtValidator>();
             services.AddTransient<IJwtGenerator, JwtGenerator>();
         }
@@ -65,15 +66,17 @@ namespace Identity.API
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.ConfigureCustomExceptionMiddleware();
+
             app.UseAuthentication();
-            
+
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller}/{action}");
+                    pattern: "api/{controller}/{action}");
             });
         }
     }

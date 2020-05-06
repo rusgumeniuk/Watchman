@@ -1,59 +1,36 @@
 ﻿using Identity.API.Models;
+using Identity.API.Services.PasswordHashing;
 
 using System;
+using System.Threading.Tasks;
 
-using Watchman.BusinessLogic.Models.Users;
+using Watchman.BusinessLogic.Models.Data;
+using Watchman.BusinessLogic.Services;
 
 namespace Identity.API.Services
 {
-    public class LoginService : ILoginService<WatchmanUser, Guid>
+    public class LoginService : ILoginService<IdentityUser, Guid>
     {
-        private readonly IUserRepository UserRepository;
-        private readonly ICustomPasswordHasher Hasher;
+        private readonly ICustomPasswordHasher _hasher;
+        private readonly IUserManager<IdentityUser, Guid> _userManager;
+        private readonly IPersonalInformationRepository<PersonalInfo, Guid> _personalInformationRepository;//TODO: remove repos and use some method in UserManager
 
-        public LoginService(IUserRepository userRepository, ICustomPasswordHasher hasher)
+        public LoginService(ICustomPasswordHasher hasher, IUserManager<IdentityUser, Guid> userManager, IPersonalInformationRepository<PersonalInfo, Guid> personalInformationRepository)
         {
-            this.UserRepository = userRepository;
-            this.Hasher = hasher;
-        }
-
-        public void Register(string email, string password)
-        {
-            Register(new PersonalInformation() { Email = email, HashedPassword = Hasher.Hash(password) });
-        }
-        public void Register(IPersonalInformation<Guid> personalInformation)
-        {
-            Register(new WatchmanUser() { PersonalInformation = personalInformation as PersonalInformation });
-        }
-        public void Register(IUser<PersonalInformation> user)
-        {
-            if (!AreCredentialsNotEmpty(user.PersonalInformation.Email, user.PersonalInformation.HashedPassword))
-                throw new ArgumentNullException("Please input valid credentials");
-            if (UserRepository.GetByEmail(user.PersonalInformation.Email).Result == null)
-            {
-                UserRepository.Add(user as WatchmanUser);
-                UserRepository.SaveChanges();
-            }
-            else
-                throw new ArgumentException($"User with email '{user.PersonalInformation.Email}' already exist");
+            this._hasher = hasher;
+            this._userManager = userManager;
+            this._personalInformationRepository = personalInformationRepository;
         }
 
-        public WatchmanUser FindByEmail(string email)
+        public async Task<bool> ValidateCredentialsAsync(string email, string password)
         {
-            return UserRepository.GetByEmail(email).Result as WatchmanUser;
+            var info = await _personalInformationRepository.GetByEmailAsync(email);
+            return info != null && _hasher.Verify(info.HashedPassword, password);
         }
-        public WatchmanUser FindById(Guid key)
+        public async Task<bool> ValidateCredentials(IdentityUser user, string password)
         {
-            return UserRepository.Get(key) as WatchmanUser;
-        }
-
-        public bool ValidateCredentials(WatchmanUser user, string password)
-        {
-            return Hasher.Verify(user?.PersonalInformation?.HashedPassword, password);
-        }
-        private bool AreCredentialsNotEmpty(string email, string password)
-        {
-            return !String.IsNullOrWhiteSpace(email) && !String.IsNullOrWhiteSpace(password);
+            var info = await _personalInformationRepository.RetrieveAsync(user.PersonalInformationId);
+            return info != null && _hasher.Verify(info.HashedPassword, password);
         }
     }
 }

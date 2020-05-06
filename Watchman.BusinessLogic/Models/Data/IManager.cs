@@ -8,7 +8,7 @@ namespace Watchman.BusinessLogic.Models.Data
         where TClass : class, IIdentifiedEntity<TKey>
         where TKey : IEquatable<TKey>
     {
-        IStore<TClass, TKey> Store { get; }
+        ICRUDRepository<TClass, TKey> Repository { get; }
 
         Task<OperationResult> CreateAsync(TClass obj);
         Task<OperationResult> UpdateAsync(TClass obj);

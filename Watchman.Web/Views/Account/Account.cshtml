@@ -1,0 +1,79 @@
+﻿@model Watchman.Web.Models.PersonalInfo
+
+@{
+    ViewData["Title"] = "Account";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Account</h1>
+
+<div class="container">
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SecondName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SecondName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.BirthDay)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.BirthDay)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Phone)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Phone)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+    </dl>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <form method="post">
+                @if (User.Claims.FirstOrDefault(claim => claim.Type.Equals("patientIdClaim")) == null)
+                {
+
+                    <button class="btn btn-outline-success" type="submit" asp-controller="Home" asp-action="CreatePatientProfile">Create patient profile</button>
+                }
+                else
+                {
+                    <button class="btn btn-outline-danger" type="submit" asp-controller="Home" asp-action="DeletePatientProfile">Delete own patient profile</button>
+                }
+            </form>
+        </div>
+        <div class="col-6">
+            <form method="post">
+                @if (User.Claims.FirstOrDefault(claim => claim.Type.Equals("watchmanIdClaim")) == null)
+                {
+                    <button class="btn btn-outline-success" type="submit" asp-controller="Home" asp-action="CreateWatchmanProfile">Create watchman profile</button>
+                }
+                else
+                {
+                    <button class="btn btn-outline-danger" type="submit" asp-controller="Home" asp-action="DeleteWatchmanProfile">Delete own watchman profile</button>
+                }
+            </form>
+        </div>
+    </div>
+</div>

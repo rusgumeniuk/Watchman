@@ -6,8 +6,8 @@ namespace Identity.API.Data
 {
     public class WatchmanDbContext : DbContext
     {
-        public DbSet<WatchmanUser> Users { get; set; }
-        public DbSet<PersonalInformation> PersonalInformation { get; set; }
+        public DbSet<IdentityUser> Users { get; set; }
+        public DbSet<PersonalInfo> PersonalInformation { get; set; }
 
         public WatchmanDbContext(DbContextOptions<WatchmanDbContext> options)
             : base(options)
