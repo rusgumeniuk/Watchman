@@ -6,30 +6,12 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container">
-    <div class="row">
-        <div class="col-4">
-            Current activity state
-        </div>
-        <div class="col-8">
-            @Html.DisplayFor(model => model.Patient.CurrentActivityState.GetType().Name)
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-4">
-            Current health state
-        </div>
-        <div class="col-8">
-            @Html.DisplayFor(model => model.Patient.CurrentHealthState.GetType().Name)
-        </div>
-    </div>
-</div>
-
 @await Html.PartialAsync("_PatientPartial", new PatientPartialViewModel()
 {
     AnalysisResults = Model.AnalysisResults,
     IgnorableSigns = Model.IgnorableSigns,
-    PatientId = Model.Patient.Id
+    PatientId = Model.Patient.Id,
+    Patient = Model.Patient
 })
 
 <div class="container">
