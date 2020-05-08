@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Watchman.Mobile.Pages;
+
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace Watchman.Mobile
 {
@@ -10,7 +10,7 @@ namespace Watchman.Mobile
         {
             InitializeComponent();
 
-            MainPage = new MainPage();
+            MainPage = new MainPage(); 
         }
 
         protected override void OnStart()

@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="Watchman.Mobile.Pages.WatchmanPage"
+             Title="Watchman page">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <x:Array x:Key="Patients" Type="{x:Type x:String}">
+                <x:String>Ruslan Humeniuk</x:String>
+                <x:String>Humeniuk Ruslan</x:String>
+                <x:String>Rusniuk Humelan</x:String>
+                <x:String>Rushum Laniuk</x:String>
+            </x:Array>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <ScrollView x:Name="ScrollViewPatients">
+            <StackLayout x:Name="StackPatients">
+                <Label 
+                    x:Name="LblPatients"
+                    Margin="10">
+                    Patients:
+                </Label>
+                <ListView 
+                    x:Name="ListPatients"
+                    ItemsSource="{StaticResource Patients}">
+                </ListView>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>
