@@ -5,6 +5,8 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
+using Watchman.BusinessLogic.Services;
+
 namespace Watchman.Web.Services
 {
     public class WatchmanHttpClient : IHttpClient

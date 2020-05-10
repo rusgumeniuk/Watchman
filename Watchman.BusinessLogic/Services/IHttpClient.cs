@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Watchman.Web.Services
+namespace Watchman.BusinessLogic.Services
 {
     public interface IHttpClient
     {
