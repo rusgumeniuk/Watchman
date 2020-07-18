@@ -74,9 +74,18 @@ body {
 /*---Custom classes---*/
 
 .measurement {
-    border: 2px blue;
+    border: 2px black;
     border-style:solid;
     border-radius: 10%;
     margin-bottom: 2%;
     padding: 5%
+}
+
+.health-state {
+    border: 2px black;
+    border-style: solid;
+    border-radius: 0%;
+    justify-content: center;
+    vertical-align:central;
+    text-align: center;
 }

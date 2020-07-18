@@ -7,15 +7,13 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 
 using Watchman.BusinessLogic.Services;
-using Watchman.Mobile.Pages;
-
+using Watchman.Mobile.Views;
 using Xamarin.Forms;
 
 namespace Watchman.Mobile.ViewModels
 {
-    public class LoginViewModel : INotifyPropertyChanged
+    public class LoginViewModel : BaseViewModel
     {
-        public event PropertyChangedEventHandler PropertyChanged;
 
         private ITokenService _tokenService;
         private string _email;
@@ -88,11 +86,12 @@ namespace Watchman.Mobile.ViewModels
             {
                 try
                 {
-                    var token = await _tokenService.GetTokenAsync(Email, Password);
-                    if (!string.IsNullOrEmpty(token))
-                        await Navigation.PushAsync(new MainPage());
-                    else
-                        Error = "Invalid credentials";
+                    Application.Current.MainPage = new MainPage();
+                    //var token = await _tokenService.GetTokenAsync(Email, Password);
+                    //if (!string.IsNullOrEmpty(token))
+                    //    await Navigation.PushAsync(new MainPage());
+                    //else
+                    //    Error = "Invalid credentials";
                 }
                 catch (WebException ex)
                 {
@@ -100,12 +99,6 @@ namespace Watchman.Mobile.ViewModels
                 }
                 
             }
-        }
-
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             Title="Health measurements"
+             x:Class="Watchman.Mobile.Views.ResultsPage">
+    <ContentPage.Resources>
+        <x:Array x:Key="IgnorableSignsArray" Type="{x:Type x:String}">
+            <x:String>DIA</x:String>
+        </x:Array>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+
+        <StackLayout Padding="20" BackgroundColor="{StaticResource BackColor}">
+            <Label>Ignorable signs:</Label>
+            <CollectionView
+                ItemsSource="{StaticResource IgnorableSignsArray}"
+                HeightRequest="20"/>
+
+            <Button
+                Style="{StaticResource BtnStyle}"
+                Text="Add new ignorable sign" HorizontalOptions="EndAndExpand" VerticalOptions="Start"/>
+
+            <Label>Health measurements</Label>
+            <StackLayout Padding="10">
+                <StackLayout Orientation="Horizontal">
+                    <Label>Measurement time</Label>
+                    <Label>29.05.2020 16:18</Label>
+                </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label>DIA</Label>
+                    <Label>80</Label>
+                </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label>SYS</Label>
+                    <Label>120</Label>
+                </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label>Heart rate</Label>
+                    <Label>90</Label>
+                </StackLayout>
+            </StackLayout>
+            <StackLayout Padding="10">
+                <StackLayout Orientation="Horizontal">
+                    <Label>Measurement time</Label>
+                    <Label>29.05.2020 16:17</Label>
+                </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label>DIA</Label>
+                    <Label>90</Label>
+                </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label>SYS</Label>
+                    <Label>140</Label>
+                </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label>Heart rate</Label>
+                    <Label>110</Label>
+                </StackLayout>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

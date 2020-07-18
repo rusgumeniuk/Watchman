@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="Watchman.Mobile.Views.AccountPage">
+    <ContentPage.Content>
+        <TableView BackgroundColor="{StaticResource BackColor}">
+            <TableSection Title="Personal information">
+                <EntryCell Label="First name" Text="{Binding FirstName}"/>
+                <EntryCell Label="Second name" Text="{Binding SecondName}"/>
+                <EntryCell Label="Last name" Text="{Binding LastName}"/>
+                <ViewCell>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Margin="10,10,10,0">Birthday date</Label>
+                        <DatePicker Date="{Binding BirthDay}" HorizontalOptions="FillAndExpand"/>
+                    </StackLayout>
+                </ViewCell>
+            </TableSection>
+            <TableSection Title="Contact information">
+                <EntryCell Label="Email" Text="{Binding Email}" Keyboard="Email"/>
+                <EntryCell Label="Phone" Text="{Binding PhoneNumber}" Keyboard="Telephone"/>
+            </TableSection>
+            <TableSection>
+                <ViewCell>
+                    <Button Style="{StaticResource BtnStyle}"  Margin="50,0" Command="{Binding SubmitCommand}" Text="Update information"/>
+                </ViewCell>
+            </TableSection>
+        </TableView>
+    </ContentPage.Content>
+</ContentPage>

@@ -4,9 +4,11 @@ using HealthService.API.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using Newtonsoft.Json;
+
 using System;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
+
 using Watchman.API.Common.Attributes;
 using Watchman.API.Common.ViewModels;
 using Watchman.BusinessLogic.Services;
@@ -21,22 +23,10 @@ namespace HealthService.API.Controllers
         {
             this._service = watchmanPatientService;
         }
-        
-
-        //[ValidationModelStateActionFilter]
-        //[HttpPost]
-        //public async Task<IActionResult> Exist([FromBody]GuidFieldViewModel model)
-        //{
-        //    var res = await _service.ExistWatchmanAsync(model.Id);
-        //    if (res)
-        //        return Ok();
-        //    else
-        //        return BadRequest();
-        //}
 
         [ValidationModelStateActionFilter]
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody]GuidFieldViewModel model)
+        public async Task<IActionResult> Create([FromBody] GuidFieldViewModel model)
         {
             await _service.CreateWatchmanAsync(new WatchmanProfileHealth() { Id = model.Id });
             return Ok();
@@ -45,20 +35,12 @@ namespace HealthService.API.Controllers
         [ValidationModelStateActionFilter]
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> Get([FromBody]GuidFieldViewModel model)
+        public async Task<IActionResult> Get([FromBody] GuidFieldViewModel model)
         {
             var watchman = await _service.GetWatchmanAsync(model.Id);
             var result = JsonConvert.SerializeObject(watchman);
             return Ok(result);
         }
-
-        //[ValidationModelStateActionFilter]
-        //[HttpDelete]
-        //public IActionResult Remove([FromBody]GuidFieldViewModel model)
-        //{
-        //    _service.RemoveWatchmanFromUser(model.Id);
-        //    return Ok();
-        //}
 
         [ValidationModelStateActionFilter]
         [HttpPost]
@@ -68,7 +50,7 @@ namespace HealthService.API.Controllers
         }
 
         [ValidationModelStateActionFilter]
-        [HttpPost]
+        [HttpPost]//TODO AddPatient
         public async Task<IActionResult> Add([FromBody] WatchmanIdPatientIdViewModel model)
         {
             try
@@ -84,7 +66,7 @@ namespace HealthService.API.Controllers
 
         [ValidationModelStateActionFilter]
         [HttpDelete]
-        public async Task<IActionResult> RemovePatient([FromBody]WatchmanIdPatientIdViewModel model)
+        public async Task<IActionResult> RemovePatient([FromBody] WatchmanIdPatientIdViewModel model)
         {
             try
             {
@@ -99,7 +81,7 @@ namespace HealthService.API.Controllers
 
         [ValidationModelStateActionFilter]
         [HttpDelete]
-        public IActionResult RemovePatients([FromBody]GuidFieldViewModel model)
+        public IActionResult RemovePatients([FromBody] GuidFieldViewModel model)
         {
             try
             {

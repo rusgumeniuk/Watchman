@@ -11,7 +11,7 @@ namespace Watchman.Mobile.Services
 {
     public class WatchmanHttpClient : IHttpClient
     {
-        private readonly string _baseUrl = "https://localhost:44383/";
+        private readonly string _baseUrl = "https://localhost:44348/";
         private readonly HttpClient _client;
 
         public WatchmanHttpClient(HttpClient httpClient, string baseUrl = null)

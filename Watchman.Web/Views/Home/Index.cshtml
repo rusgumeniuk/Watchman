@@ -3,27 +3,38 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h1>Main page</h1>
-
-@{
-    var token = Context.Request.Cookies["access_token"];
-}
-@if (token != null)
-{
-    <h2>Length of your access token: </h2>
-    <h3>@token.ToString().Length</h3>
-}
-@if (User.IsInRole("Admin"))
-{
-    <h2>Cool, you are an admin</h2>
-}
-else if (User.Identity.IsAuthenticated)
-{
-    <h2>Hello there, user</h2>
-}
-else
-{
-    <h2>Nihil verum est licet omnia, anonymus</h2>
-}
-
+    <div class="container">
+        <div class="row">
+            <h1>Welcome to the Watchman</h1>
+        </div>
+        <div class="row">
+            <div>This is a system that allows to be <strong>a patient </strong> and <strong>a watchman.</strong> </div>
+        </div>
+        <div class="row">
+            <h3><strong>Patient</strong></h3>
+        </div>
+        <div class="row">
+            It's a role when you and your watchmen can monitor your current health state and activity state, look at health measurements, and see results of the analysis of those measurements.
+        </div>
+        <div class="row">
+            <h3><strong>Watchman</strong></h3>
+        </div>
+        <div class="row">
+            It's a role when you send a control request to some patient and if the patient accepts it, you get access to monitor patient health state, measurements etc.
+            So watchman at any time can see the health state of a patient and be sure that it's alright.
+            For example, you can monitor the health of your parents, grandparents, etc.
+        </div>
+        <div class="row">
+            <div class="container">
+                <div class="row">
+                    <h2 class="text-danger"><strong>Attention</strong></h2>
+                </div>
+                <div class="row">
+                    Our service isn't a licensed medical system so we are not responsible for side effects.
+                </div>
+                <div class="row">
+                    <strong>If necessary, please consult a certified doctor!</strong>
+                </div>
+            </div>
+        </div>
+    </div>

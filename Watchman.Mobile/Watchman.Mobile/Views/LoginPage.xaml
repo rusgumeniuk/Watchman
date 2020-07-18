@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="Watchman.Mobile.Views.LoginPage">
+    <ContentPage.Content>
+        <StackLayout BackgroundColor="{StaticResource BackColor}">
+
+            <Label TextColor="Red" Text="{Binding Error}" VerticalOptions="Start"/>
+            <Label
+                Text="Watchman"
+                VerticalOptions="Start"
+                HorizontalOptions="Center"
+                FontSize="Title"
+                Margin="40"/>
+            <StackLayout VerticalOptions="Center">
+                <StackLayout Margin="20">
+                    <Label Text="Email"/>
+                    <Entry Text="{Binding Email}"/>
+                </StackLayout>
+                <StackLayout Margin="20">
+                    <Label Text="Password"/>
+                    <Entry Text="{Binding Password}"/>
+                </StackLayout>
+                <Button 
+                    VerticalOptions="StartAndExpand"
+                    Margin="20,10,20,20"
+                    Text="Log in"
+                    Style="{StaticResource BtnStyle}"
+                    Command="{Binding SubmitCommand}"/>
+                <Button 
+                    VerticalOptions="StartAndExpand"
+                    Margin="20,10, 20, 10"
+                    Style="{StaticResource BtnStyle}"
+                    Text="Sign up"/>
+                <Button 
+                    VerticalOptions="StartAndExpand"
+                    Margin="20,0,20,0"
+                    Text="Forgot password"
+                    Style="{StaticResource BtnStyle}"
+                    />
+            </StackLayout>
+            </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

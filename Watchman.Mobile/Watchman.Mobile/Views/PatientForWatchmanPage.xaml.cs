@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace Watchman.Mobile.Pages
+namespace Watchman.Mobile.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class ProfilePage : ContentPage
+    public partial class PatientForWatchmanPage : TabbedPage
     {
-        public ProfilePage()
+        public PatientForWatchmanPage()
         {
             InitializeComponent();
         }

@@ -14,5 +14,10 @@ namespace Watchman.BusinessLogic.Models.PatientStates.ActivityStates
         {
             return state ?? (state = new SportActivityState());
         }
+
+        public override string ToString()
+        {
+            return "Sport activity state";
+        }
     }
 }

@@ -15,5 +15,9 @@ namespace Watchman.BusinessLogic.Models.PatientStates.ActivityStates
         {
             return state ?? (state = new SleepActivityState());
         }
+        public override string ToString()
+        {
+            return "Sleep activity state";
+        }
     }
 }

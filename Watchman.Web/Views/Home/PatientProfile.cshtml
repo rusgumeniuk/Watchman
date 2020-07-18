@@ -14,6 +14,7 @@
     Patient = Model.Patient
 })
 
+<hr/>
 <div class="container">
     @if (Model.Watchmen.Any())
     {
@@ -49,23 +50,28 @@
         </div>
     }
 </div>
-
+<hr/>
 
 <div class="container">
     @if (Model.ControlRequests.Any())
     {
-        <label>Here is requests from user which wanna monitor your health:</label>
+        <h3>Here is requests from user which wanna monitor your health:</h3>
         <div class="row">
             @foreach (var request in Model.ControlRequests)
             {
                 <div class="container">
                     <div class="row">
-                        <span> @request.PersonalInformation.FirstName </span>
-                        <span>@request.PersonalInformation.SecondName</span>
+                        <div class="col-2">
+                            Name
+                        </div>
+                        <div class="col-10">
+                            <span>@request.PersonalInformation.FirstName </span>
+                            <span>@request.PersonalInformation.SecondName </span>
+                        </div>
                     </div>
                     <div class="row">
-                        <label>Email</label>
-                        <label>@request.PersonalInformation.Email</label>
+                        <div class="col-2">Email</div>
+                        <div class="col-10">@request.PersonalInformation.Email</div>
                     </div>
                     <div class="row">
                         <form class="col-3" asp-controller="Home" asp-action="AcceptRequest" method="post">

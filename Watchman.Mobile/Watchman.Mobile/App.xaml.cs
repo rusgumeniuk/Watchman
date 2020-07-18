@@ -1,6 +1,7 @@
-﻿using Watchman.Mobile.Pages;
-
+﻿using Watchman.Mobile.Infrastructure;
+using Watchman.Mobile.Views;
 using Xamarin.Forms;
+using MainPage = Watchman.Mobile.Views.MainPage;
 
 namespace Watchman.Mobile
 {
@@ -10,7 +11,13 @@ namespace Watchman.Mobile
         {
             InitializeComponent();
 
-            MainPage = new NavigationPage(new LoginPage());
+            if (!UserManager.Instance.IsLoggedIn())
+            {
+                MainPage = new LoginPage();
+                return;
+            }
+
+            MainPage = new MainPage();
         }
 
         protected override void OnStart()

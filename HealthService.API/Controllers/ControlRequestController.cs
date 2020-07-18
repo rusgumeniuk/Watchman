@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using HealthService.API.ViewModels;
+﻿using HealthService.API.ViewModels;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
 using Watchman.API.Common.Attributes;
 using Watchman.API.Common.ViewModels;
 using Watchman.BusinessLogic.Models.Users;
@@ -23,14 +24,14 @@ namespace HealthService.API.Controllers
         }
 
         [ValidationModelStateActionFilter]
-        [HttpPost]
+        [HttpPost]//TODO GET
         public async Task<IActionResult> Get([FromBody] GuidFieldViewModel model)
         {
             return Ok(await _controlRequestService.GetControlRequest(model.Id));
         }
 
         [ValidationModelStateActionFilter]
-        [HttpPost]
+        [HttpPost]//TODO GET
         public async Task<IEnumerable<ControlRequest>> GetPendingRequests([FromBody] GuidFieldViewModel model)
         {
             return await _controlRequestService.GetPendingRequests(model.Id);

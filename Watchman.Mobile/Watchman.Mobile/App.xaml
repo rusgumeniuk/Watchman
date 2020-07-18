@@ -6,6 +6,13 @@
              mc:Ignorable="d"
              x:Class="Watchman.Mobile.App">
     <Application.Resources>
-
+        <ResourceDictionary>
+            <Color x:Key="BackColor">WhiteSmoke</Color>
+            <Style x:Key="BtnStyle" TargetType="Button">
+                <Setter Property="TextColor" Value="#004D40" />
+                <Setter Property="BackgroundColor" Value="CornflowerBlue" />
+                <Setter Property="CornerRadius" Value="20" />
+            </Style>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

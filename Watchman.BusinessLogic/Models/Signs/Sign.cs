@@ -21,5 +21,10 @@ namespace Watchman.BusinessLogic.Models.Signs
         {
             Type = GetType().Name;
         }
+
+        public override string ToString()
+        {
+            return Type;
+        }
     }
 }
