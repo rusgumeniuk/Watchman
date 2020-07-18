@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="Watchman.Mobile.Views.GeneralInfoForWatchmanPage"
+             Title="General info">
+    <ContentPage.Content>
+        <StackLayout Padding="20" BackgroundColor="{StaticResource BackColor}">
+            <StackLayout Orientation="Horizontal">
+                <StackLayout>
+                    <Label>First name</Label>
+                    <Label>Second name</Label>
+                    <Label>Birth date</Label>
+                    <Label>Phone</Label>
+                    <Label>Email</Label>
+                </StackLayout>
+                <StackLayout>
+                    <Label Text="{Binding PatientPersonalInformation.FirstName}"/>
+                    <Label Text="{Binding PatientPersonalInformation.SecondName}"/>
+                    <Label Text="{Binding PatientPersonalInformation.BirthDay}"/>
+                    <Label Text="{Binding PatientPersonalInformation.Phone}"/>
+                    <Label Text="{Binding PatientPersonalInformation.Email}"/>
+                </StackLayout>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Current activity state:"/>
+                <Label Text="{Binding ActivityState}"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Current health state"/>
+                <Label Text="Normal health state"/><!--{Binding HealthState}-->
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

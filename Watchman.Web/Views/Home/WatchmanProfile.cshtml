@@ -21,28 +21,28 @@
 <div class="container">
     @if (Model.PatientsAndPersonalInfoPairs?.Any() ?? false)
     {
-        <div class="row">
+        <div class="row m-1">
             <h2>You are a watchman for next patients:</h2>
         </div>
-        <div class="row thead-light">
-            <div class="col-4">Patient name</div>
-            <div class="col-2">Health state</div>
+        <div class="row thead-light m-1">
+            <div class="col-3">Patient name</div>
             <div class="col-2">Activity state</div>
+            <div class="col-3">Health state</div>
             <div class="col-1"></div>
             <div class="col-3"></div>
         </div>
         @foreach (var patient in Model.PatientsAndPersonalInfoPairs)
         {
-            <div class="row">
-                <div class="col-4">@patient.PersonalInformation.FirstName @patient.PersonalInformation.SecondName</div>
-                <div class="col-2">@patient.Patient.CurrentActivityState.GetType().Name</div>
+            <div class="row m-1">
+                <div class="col-3">@patient.PersonalInformation.FirstName @patient.PersonalInformation.SecondName</div>
+                <div class="col-2">@patient.Patient.CurrentActivityState.ToString()</div>
                 @if (patient.Patient.CurrentHealthState is NormalHealthState)
                 {
-                    <div class="col-2 bg-success">@patient.Patient.CurrentHealthState.GetType().Name</div>
+                    <div class="col-3 bg-success health-state">Normal health state</div>
                 }
                 else
                 {
-                    <div class="col-2 bg-danger">@patient.Patient.CurrentHealthState.GetType().Name</div>
+                    <div class="col-3 bg-danger health-state">Threatening health state</div>
                 }
                 <div class="col-1">
                     <form asp-action="PatientProfileForWatchman" asp-controller="Home" method="get">

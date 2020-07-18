@@ -3,31 +3,40 @@
 
 <div class="container w-100">
     <div class="row">
+        <h2>Current patient states</h2>
+    </div>
+    <div class="row">
         <div class="col-4">
-            Current activity state
+            Activity state
         </div>
         <div class="col-8">
-            @Html.DisplayFor(model => Model.Patient.CurrentActivityState.GetType().Name)
+            @Model.Patient.CurrentActivityState.ToString()
         </div>
     </div>
     <div class="row">
         <div class="col-4">
-            Current health state
+            Health state
         </div>
-        @if (Model.Patient.CurrentHealthState is NormalHealthState)
+        @if (Model.Patient.CurrentHealthState.HealthAuditSecondPeriod == NormalHealthState.GetInstance().HealthAuditSecondPeriod)
         {
-            <div class="col-8 bg-success">@Html.DisplayFor(model => model.Patient.CurrentHealthState.GetType().Name)</div>
+            <div class="col-8">
+                <div class="col-4 health-state bg-success">Normal health state</div>
+            </div>
         }
         else
         {
-            <div class="col-8 bg-danger">@Html.DisplayFor(model => model.Patient.CurrentHealthState.GetType().Name)</div>
+            <div class="col-8">
+                <div class="col-4 health-state bg-danger">Threatening health state</div>
+            </div>
         }
     </div>
 </div>
 <div class="container w-100">
     <div class="row">
+        <h2>Ignorable signs</h2>
+    </div>
+    <div class="row">
         <div class="container">
-            <h2>Ignorable signs:</h2>
             @foreach (var sign in Model.IgnorableSigns)
             {
                 <div class="row">
@@ -59,15 +68,21 @@
 </div>
 <div class="container w-100">
     <div class="row">
-        <h2>Health measurements:</h2>
+        <h2>Health measurements</h2>
     </div>
     <div class="row">
-        @foreach (var result in Model.AnalysisResults)
+        @if (!Model.AnalysisResults.Any())
+        {
+            <div class="container">
+                <div>No one measurement</div>
+            </div>
+        }
+        @foreach (var result in Model.AnalysisResults.OrderByDescending(analysis => analysis.HealthState.MeasurementTime))
         {
             <div class="container measurement">
                 <div class="row">
                     <div class="col-4">
-                        <h3>@Html.DisplayNameFor(model => result.HealthState.MeasurementTime)</h3>
+                        <h3>Measurement time</h3>
                     </div>
                     <div class="col-8">
                         @Html.DisplayFor(model => result.HealthState.MeasurementTime)
@@ -80,13 +95,14 @@
                         {
                             <div class="row">
                                 <div class="col-6">
-                                    @sign.GetType().Name
+                                    @sign.ToString()
                                 </div>
 
                                 <div class="col-6">
                                     @sign.Value
                                 </div>
                             </div>
+                            <hr />
                         }
                     </div>
                     <div class="col-8">
@@ -101,20 +117,20 @@
                                             Action:
                                         </div>
                                         <div class="col-8">
-                                            @threat.ActionRequirement.ToString()
+                                            @Html.DisplayFor(model => threat.ActionRequirement)
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-2">
-                                            Sign
+                                            Sign:
                                         </div>
                                         <div class="col-8">
-                                            @threat.Sign.Type
+                                            @threat.Sign.ToString()
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-2">
-                                            Comment
+                                            Comment:
                                         </div>
                                         <div class="col-10">
                                             @threat.Comment
@@ -135,20 +151,20 @@
                                             Action:
                                         </div>
                                         <div class="col-8">
-                                            @advice.ActionRequirement.ToString()
+                                            @Html.DisplayFor(model => advice.ActionRequirement)
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-2">
-                                            Sign
+                                            Sign:
                                         </div>
                                         <div class="col-8">
-                                            @advice.Sign.Type
+                                            @advice.Sign.ToString()
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-2">
-                                            Comment
+                                            Comment:
                                         </div>
                                         <div class="col-10">
                                             @advice.Comment
@@ -169,20 +185,20 @@
                                             Action:
                                         </div>
                                         <div class="col-8">
-                                            @notice.ActionRequirement.ToString()
+                                            @Html.DisplayFor(model => notice.ActionRequirement)
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-2">
-                                            Sign
+                                            Sign:
                                         </div>
                                         <div class="col-8">
-                                            @notice.Sign.Type
+                                            @notice.Sign.ToString()
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-2">
-                                            Comment
+                                            Comment:
                                         </div>
                                         <div class="col-10">
                                             @notice.Comment

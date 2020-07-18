@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.ComponentModel.DataAnnotations;
 using Watchman.BusinessLogic.Models.Signs;
 
 namespace Watchman.BusinessLogic.Models.Analysis
@@ -15,8 +15,11 @@ namespace Watchman.BusinessLogic.Models.Analysis
 
     public enum ActionRequirement : byte
     {
+        [Display(Name = "Not necessarily")]
         NotNecessarily,
+        
         Recommended,
+        [Display(Name = "Highly recommended")]
         RecommendedPriority
     }
 }

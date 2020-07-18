@@ -14,5 +14,10 @@ namespace Watchman.BusinessLogic.Models.PatientStates.HealthStates
         {
             return state ?? (state = new ThreateningHealthState());
         }
+
+        public override string ToString()
+        {
+            return "Threatening health state";
+        }
     }
 }

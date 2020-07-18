@@ -28,31 +28,31 @@ namespace HealthService.API.Models.Analysis
                     case "SYS":
                         {
                             if (valueWithActivityRate < 95)
-                                result.Notices.Add(new HealthNotice() { Sign = sign, Comment = "U have some small sys" });
+                                result.Notices.Add(new HealthNotice() { Sign = sign, Comment = "You have some small sys" });
                             else if (valueWithActivityRate > 180)
                                 result.Threats.Add(new HealthThreat() { Sign = sign, Comment = $"Call to your doctor, because u may get hypertensive crisis" });
                             else if (valueWithActivityRate > 130)
-                                result.Threats.Add(new HealthThreat() { Sign = sign, Comment = $"U have high blood pressure" });
+                                result.Threats.Add(new HealthThreat() { Sign = sign, Comment = $"You have high blood pressure" });
                             break;
                         }
                     case "DIA":
                         {
                             if (valueWithActivityRate < 40)
-                                result.Notices.Add(new HealthNotice() { Sign = sign, Comment = "U have some small sys" });
+                                result.Notices.Add(new HealthNotice() { Sign = sign, Comment = "You have some small sys" });
                             else if (valueWithActivityRate > 120)
                                 result.Threats.Add(new HealthThreat() { Sign = sign, Comment = $"Call to your doctor, because u may get hypertensive crisis" });
                             else if (valueWithActivityRate > 80)
-                                result.Threats.Add(new HealthThreat() { Sign = sign, Comment = $"U have high blood pressure" });
+                                result.Threats.Add(new HealthThreat() { Sign = sign, Comment = $"You have high blood pressure" });
                             break;
                         }
                     case "HeartRate":
                         {
                             if (valueWithActivityRate < 60)
-                                result.Threats.Add(new HealthThreat() { Sign = sign, Comment = "U have some small heart rate" });
+                                result.Threats.Add(new HealthThreat() { Sign = sign, Comment = "You have some small heart rate" });
                             else if (valueWithActivityRate > 150)
                                 result.Threats.Add(new HealthThreat() { Sign = sign, Comment = $"Call to your emergency, because u may get heart issue" });
                             else if (valueWithActivityRate > 100)
-                                result.Threats.Add(new HealthThreat() { Sign = sign, Comment = $"U have high heart rate" });
+                                result.Threats.Add(new HealthThreat() { Sign = sign, Comment = $"You have high heart rate" });
                             break;
                         }
 

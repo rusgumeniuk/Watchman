@@ -20,7 +20,6 @@ namespace ApiGateway.Web
                     config.AddJsonFile("ocelot.json");
                 })
                 .UseStartup<Startup>();
-
         }
     }
 }

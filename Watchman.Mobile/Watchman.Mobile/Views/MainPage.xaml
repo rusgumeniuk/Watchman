@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<MasterDetailPage xmlns="http://xamarin.com/schemas/2014/forms"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                  xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+                  xmlns:views="clr-namespace:Watchman.Mobile.Views;assembly=Watchman.Mobile"
+                  mc:Ignorable="d"
+                  x:Class="Watchman.Mobile.Views.MainPage">
+    <MasterDetailPage.Master>
+        <views:MenuPage x:Name="MasterPage"/>
+    </MasterDetailPage.Master>
+    <MasterDetailPage.Detail>
+        <NavigationPage>
+            <x:Arguments>
+                <views:AboutPage/>
+            </x:Arguments>
+        </NavigationPage>
+    </MasterDetailPage.Detail>
+</MasterDetailPage>
